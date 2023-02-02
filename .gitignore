@@ -1,0 +1,13 @@
+# IDE
+.idea
+.metals
+.vscode
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Auto generated
+/logs
+/build
+/vendor
