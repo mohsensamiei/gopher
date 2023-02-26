@@ -43,7 +43,7 @@ func ApplyQuery[T any](db *gorm.DB, q query.Query) *gorm.DB {
 	}
 	{
 		for _, include := range q.IncludeItems() {
-			db = db.Joins(toDelimited(include, strcase.ToCamel))
+			db = db.Preload(toDelimited(include, strcase.ToCamel))
 		}
 	}
 	{
