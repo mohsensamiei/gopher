@@ -34,7 +34,6 @@ func Slice(from, to any) {
 	if toTypeElem.Kind() == reflect.Ptr {
 		toTypeElem = toTypeElem.Elem()
 	}
-	toValue.Set(reflect.MakeSlice(toType, 0, toValue.Cap()))
 
 	if fromTypeElem.Kind() == toTypeElem.Kind() && toTypeElem.Kind() == reflect.Struct {
 		for i := 0; i < fromValue.Len(); i++ {
