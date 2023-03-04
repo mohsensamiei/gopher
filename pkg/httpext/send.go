@@ -3,6 +3,7 @@ package httpext
 import (
 	"encoding/json"
 	"github.com/pinosell/gopher/pkg/errors"
+	"github.com/pinosell/gopher/pkg/i18next"
 	"github.com/pinosell/gopher/pkg/mimeext"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -14,6 +15,9 @@ func SendCode(res http.ResponseWriter, req *http.Request, code int) {
 
 func SendError(res http.ResponseWriter, req *http.Request, err error) {
 	model := errors.Cast(err)
+	if model.Localize() == "" {
+		model = model.SetLocalize(i18next.ByContext(req.Context(), model.Slug()))
+	}
 	SendModel(res, req, model.StatusCode(), model)
 }
 
