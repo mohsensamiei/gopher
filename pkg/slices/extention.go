@@ -1,6 +1,10 @@
 package slices
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
 
 func Remove[T comparable](values []T, drop ...T) []T {
 	var result []T
@@ -36,4 +40,20 @@ func ToString[T any](values []T) []string {
 		results = append(results, fmt.Sprint(val))
 	}
 	return results
+}
+
+func Shuffle[T any](slice []T) []T {
+	var (
+		dest   []T
+		length = len(slice)
+		src    = make([]T, length)
+		random = rand.New(rand.NewSource(time.Now().Unix()))
+	)
+	copy(src, slice)
+	for i := 0; i < length; i++ {
+		index := random.Intn(len(src))
+		dest = append(dest, src[index])
+		src = append(src[:index], src[index+1:]...)
+	}
+	return dest
 }
