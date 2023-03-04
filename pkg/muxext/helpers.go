@@ -1,7 +1,6 @@
 package muxext
 
 import (
-	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -10,14 +9,15 @@ func NewRouter() *mux.Router {
 	return mux.NewRouter().StrictSlash(true)
 }
 
-type key interface {
-	SetID(id uuid.UUID)
+type key[T comparable] interface {
+	SetID(id T)
+	ParseID(id string) (T, error)
 	SetSlug(slug string)
 }
 
-func PathKey(req *http.Request, name string, out key) {
+func PathKey[T comparable](req *http.Request, name string, out key[T]) {
 	v := mux.Vars(req)[name]
-	id, err := uuid.Parse(v)
+	id, err := out.ParseID(v)
 	if err == nil {
 		out.SetID(id)
 		return
