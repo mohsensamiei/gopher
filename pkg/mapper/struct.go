@@ -51,6 +51,9 @@ func Struct(from, to any) {
 			if !toField.CanSet() {
 				continue
 			}
+			if toTypeField.Anonymous {
+				Struct(from, toField.Addr().Interface())
+			}
 
 			if compareTags(fromFieldTags, toFieldTags) {
 				if fromField.IsZero() {
