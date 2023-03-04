@@ -9,7 +9,7 @@ const (
 )
 
 var (
-	includeTermExp   = `[a-zA-Z][a-zA-Z0-9_]*`
+	includeTermExp   = `[a-zA-Z][a-zA-Z0-9_.]*`
 	includeTermRegex = regexp.MustCompile(includeTermExp)
 )
 
