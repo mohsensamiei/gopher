@@ -14,11 +14,11 @@ func GetLang(ctx context.Context) language.Tag {
 	if lang, ok := metadataext.GetValue(ctx, key); ok {
 		tag, err := language.Parse(lang)
 		if err != nil {
-			return language.Und
+			return defaultLang
 		}
 		return tag
 	}
-	return language.Und
+	return defaultLang
 }
 
 func SetLang(ctx context.Context, lang language.Tag) context.Context {
