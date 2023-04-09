@@ -1,7 +1,7 @@
 package errors
 
 import (
-	"fmt"
+	"github.com/iancoleman/strcase"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -18,8 +18,11 @@ func Cast(err error) *Error {
 		return e
 	case grpcStatus:
 		st := e.GRPCStatus()
-		if local := statusLocalize(st); local == nil {
-			return Wrap(fmt.Errorf(st.Message()), st.Code()).WithDetails(statusInfo(st)...)
+		// it means status is not compatible with our package
+		if local := getStatusLocalizedMessage(st); local == nil {
+			wrapped, _ := newStatus(st.Code(), st.Message(), strcase.ToSnake(st.Code().String())).
+				WithDetails(getStatusDetails(st)...)
+			return &Error{st: wrapped}
 		} else {
 			return &Error{st: st}
 		}

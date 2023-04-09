@@ -2,7 +2,9 @@ package errors
 
 import (
 	"fmt"
+	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"strings"
@@ -17,21 +19,38 @@ func (e Error) Message() string {
 }
 
 func (e Error) Slug() string {
-	return statusLocalize(e.st).Locale
+	return getStatusLocalizedMessage(e.st).Locale
 }
 
 func (e Error) Localize() string {
-	return statusLocalize(e.st).Message
+	return getStatusLocalizedMessage(e.st).Message
 }
 
 func (e Error) SetLocalize(localize string) *Error {
 	st := newStatusWithLocalize(e.Code(), e.Message(), e.Slug(), localize)
-	st = statusWithDetails(st, e.Details())
+	st, _ = st.WithDetails(getStatusDetails(e.st)...)
 	return &Error{st}
 }
 
 func (e Error) Details() []string {
-	return statusInfo(e.st)
+	var res []string
+	for _, ei := range getStatusErrorInfo(e.st) {
+		res = append(res, ei.Reason)
+	}
+	return res
+}
+
+func (e Error) Validations() []*Validation {
+	var res []*Validation
+	for _, br := range getStatusBadRequest(e.st) {
+		for _, v := range br.FieldViolations {
+			res = append(res, &Validation{
+				Tag:   v.Description,
+				Field: v.Field,
+			})
+		}
+	}
+	return res
 }
 
 func (e Error) Error() string {
@@ -40,8 +59,12 @@ func (e Error) Error() string {
 		e.Message(),
 		e.Slug(),
 	}
-	if len(e.Details()) > 0 {
-		parts = append(parts, strings.Join(e.Details(), ", "))
+	parts = append(parts, e.Details()...)
+	for _, validation := range e.Validations() {
+		parts = append(parts, fmt.Sprintf("tag '%v' on '%v'",
+			validation.Tag,
+			validation.Field,
+		))
 	}
 	return strings.Join(parts, " | ")
 }
@@ -67,5 +90,33 @@ func (e Error) WithDetailF(format string, args ...any) *Error {
 }
 
 func (e Error) WithDetails(details ...string) *Error {
-	return &Error{statusWithDetails(e.st, details)}
+	var ei []proto.Message
+	for _, detail := range details {
+		ei = append(ei, &errdetails.ErrorInfo{
+			Reason: detail,
+		})
+	}
+	st, _ := e.st.WithDetails(ei...)
+	return &Error{st}
+}
+
+func (e Error) WithValidation(tag string, field string) *Error {
+	return e.WithValidations([]*Validation{
+		{
+			Tag:   tag,
+			Field: field,
+		},
+	})
+}
+
+func (e Error) WithValidations(validations []*Validation) *Error {
+	br := new(errdetails.BadRequest)
+	for _, v := range validations {
+		br.FieldViolations = append(br.FieldViolations, &errdetails.BadRequest_FieldViolation{
+			Field:       v.Field,
+			Description: v.Tag,
+		})
+	}
+	st, _ := e.st.WithDetails(br)
+	return &Error{st}
 }

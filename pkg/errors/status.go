@@ -19,7 +19,7 @@ func newStatusWithLocalize(code codes.Code, message, slug string, localize strin
 	return st
 }
 
-func statusLocalize(st *status.Status) *errdetails.LocalizedMessage {
+func getStatusLocalizedMessage(st *status.Status) *errdetails.LocalizedMessage {
 	for _, detail := range st.Details() {
 		if ei, ok := detail.(*errdetails.LocalizedMessage); ok {
 			return ei
@@ -28,25 +28,38 @@ func statusLocalize(st *status.Status) *errdetails.LocalizedMessage {
 	return nil
 }
 
-func statusInfo(st *status.Status) []string {
-	var details []string
+func getStatusDetails(st *status.Status) []proto.Message {
+	var res []proto.Message
+	for _, detail := range st.Details() {
+		dt, ok := detail.(proto.Message)
+		if !ok {
+			continue
+		}
+		res = append(res, dt)
+	}
+	return res
+}
+
+func getStatusErrorInfo(st *status.Status) []*errdetails.ErrorInfo {
+	var details []*errdetails.ErrorInfo
 	for _, detail := range st.Details() {
 		ei, ok := detail.(*errdetails.ErrorInfo)
 		if !ok {
 			continue
 		}
-		details = append(details, ei.Reason)
+		details = append(details, ei)
 	}
 	return details
 }
 
-func statusWithDetails(st *status.Status, details []string) *status.Status {
-	var messages []proto.Message
-	for _, detail := range details {
-		messages = append(messages, &errdetails.ErrorInfo{
-			Reason: detail,
-		})
+func getStatusBadRequest(st *status.Status) []*errdetails.BadRequest {
+	var details []*errdetails.BadRequest
+	for _, detail := range st.Details() {
+		br, ok := detail.(*errdetails.BadRequest)
+		if !ok {
+			continue
+		}
+		details = append(details, br)
 	}
-	s, _ := st.WithDetails(messages...)
-	return s
+	return details
 }
