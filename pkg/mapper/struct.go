@@ -30,30 +30,36 @@ func Struct(from, to any) {
 
 	for i := 0; i < fromType.NumField(); i++ {
 		fromTypeField := fromType.Field(i)
-		fromFieldTags := getTagNames(fromTypeField)
+		if !fromTypeField.IsExported() {
+			continue
+		}
 		fromField := fromValue.FieldByName(fromTypeField.Name)
 		fromFieldType := fromTypeField.Type
 		if fromFieldType.Kind() == reflect.Ptr {
 			fromFieldType = fromFieldType.Elem()
 		}
-		if fromFieldType.Kind() == reflect.Struct && fromTypeField.Anonymous && fromTypeField.IsExported() {
+		if fromFieldType.Kind() == reflect.Struct && fromTypeField.Anonymous {
 			Struct(fromField.Interface(), to)
 		}
+		fromFieldTags := getTagNames(fromTypeField)
 
 		for j := 0; j < toType.NumField(); j++ {
 			toTypeField := toType.Field(j)
-			toFieldTags := getTagNames(toTypeField)
+			if !toTypeField.IsExported() {
+				continue
+			}
 			toField := toValue.FieldByName(toTypeField.Name)
+			if !toField.CanSet() {
+				continue
+			}
 			toFieldType := toTypeField.Type
 			if toFieldType.Kind() == reflect.Ptr {
 				toFieldType = toFieldType.Elem()
 			}
-			if !toField.CanSet() {
-				continue
-			}
 			if toTypeField.Anonymous {
 				Struct(from, toField.Addr().Interface())
 			}
+			toFieldTags := getTagNames(toTypeField)
 
 			if compareTags(fromFieldTags, toFieldTags) {
 				if fromField.IsZero() {
@@ -62,10 +68,16 @@ func Struct(from, to any) {
 				}
 
 				if fromFieldType.Kind() == toFieldType.Kind() && toFieldType.Kind() == reflect.Struct {
-					val := reflect.New(toFieldType)
+					var val reflect.Value
+					if toField.IsNil() {
+						val = reflect.New(toFieldType)
+					} else {
+						val = toField.Elem()
+					}
 					if val.Kind() != reflect.Ptr {
 						val = val.Addr()
 					}
+
 					Struct(fromField.Interface(), val.Interface())
 					if toField.Kind() == reflect.Ptr {
 						toField.Set(val)
