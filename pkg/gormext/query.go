@@ -91,35 +91,23 @@ func applySearch[T any](db *gorm.DB, query string) *gorm.DB {
 
 func applyFilter(db *gorm.DB, filters []*query.FilterClause) *gorm.DB {
 	for _, filter := range filters {
-		exp, values, err := convertExpression(filter)
-		if err != nil {
-			continue
-		}
-		if len(values) > 0 {
-			db = db.Where(exp, values)
-		} else {
-			db = db.Where(exp)
+		field := toDelimited(filter.Field, strcase.ToSnake)
+		switch filter.Function {
+		case query.Null, query.NotNull:
+			db = db.Where(fmt.Sprintf(queries[filter.Function], field))
+		case query.LessThanOrNull, query.LessThanOrEqualOrNull, query.GreaterThanOrNull, query.GreaterThanOrEqualOrNull:
+			db = db.Where(fmt.Sprintf(queries[filter.Function], field, field), filter.Values)
+		case query.Like, query.NotLike:
+			var values []any
+			for _, value := range filter.Values {
+				values = append(values, fmt.Sprint("%", value, "%"))
+			}
+			db = db.Where(fmt.Sprintf(queries[filter.Function], field), values)
+		default:
+			db = db.Where(fmt.Sprintf(queries[filter.Function], field), filter.Values)
 		}
 	}
 	return db
-}
-
-func convertExpression(filter *query.FilterClause) (string, []any, error) {
-	field := toDelimited(filter.Field, strcase.ToSnake)
-	switch filter.Function {
-	case query.Null, query.NotNull:
-		return fmt.Sprintf(queries[filter.Function], field), nil, nil
-	case query.LessThanOrNull, query.LessThanOrEqualOrNull, query.GreaterThanOrNull, query.GreaterThanOrEqualOrNull:
-		return fmt.Sprintf(queries[filter.Function], field, field), filter.Values, nil
-	case query.Like, query.NotLike:
-		var values []any
-		for _, value := range filter.Values {
-			values = append(values, fmt.Sprint("%", value, "%"))
-		}
-		return fmt.Sprintf(queries[filter.Function], field), values, nil
-	default:
-		return fmt.Sprintf(queries[filter.Function], field), filter.Values, nil
-	}
 }
 
 func toDelimited(s string, f func(s string) string) string {
