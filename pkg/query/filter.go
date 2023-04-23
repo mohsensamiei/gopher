@@ -15,7 +15,11 @@ const (
 type FilterFunction string
 
 const (
-	Null               FilterFunction = "null"
+	Is    FilterFunction = "is"
+	IsNot FilterFunction = "isn"
+	// Deprecated: use Is with null value
+	Null FilterFunction = "null"
+	// Deprecated: use Is with IsNot value
 	NotNull            FilterFunction = "nnull"
 	Equal              FilterFunction = "eq"
 	NotEqual           FilterFunction = "neq"
@@ -29,6 +33,7 @@ const (
 	NotContains        FilterFunction = "ncnt"
 	Like               FilterFunction = "like"
 	NotLike            FilterFunction = "nlike"
+	Or                 FilterFunction = "or"
 )
 
 var (
@@ -38,6 +43,8 @@ var (
 		strings.Join([]string{
 			string(Like),
 			string(NotLike),
+			string(Is),
+			string(IsNot),
 			string(Null),
 			string(NotNull),
 			string(Equal),
@@ -50,6 +57,7 @@ var (
 			string(NotIn),
 			string(Contains),
 			string(NotContains),
+			string(Or),
 		}, "|"),
 		filterValueExp,
 	)

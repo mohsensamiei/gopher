@@ -10,6 +10,8 @@ import (
 
 var (
 	queries = map[query.FilterFunction]string{
+		query.Is:                 "%v IS ?",
+		query.IsNot:              "%v IS NOT ?",
 		query.Null:               "%v IS NULL",
 		query.NotNull:            "%v IS NOT NULL",
 		query.Equal:              "%v = ?",
@@ -87,28 +89,52 @@ func applySearch[T any](db *gorm.DB, query string) *gorm.DB {
 
 func applyFilter(db *gorm.DB, filters []*query.FilterClause) *gorm.DB {
 	for _, filter := range filters {
-		switch filter.Function {
-		case query.Null, query.NotNull:
-			db = db.Where(
-				fmt.Sprintf(queries[filter.Function], toDelimited(filter.Field, strcase.ToSnake)),
-			)
-		case query.Like, query.NotLike:
-			var values []any
-			for _, value := range values {
-				values = append(values, fmt.Sprint("%", value, "%"))
-			}
-			db = db.Where(
-				fmt.Sprintf(queries[filter.Function], toDelimited(filter.Field, strcase.ToSnake)),
-				values,
-			)
-		default:
-			db = db.Where(
-				fmt.Sprintf(queries[filter.Function], toDelimited(filter.Field, strcase.ToSnake)),
-				filter.Values,
-			)
+		exp, values, err := convertExpression(filter)
+		if err != nil {
+			continue
 		}
+		db = db.Where(exp, values)
 	}
 	return db
+}
+
+func convertExpression(filter *query.FilterClause) (string, []any, error) {
+	switch filter.Function {
+	case query.Null, query.NotNull:
+		return fmt.Sprintf(queries[filter.Function], toDelimited(filter.Field, strcase.ToSnake)), nil, nil
+	case query.Or:
+		var (
+			exps   []string
+			values []any
+		)
+		for _, value := range filter.Values {
+			q, err := query.Parse(value.(string))
+			if err != nil {
+				return "", nil, err
+			}
+			for _, clause := range q.FilterClauses() {
+				var (
+					e string
+					v []any
+				)
+				e, v, err = convertExpression(clause)
+				if err != nil {
+					return "", nil, err
+				}
+				exps = append(exps, e)
+				values = append(values, v)
+			}
+		}
+		return strings.Join(exps, " OR "), values, nil
+	case query.Like, query.NotLike:
+		var values []any
+		for _, value := range filter.Values {
+			values = append(values, fmt.Sprint("%", value, "%"))
+		}
+		return fmt.Sprintf(queries[filter.Function], toDelimited(filter.Field, strcase.ToSnake)), values, nil
+	default:
+		return fmt.Sprintf(queries[filter.Function], toDelimited(filter.Field, strcase.ToSnake)), filter.Values, nil
+	}
 }
 
 func toDelimited(s string, f func(s string) string) string {
