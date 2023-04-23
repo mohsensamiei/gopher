@@ -10,22 +10,24 @@ import (
 
 var (
 	queries = map[query.FilterFunction]string{
-		query.Is:                 "%v IS ?",
-		query.IsNot:              "%v IS NOT ?",
-		query.Null:               "%v IS NULL",
-		query.NotNull:            "%v IS NOT NULL",
-		query.Equal:              "%v = ?",
-		query.NotEqual:           "%v <> ?",
-		query.In:                 "%v IN (?)",
-		query.NotIn:              "%v NOT IN (?)",
-		query.Contains:           "? IN %v",
-		query.NotContains:        "? NOT IN %v",
-		query.LessThan:           "%v < ?",
-		query.LessThanOrEqual:    "%v <= ?",
-		query.GreaterThan:        "%v > ?",
-		query.GreaterThanOrEqual: "%v >= ?",
-		query.Like:               "%v LIKE ?",
-		query.NotLike:            "%v NOT LIKE ?",
+		query.Null:                     "%v IS NULL",
+		query.NotNull:                  "%v IS NOT NULL",
+		query.Equal:                    "%v = ?",
+		query.NotEqual:                 "%v <> ?",
+		query.In:                       "%v IN (?)",
+		query.NotIn:                    "%v NOT IN (?)",
+		query.Contains:                 "? IN %v",
+		query.NotContains:              "? NOT IN %v",
+		query.LessThan:                 "%v < ?",
+		query.LessThanOrEqual:          "%v <= ?",
+		query.GreaterThan:              "%v > ?",
+		query.GreaterThanOrEqual:       "%v >= ?",
+		query.LessThanOrNull:           "(%v < ? OR %v IS NULL)",
+		query.LessThanOrEqualOrNull:    "(%v <= ? OR %v IS NULL)",
+		query.GreaterThanOrNull:        "(%v > ? OR %v IS NULL)",
+		query.GreaterThanOrEqualOrNull: "(%v >= ? OR %v IS NULL)",
+		query.Like:                     "%v LIKE ?",
+		query.NotLike:                  "%v NOT LIKE ?",
 	}
 	orders = map[query.SortFunction]string{
 		query.ASC:  "%v ASC",
@@ -93,47 +95,30 @@ func applyFilter(db *gorm.DB, filters []*query.FilterClause) *gorm.DB {
 		if err != nil {
 			continue
 		}
-		db = db.Where(exp, values)
+		if len(values) > 0 {
+			db = db.Where(exp, values)
+		} else {
+			db = db.Where(exp)
+		}
 	}
 	return db
 }
 
 func convertExpression(filter *query.FilterClause) (string, []any, error) {
+	field := toDelimited(filter.Field, strcase.ToSnake)
 	switch filter.Function {
 	case query.Null, query.NotNull:
-		return fmt.Sprintf(queries[filter.Function], toDelimited(filter.Field, strcase.ToSnake)), nil, nil
-	case query.Or:
-		var (
-			exps   []string
-			values []any
-		)
-		for _, value := range filter.Values {
-			q, err := query.Parse(value.(string))
-			if err != nil {
-				return "", nil, err
-			}
-			for _, clause := range q.FilterClauses() {
-				var (
-					e string
-					v []any
-				)
-				e, v, err = convertExpression(clause)
-				if err != nil {
-					return "", nil, err
-				}
-				exps = append(exps, e)
-				values = append(values, v)
-			}
-		}
-		return strings.Join(exps, " OR "), values, nil
+		return fmt.Sprintf(queries[filter.Function], field), nil, nil
+	case query.LessThanOrNull, query.LessThanOrEqualOrNull, query.GreaterThanOrNull, query.GreaterThanOrEqualOrNull:
+		return fmt.Sprintf(queries[filter.Function], field, field), filter.Values, nil
 	case query.Like, query.NotLike:
 		var values []any
 		for _, value := range filter.Values {
 			values = append(values, fmt.Sprint("%", value, "%"))
 		}
-		return fmt.Sprintf(queries[filter.Function], toDelimited(filter.Field, strcase.ToSnake)), values, nil
+		return fmt.Sprintf(queries[filter.Function], field), values, nil
 	default:
-		return fmt.Sprintf(queries[filter.Function], toDelimited(filter.Field, strcase.ToSnake)), filter.Values, nil
+		return fmt.Sprintf(queries[filter.Function], field), filter.Values, nil
 	}
 }
 

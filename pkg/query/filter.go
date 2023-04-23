@@ -15,36 +15,33 @@ const (
 type FilterFunction string
 
 const (
-	Is    FilterFunction = "is"
-	IsNot FilterFunction = "isn"
-	// Deprecated: use Is with null value
-	Null FilterFunction = "null"
-	// Deprecated: use Is with IsNot value
-	NotNull            FilterFunction = "nnull"
-	Equal              FilterFunction = "eq"
-	NotEqual           FilterFunction = "neq"
-	GreaterThan        FilterFunction = "gt"
-	GreaterThanOrEqual FilterFunction = "gte"
-	LessThan           FilterFunction = "lt"
-	LessThanOrEqual    FilterFunction = "lte"
-	In                 FilterFunction = "in"
-	NotIn              FilterFunction = "nin"
-	Contains           FilterFunction = "cnt"
-	NotContains        FilterFunction = "ncnt"
-	Like               FilterFunction = "like"
-	NotLike            FilterFunction = "nlike"
-	Or                 FilterFunction = "or"
+	Null                     FilterFunction = "null"
+	NotNull                  FilterFunction = "nnull"
+	Equal                    FilterFunction = "eq"
+	NotEqual                 FilterFunction = "neq"
+	GreaterThan              FilterFunction = "gt"
+	GreaterThanOrEqual       FilterFunction = "gte"
+	LessThan                 FilterFunction = "lt"
+	LessThanOrEqual          FilterFunction = "lte"
+	GreaterThanOrNull        FilterFunction = "gtn"
+	GreaterThanOrEqualOrNull FilterFunction = "gten"
+	LessThanOrNull           FilterFunction = "ltn"
+	LessThanOrEqualOrNull    FilterFunction = "lten"
+	In                       FilterFunction = "in"
+	NotIn                    FilterFunction = "nin"
+	Contains                 FilterFunction = "cnt"
+	NotContains              FilterFunction = "ncnt"
+	Like                     FilterFunction = "like"
+	NotLike                  FilterFunction = "nlike"
 )
 
 var (
-	filterValueExp = `\d+|\"[^\"]*\"|true|false|null`
+	filterValueExp = `\d+|\"[^\"]*\"|true|false`
 	filterTermExp  = fmt.Sprintf(`(%v):(%v)(\((,|\s+|%v)*\))`,
 		`[a-zA-Z][a-zA-Z0-9_.]*`,
 		strings.Join([]string{
 			string(Like),
 			string(NotLike),
-			string(Is),
-			string(IsNot),
 			string(Null),
 			string(NotNull),
 			string(Equal),
@@ -53,11 +50,14 @@ var (
 			string(GreaterThanOrEqual),
 			string(LessThan),
 			string(LessThanOrEqual),
+			string(GreaterThanOrNull),
+			string(GreaterThanOrEqualOrNull),
+			string(LessThanOrNull),
+			string(LessThanOrEqualOrNull),
 			string(In),
 			string(NotIn),
 			string(Contains),
 			string(NotContains),
-			string(Or),
 		}, "|"),
 		filterValueExp,
 	)
