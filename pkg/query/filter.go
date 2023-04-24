@@ -18,6 +18,7 @@ const (
 	Null                     FilterFunction = "null"
 	NotNull                  FilterFunction = "nnull"
 	Equal                    FilterFunction = "eq"
+	EqualOrNull              FilterFunction = "eqn"
 	NotEqual                 FilterFunction = "neq"
 	GreaterThan              FilterFunction = "gt"
 	GreaterThanOrEqual       FilterFunction = "gte"
@@ -45,6 +46,7 @@ var (
 			string(Null),
 			string(NotNull),
 			string(Equal),
+			string(EqualOrNull),
 			string(NotEqual),
 			string(GreaterThan),
 			string(GreaterThanOrEqual),

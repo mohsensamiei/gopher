@@ -13,6 +13,7 @@ var (
 		query.Null:                     "%v IS NULL",
 		query.NotNull:                  "%v IS NOT NULL",
 		query.Equal:                    "%v = ?",
+		query.EqualOrNull:              "(%v = ? OR %v IS NULL)",
 		query.NotEqual:                 "%v <> ?",
 		query.In:                       "%v IN (?)",
 		query.NotIn:                    "%v NOT IN (?)",
@@ -95,7 +96,7 @@ func applyFilter(db *gorm.DB, filters []*query.FilterClause) *gorm.DB {
 		switch filter.Function {
 		case query.Null, query.NotNull:
 			db = db.Where(fmt.Sprintf(queries[filter.Function], field))
-		case query.LessThanOrNull, query.LessThanOrEqualOrNull, query.GreaterThanOrNull, query.GreaterThanOrEqualOrNull:
+		case query.EqualOrNull, query.LessThanOrNull, query.LessThanOrEqualOrNull, query.GreaterThanOrNull, query.GreaterThanOrEqualOrNull:
 			db = db.Where(fmt.Sprintf(queries[filter.Function], field, field), filter.Values)
 		case query.Like, query.NotLike:
 			var values []any
