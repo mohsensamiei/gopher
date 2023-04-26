@@ -27,8 +27,8 @@ var (
 		query.LessThanOrEqualOrNull:    "(%v <= ? OR %v IS NULL)",
 		query.GreaterThanOrNull:        "(%v > ? OR %v IS NULL)",
 		query.GreaterThanOrEqualOrNull: "(%v >= ? OR %v IS NULL)",
-		query.Like:                     "%v LIKE ?",
-		query.NotLike:                  "%v NOT LIKE ?",
+		query.Like:                     "%v ILIKE ?",
+		query.NotLike:                  "%v NOT ILIKE ?",
 	}
 	orders = map[query.SortFunction]string{
 		query.ASC:  "%v ASC",
