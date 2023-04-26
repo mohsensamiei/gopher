@@ -29,14 +29,9 @@ func (q Query) TakeCount() int {
 		return 10
 	}
 	i, _ := strconv.Atoi(strings.TrimSpace(val[0]))
-	if i < 0 {
-		return 0
+	if i < 1 {
+		return 10
 	}
-	//if i < 1 {
-	//	return 10
-	//} else if i > 100 {
-	//	return 100
-	//}
 	return i
 }
 
