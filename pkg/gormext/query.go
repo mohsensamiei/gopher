@@ -83,9 +83,12 @@ func applySearch[T any](db *gorm.DB, query string) *gorm.DB {
 	if !ok {
 		return db
 	}
+	if len(query) >= 3 {
+		query = fmt.Sprint("%", query, "%")
+	}
 	db = db.Where(
-		fmt.Sprintf("%v LIKE ?", toDelimited(obj.FullTextName(), strcase.ToSnake)),
-		fmt.Sprint("%", query, "%"),
+		fmt.Sprintf("%v ILIKE ?", toDelimited(obj.FullTextName(), strcase.ToSnake)),
+		query,
 	)
 	return db
 }
