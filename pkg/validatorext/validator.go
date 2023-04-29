@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"reflect"
 	"regexp"
+	"strings"
 )
 
 type EnumValidation interface {
@@ -37,7 +38,7 @@ func (v *Validate) Struct(s any) error {
 		var validations []*errors.Validation
 		for _, row := range raw.FindAllStringSubmatch(err.Error(), -1) {
 			validations = append(validations, &errors.Validation{
-				Tag:   strcase.ToSnake(row[3]),
+				Tag:   strings.Split(strcase.ToSnake(row[3]), "_")[0],
 				Field: strcase.ToSnake(row[2]),
 			})
 		}
