@@ -32,7 +32,7 @@ type CrudRepository[M Identity[K], K any] struct {
 }
 
 func (r CrudRepository[M, K]) DB(ctx context.Context) *gorm.DB {
-	return di.Provide[*gorm.DB](ctx, Name)
+	return di.Provide[*gorm.DB](ctx, Name).WithContext(ctx)
 }
 
 func (r CrudRepository[M, K]) ReturnByID(ctx context.Context, id K, qe query.Encode) (*M, error) {
