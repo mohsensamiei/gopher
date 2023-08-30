@@ -1,12 +1,13 @@
 package i18next
 
 import (
-	"github.com/BurntSushi/toml"
-	"github.com/nicksnyder/go-i18n/v2/i18n"
-	"golang.org/x/text/language"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/BurntSushi/toml"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
+	"golang.org/x/text/language"
 )
 
 var (
@@ -35,4 +36,11 @@ func Setup(configs Configs, path string) error {
 		languages[tag] = i18n.NewLocalizer(bundle, tag.String())
 	}
 	return nil
+}
+
+func Languages() (tags []language.Tag) {
+	for tag := range languages {
+		tags = append(tags, tag)
+	}
+	return
 }
