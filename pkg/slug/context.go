@@ -2,7 +2,7 @@ package slug
 
 import (
 	"context"
-	"github.com/mohsensamiei/gopher/pkg/di"
+	"github.com/mohsensamiei/gopher/v2/pkg/di"
 )
 
 const (

@@ -2,7 +2,7 @@ package telebot
 
 import (
 	"context"
-	"github.com/mohsensamiei/gopher/pkg/telegram"
+	"github.com/mohsensamiei/gopher/v2/pkg/telegram"
 	log "github.com/sirupsen/logrus"
 	"strings"
 )

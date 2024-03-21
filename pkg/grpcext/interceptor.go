@@ -2,10 +2,10 @@ package grpcext
 
 import (
 	"context"
-	"github.com/mohsensamiei/gopher/pkg/di"
-	"github.com/mohsensamiei/gopher/pkg/errors"
-	"github.com/mohsensamiei/gopher/pkg/i18next"
-	"github.com/mohsensamiei/gopher/pkg/metadataext"
+	"github.com/mohsensamiei/gopher/v2/pkg/di"
+	"github.com/mohsensamiei/gopher/v2/pkg/errors"
+	"github.com/mohsensamiei/gopher/v2/pkg/i18next"
+	"github.com/mohsensamiei/gopher/v2/pkg/metadataext"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )

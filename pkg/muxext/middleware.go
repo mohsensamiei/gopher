@@ -2,11 +2,11 @@ package muxext
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/mohsensamiei/gopher/pkg/authorize"
-	"github.com/mohsensamiei/gopher/pkg/di"
-	"github.com/mohsensamiei/gopher/pkg/httpext"
-	"github.com/mohsensamiei/gopher/pkg/i18next"
-	"github.com/mohsensamiei/gopher/pkg/response"
+	"github.com/mohsensamiei/gopher/v2/pkg/authorize"
+	"github.com/mohsensamiei/gopher/v2/pkg/di"
+	"github.com/mohsensamiei/gopher/v2/pkg/httpext"
+	"github.com/mohsensamiei/gopher/v2/pkg/i18next"
+	"github.com/mohsensamiei/gopher/v2/pkg/response"
 	"golang.org/x/text/language"
 	"net/http"
 	"strings"

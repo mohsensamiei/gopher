@@ -2,8 +2,8 @@ package muxext
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/mohsensamiei/gopher/pkg/httpext"
-	"github.com/mohsensamiei/gopher/pkg/service"
+	"github.com/mohsensamiei/gopher/v2/pkg/httpext"
+	"github.com/mohsensamiei/gopher/v2/pkg/service"
 	"github.com/rs/cors"
 	"net"
 	"net/http"

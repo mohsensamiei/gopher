@@ -3,7 +3,7 @@ package redisext
 import (
 	"encoding/json"
 	"github.com/adjust/rmq/v5"
-	"github.com/mohsensamiei/gopher/pkg/errors"
+	"github.com/mohsensamiei/gopher/v2/pkg/errors"
 	"time"
 )
 

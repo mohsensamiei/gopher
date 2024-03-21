@@ -3,8 +3,8 @@ package gormext
 import (
 	"context"
 	"fmt"
-	"github.com/mohsensamiei/gopher/pkg/errors"
-	"github.com/mohsensamiei/gopher/pkg/query"
+	"github.com/mohsensamiei/gopher/v2/pkg/errors"
+	"github.com/mohsensamiei/gopher/v2/pkg/query"
 	"google.golang.org/grpc/codes"
 	"gorm.io/gorm"
 	"strings"

@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/mohsensamiei/gopher/pkg/gormext"
-	"github.com/mohsensamiei/gopher/pkg/postgresext"
-	"github.com/mohsensamiei/gopher/pkg/query"
+	"github.com/mohsensamiei/gopher/v2/pkg/gormext"
+	"github.com/mohsensamiei/gopher/v2/pkg/postgresext"
+	"github.com/mohsensamiei/gopher/v2/pkg/query"
 	log "github.com/sirupsen/logrus"
 )
 

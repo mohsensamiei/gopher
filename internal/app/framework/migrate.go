@@ -5,10 +5,10 @@ import (
 	"strings"
 
 	"github.com/iancoleman/strcase"
-	"github.com/mohsensamiei/gopher/internal/pkg/helpers"
-	"github.com/mohsensamiei/gopher/internal/pkg/templates"
-	"github.com/mohsensamiei/gopher/pkg/cobraext"
-	"github.com/mohsensamiei/gopher/pkg/slices"
+	"github.com/mohsensamiei/gopher/v2/internal/pkg/helpers"
+	"github.com/mohsensamiei/gopher/v2/internal/pkg/templates"
+	"github.com/mohsensamiei/gopher/v2/pkg/cobraext"
+	"github.com/mohsensamiei/gopher/v2/pkg/slices"
 	"github.com/spf13/cobra"
 )
 

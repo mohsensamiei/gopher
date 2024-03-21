@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/getsentry/sentry-go"
 	sentrylogrus "github.com/getsentry/sentry-go/logrus"
-	"github.com/mohsensamiei/gopher/pkg/slices"
+	"github.com/mohsensamiei/gopher/v2/pkg/slices"
 	log "github.com/sirupsen/logrus"
 	"time"
 )

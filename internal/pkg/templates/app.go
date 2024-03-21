@@ -6,9 +6,9 @@ package {{ .plural }}
 
 import (
 	"{{ .repository }}/api"
-	"github.com/mohsensamiei/gopher/pkg/grpcext"
-	"github.com/mohsensamiei/gopher/pkg/httpext"
-	"github.com/mohsensamiei/gopher/pkg/muxext"
+	"github.com/mohsensamiei/gopher/v2/pkg/grpcext"
+	"github.com/mohsensamiei/gopher/v2/pkg/httpext"
+	"github.com/mohsensamiei/gopher/v2/pkg/muxext"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -172,8 +172,8 @@ package {{ .plural }}
 import (
 	"context"
 	"{{ .repository }}/api"
-	"github.com/mohsensamiei/gopher/pkg/errors"
-	"github.com/mohsensamiei/gopher/pkg/grpcext"
+	"github.com/mohsensamiei/gopher/v2/pkg/errors"
+	"github.com/mohsensamiei/gopher/v2/pkg/grpcext"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 )

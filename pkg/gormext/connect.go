@@ -1,7 +1,7 @@
 package gormext
 
 import (
-	"github.com/mohsensamiei/gopher/pkg/errors"
+	"github.com/mohsensamiei/gopher/v2/pkg/errors"
 	"google.golang.org/grpc/codes"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"

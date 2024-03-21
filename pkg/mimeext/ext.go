@@ -1,7 +1,7 @@
 package mimeext
 
 import (
-	"github.com/mohsensamiei/gopher/pkg/slices"
+	"github.com/mohsensamiei/gopher/v2/pkg/slices"
 	"mime"
 )
 

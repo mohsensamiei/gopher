@@ -1,6 +1,6 @@
 package slug
 
-import "github.com/mohsensamiei/gopher/pkg/stringsext"
+import "github.com/mohsensamiei/gopher/v2/pkg/stringsext"
 
 type Service struct {
 	Configs

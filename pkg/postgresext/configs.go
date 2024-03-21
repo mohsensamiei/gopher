@@ -2,7 +2,7 @@ package postgresext
 
 import (
 	"fmt"
-	"github.com/mohsensamiei/gopher/pkg/netext"
+	"github.com/mohsensamiei/gopher/v2/pkg/netext"
 	"strings"
 )
 

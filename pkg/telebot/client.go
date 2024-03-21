@@ -1,6 +1,6 @@
 package telebot
 
-import "github.com/mohsensamiei/gopher/pkg/telegram"
+import "github.com/mohsensamiei/gopher/v2/pkg/telegram"
 
 func New(configs Configs, connection *telegram.Connection) *Client {
 	return &Client{

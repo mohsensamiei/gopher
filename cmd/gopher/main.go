@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/mohsensamiei/gopher/internal/app/framework"
-	"github.com/mohsensamiei/gopher/pkg/cobraext"
-	"github.com/mohsensamiei/gopher/pkg/logext"
+	"github.com/mohsensamiei/gopher/v2/internal/app/framework"
+	"github.com/mohsensamiei/gopher/v2/pkg/cobraext"
+	"github.com/mohsensamiei/gopher/v2/pkg/logext"
 	"github.com/spf13/cobra"
 )
 

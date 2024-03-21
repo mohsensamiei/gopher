@@ -2,8 +2,8 @@ package jwtext
 
 import (
 	"context"
-	"github.com/mohsensamiei/gopher/pkg/authorize"
-	"github.com/mohsensamiei/gopher/pkg/di"
+	"github.com/mohsensamiei/gopher/v2/pkg/authorize"
+	"github.com/mohsensamiei/gopher/v2/pkg/di"
 )
 
 func FromContext(ctx context.Context) *JWT {

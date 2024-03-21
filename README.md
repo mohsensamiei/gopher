@@ -26,8 +26,8 @@ brew install --cask docker
 
 **Linux using apt:**
 ```sh
-wget https://go.dev/dl/go1.18.5.linux-amd64.tar.gz
-tar -C /usr/local -xzf go1.18.5.linux-amd64.tar.gz
+wget "https://dl.google.com/go/$(curl -Ls https://go.dev/VERSION\?m\=text | head -n 1).linux-amd64.tar.gz"
+tar -C /usr/local -xzf $(curl -Ls https://go.dev/VERSION\?m\=text | head -n 1).linux-amd64.tar.gz
 echo 'export GOPATH="$HOME/go"' >> ~/.bashrc
 echo 'export PATH=$PATH:$(go env GOPATH)/bin:/usr/local/go/bin"' >> ~/.bashrc
 echo 'export PATH=$PATH:~/go/bin' >> ~/.bashrc
@@ -42,7 +42,7 @@ go install github.com/keepljg/protoc-go-inject-tag@latest
 
 ## Installation
 ```shell
-go install github.com/mohsensamiei/gopher/cmd/gopher@latest
+go install github.com/mohsensamiei/gopher/v2/cmd/gopher@latest
 ```
 
 ## How to use

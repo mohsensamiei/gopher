@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/mohsensamiei/gopher/pkg/execext"
+	"github.com/mohsensamiei/gopher/v2/pkg/execext"
 	"github.com/spf13/cobra"
 )
 

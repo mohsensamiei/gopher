@@ -1,7 +1,7 @@
 package httpext
 
 import (
-	"github.com/mohsensamiei/gopher/pkg/mimeext"
+	"github.com/mohsensamiei/gopher/v2/pkg/mimeext"
 	"net/http"
 	"strings"
 )

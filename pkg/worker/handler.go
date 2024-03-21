@@ -1,7 +1,7 @@
 package worker
 
 import (
-	"github.com/mohsensamiei/gopher/pkg/httpext"
+	"github.com/mohsensamiei/gopher/v2/pkg/httpext"
 	"net/http"
 )
 

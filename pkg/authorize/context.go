@@ -3,7 +3,7 @@ package authorize
 import (
 	"context"
 	"encoding/json"
-	"github.com/mohsensamiei/gopher/pkg/metadataext"
+	"github.com/mohsensamiei/gopher/v2/pkg/metadataext"
 )
 
 func ToContext(ctx context.Context, claim *Claims) context.Context {

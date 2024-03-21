@@ -8,7 +8,7 @@ import (
 	"github.com/go-redis/redis_rate/v10"
 	"github.com/go-redsync/redsync/v4"
 	"github.com/go-redsync/redsync/v4/redis/goredis/v9"
-	"github.com/mohsensamiei/gopher/pkg/errors"
+	"github.com/mohsensamiei/gopher/v2/pkg/errors"
 	"github.com/redis/go-redis/v9"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc/codes"

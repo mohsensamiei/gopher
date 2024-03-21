@@ -3,7 +3,7 @@ package gormext
 import (
 	"fmt"
 	"github.com/iancoleman/strcase"
-	"github.com/mohsensamiei/gopher/pkg/slices"
+	"github.com/mohsensamiei/gopher/v2/pkg/slices"
 	"gorm.io/gorm"
 	"reflect"
 	"strings"

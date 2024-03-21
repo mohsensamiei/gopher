@@ -1,7 +1,7 @@
 package cobraext
 
 import (
-	"github.com/mohsensamiei/gopher/pkg/pointers"
+	"github.com/mohsensamiei/gopher/v2/pkg/pointers"
 	"github.com/spf13/cobra"
 )
 

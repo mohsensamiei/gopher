@@ -2,7 +2,7 @@ package response
 
 import (
 	"context"
-	"github.com/mohsensamiei/gopher/pkg/di"
+	"github.com/mohsensamiei/gopher/v2/pkg/di"
 	cache "github.com/victorspringer/http-cache"
 )
 

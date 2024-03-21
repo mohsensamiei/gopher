@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/mohsensamiei/gopher/pkg/gormext"
+	"github.com/mohsensamiei/gopher/v2/pkg/gormext"
 	"reflect"
 	"time"
 )

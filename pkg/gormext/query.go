@@ -3,9 +3,9 @@ package gormext
 import (
 	"fmt"
 	"github.com/iancoleman/strcase"
-	"github.com/mohsensamiei/gopher/pkg/logic"
-	"github.com/mohsensamiei/gopher/pkg/query"
-	"github.com/mohsensamiei/gopher/pkg/strcaseext"
+	"github.com/mohsensamiei/gopher/v2/pkg/logic"
+	"github.com/mohsensamiei/gopher/v2/pkg/query"
+	"github.com/mohsensamiei/gopher/v2/pkg/strcaseext"
 	"gorm.io/gorm"
 	"reflect"
 	"strings"

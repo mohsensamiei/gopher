@@ -2,9 +2,9 @@ package httpext
 
 import (
 	"encoding/json"
-	"github.com/mohsensamiei/gopher/pkg/errors"
-	"github.com/mohsensamiei/gopher/pkg/i18next"
-	"github.com/mohsensamiei/gopher/pkg/mimeext"
+	"github.com/mohsensamiei/gopher/v2/pkg/errors"
+	"github.com/mohsensamiei/gopher/v2/pkg/i18next"
+	"github.com/mohsensamiei/gopher/v2/pkg/mimeext"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 )

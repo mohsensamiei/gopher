@@ -1,8 +1,8 @@
 package response
 
 import (
-	"github.com/mohsensamiei/gopher/pkg/cache"
-	"github.com/mohsensamiei/gopher/pkg/redisext"
+	"github.com/mohsensamiei/gopher/v2/pkg/cache"
+	"github.com/mohsensamiei/gopher/v2/pkg/redisext"
 )
 
 func New(configs Configs, rdb *redisext.Client) (*cache.Client, error) {

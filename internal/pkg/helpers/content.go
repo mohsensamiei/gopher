@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	"github.com/mohsensamiei/gopher/pkg/templateext"
+	"github.com/mohsensamiei/gopher/v2/pkg/templateext"
 	"os"
 	"strings"
 )

@@ -3,7 +3,7 @@ package response
 import (
 	"context"
 	"fmt"
-	"github.com/mohsensamiei/gopher/pkg/redisext"
+	"github.com/mohsensamiei/gopher/v2/pkg/redisext"
 	"time"
 )
 

@@ -2,8 +2,8 @@ package authorize
 
 import (
 	"context"
-	"github.com/mohsensamiei/gopher/pkg/authenticate"
-	"github.com/mohsensamiei/gopher/pkg/di"
+	"github.com/mohsensamiei/gopher/v2/pkg/authenticate"
+	"github.com/mohsensamiei/gopher/v2/pkg/di"
 )
 
 func Authorized(ctx context.Context, token authenticate.Authenticate, scopes ...string) (*Claims, error) {

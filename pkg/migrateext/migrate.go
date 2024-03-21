@@ -8,7 +8,7 @@ import (
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
-	"github.com/mohsensamiei/gopher/pkg/errors"
+	"github.com/mohsensamiei/gopher/v2/pkg/errors"
 	"google.golang.org/grpc/codes"
 )
 

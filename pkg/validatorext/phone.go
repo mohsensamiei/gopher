@@ -2,7 +2,7 @@ package validatorext
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/mohsensamiei/gopher/pkg/phonenumberext"
+	"github.com/mohsensamiei/gopher/v2/pkg/phonenumberext"
 	"reflect"
 )
 

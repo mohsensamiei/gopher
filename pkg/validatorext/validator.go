@@ -3,7 +3,7 @@ package validatorext
 import (
 	"github.com/go-playground/validator/v10"
 	"github.com/iancoleman/strcase"
-	"github.com/mohsensamiei/gopher/pkg/errors"
+	"github.com/mohsensamiei/gopher/v2/pkg/errors"
 	"google.golang.org/grpc/codes"
 	"reflect"
 	"regexp"
