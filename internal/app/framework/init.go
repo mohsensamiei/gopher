@@ -3,11 +3,11 @@ package framework
 import (
 	"fmt"
 
-	"github.com/pinosell/gopher/internal/pkg/helpers"
-	"github.com/pinosell/gopher/internal/pkg/templates"
-	"github.com/pinosell/gopher/pkg/cobraext"
-	"github.com/pinosell/gopher/pkg/errors"
-	"github.com/pinosell/gopher/pkg/execext"
+	"github.com/mohsensamiei/gopher/internal/pkg/helpers"
+	"github.com/mohsensamiei/gopher/internal/pkg/templates"
+	"github.com/mohsensamiei/gopher/pkg/cobraext"
+	"github.com/mohsensamiei/gopher/pkg/errors"
+	"github.com/mohsensamiei/gopher/pkg/execext"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc/codes"
 )
@@ -51,7 +51,6 @@ func (c Commander) init(cmd *cobra.Command, args []string) error {
 	}
 
 	if err := helpers.MakeContents(map[string]string{
-		"api/src/misc.proto":               templates.ApiMisc,
 		"assets/locales/.gitkeep":          templates.GitKeep,
 		"assets/migrations/.gitkeep":       templates.GitKeep,
 		"assets/statics/.gitkeep":          templates.GitKeep,

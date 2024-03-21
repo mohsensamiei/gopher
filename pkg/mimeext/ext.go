@@ -1,7 +1,7 @@
 package mimeext
 
 import (
-	"github.com/pinosell/gopher/pkg/slices"
+	"github.com/mohsensamiei/gopher/pkg/slices"
 	"mime"
 )
 
@@ -10,7 +10,9 @@ var (
 		".jpg", ".png", ".gif", ".svg", ".bmp",
 		".mp4", "mov",
 		".txt",
-		".json", ".yaml", ".html",
+		".json", ".yaml",
+		".html",
+		".pdf",
 	}
 )
 

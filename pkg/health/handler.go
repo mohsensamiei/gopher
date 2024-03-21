@@ -1,8 +1,8 @@
 package health
 
 import (
-	"github.com/pinosell/gopher/pkg/httpext"
-	"github.com/pinosell/gopher/pkg/mimeext"
+	"github.com/mohsensamiei/gopher/pkg/httpext"
+	"github.com/mohsensamiei/gopher/pkg/mimeext"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
 )

@@ -3,7 +3,7 @@ package templates
 const (
 	ServiceDockerfile = `
 FROM golang:alpine as builder
-RUN apk update && apk add git
+RUN apk add --update --no-cache git
 
 ARG VERSION
 ARG GOPROXY
@@ -18,7 +18,7 @@ COPY . .
 # {{ .command }}
 
 FROM alpine:latest
-RUN apk update && apk add ca-certificates tzdata mailcap
+RUN apk add --update --no-cache ca-certificates tzdata mailcap
 
 WORKDIR /app
 COPY --from=builder /src/build/ ./

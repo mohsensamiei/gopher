@@ -2,14 +2,14 @@ package httpext
 
 import (
 	"encoding/json"
-	"github.com/pinosell/gopher/pkg/errors"
-	"github.com/pinosell/gopher/pkg/i18next"
-	"github.com/pinosell/gopher/pkg/mimeext"
+	"github.com/mohsensamiei/gopher/pkg/errors"
+	"github.com/mohsensamiei/gopher/pkg/i18next"
+	"github.com/mohsensamiei/gopher/pkg/mimeext"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
-func SendCode(res http.ResponseWriter, req *http.Request, code int) {
+func SendCode(res http.ResponseWriter, _ *http.Request, code int) {
 	res.WriteHeader(code)
 }
 
@@ -29,7 +29,7 @@ func SendModel(res http.ResponseWriter, req *http.Request, code int, model any) 
 	Send(res, req, code, mimeext.Json, bytes)
 }
 
-func Send(res http.ResponseWriter, req *http.Request, code int, mime string, data []byte) {
+func Send(res http.ResponseWriter, _ *http.Request, code int, mime string, data []byte) {
 	res.Header().Set(ContentTypeHeader, mime)
 	res.Header().Set(CharsetHeader, "utf-8")
 	res.WriteHeader(code)

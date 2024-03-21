@@ -3,8 +3,8 @@ package ldapext
 import (
 	"fmt"
 	"github.com/go-ldap/ldap/v3"
-	"github.com/pinosell/gopher/pkg/errors"
-	"github.com/pinosell/gopher/pkg/query"
+	"github.com/mohsensamiei/gopher/pkg/errors"
+	"github.com/mohsensamiei/gopher/pkg/query"
 	"google.golang.org/grpc/codes"
 )
 
@@ -48,7 +48,7 @@ func (e Groups) Create(group *Group) error {
 	return nil
 }
 
-func (e Groups) List(unit *Unit, qe query.Encode) ([]*Group, int64, error) {
+func (e Groups) List(unit *Unit, _ query.Encode) ([]*Group, int64, error) {
 	searchReq := ldap.NewSearchRequest(unit.ID,
 		ldap.ScopeWholeSubtree,
 		ldap.NeverDerefAliases,
@@ -74,7 +74,7 @@ func (e Groups) List(unit *Unit, qe query.Encode) ([]*Group, int64, error) {
 	return list, int64(len(list)), nil
 }
 
-func (e Groups) Return(id string, qe query.Encode) (*Group, error) {
+func (e Groups) Return(id string, _ query.Encode) (*Group, error) {
 	searchReq := ldap.NewSearchRequest(id,
 		ldap.ScopeWholeSubtree,
 		ldap.NeverDerefAliases,

@@ -12,7 +12,7 @@ services:
     image: {{ .registry }}/gateway:${VERSION:-latest}
     build:
       context: ..
-      dockerfile: services/gateway/Dockerfile
+      dockerfile: deploy/gateway/Dockerfile
       network: host
 # GOPHER: Don't remove this line
 # {{ .service }}
@@ -25,7 +25,7 @@ services:
     image: {{ .registry }}/{{ .name }}:${VERSION:-latest}
     build:
       context: ..
-      dockerfile: services/{{ .name }}/Dockerfile
+      dockerfile: deploy/{{ .name }}/Dockerfile
       args:
         - VERSION=${VERSION:-latest}
         - GOPROXY=${GOPROXY}

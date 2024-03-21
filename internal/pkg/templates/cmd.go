@@ -7,15 +7,15 @@ package main
 import (
 	// GOPHER: Don't remove this line
 	// {{ .import }}
-	"github.com/pinosell/gopher/pkg/envext"
-	"github.com/pinosell/gopher/pkg/grpcext"
-	"github.com/pinosell/gopher/pkg/health"
-	"github.com/pinosell/gopher/pkg/httpext"
-	"github.com/pinosell/gopher/pkg/i18next"
-	"github.com/pinosell/gopher/pkg/logext"
-	"github.com/pinosell/gopher/pkg/metadataext"
-	"github.com/pinosell/gopher/pkg/muxext"
-	"github.com/pinosell/gopher/pkg/service"
+	"github.com/mohsensamiei/gopher/pkg/envext"
+	"github.com/mohsensamiei/gopher/pkg/grpcext"
+	"github.com/mohsensamiei/gopher/pkg/health"
+	"github.com/mohsensamiei/gopher/pkg/httpext"
+	"github.com/mohsensamiei/gopher/pkg/i18next"
+	"github.com/mohsensamiei/gopher/pkg/logext"
+	"github.com/mohsensamiei/gopher/pkg/metadataext"
+	"github.com/mohsensamiei/gopher/pkg/muxext"
+	"github.com/mohsensamiei/gopher/pkg/service"
 	"github.com/gorilla/mux"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	log "github.com/sirupsen/logrus"
@@ -51,6 +51,10 @@ func init() {
 	}
 }
 
+//	@securityDefinitions.apikey	BearerAuth
+//	@in							header
+//	@name						Authorization
+//	@description				Format: Bearer [Access Token]
 func main() {
 	health.Serve(configs.Health)
 

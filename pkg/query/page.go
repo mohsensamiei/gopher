@@ -2,6 +2,7 @@ package query
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -11,44 +12,64 @@ const (
 	takeKey = "take"
 )
 
-func (q Query) SkipCount() int {
-	val := q.get(skipKey)
+type SkipClause int
+
+func (c *SkipClause) UnmarshalQuery(values url.Values) {
+	*c = 0
+	val := values[skipKey]
 	if len(val) == 0 {
-		return 0
+		return
 	}
 	i, _ := strconv.Atoi(strings.TrimSpace(val[0]))
 	if i < 0 {
-		return 0
+		return
 	}
-	return i
+	*c = SkipClause(i)
 }
 
-func (q Query) TakeCount() int {
-	val := q.get(takeKey)
+func (c SkipClause) MarshalQuery(values *url.Values) {
+	if c <= 0 {
+		return
+	}
+	values.Add(skipKey, fmt.Sprint(c))
+}
+
+type TakeClause int
+
+func (c *TakeClause) UnmarshalQuery(values url.Values) {
+	*c = 10
+	val := values[takeKey]
 	if len(val) == 0 {
-		return 10
+		return
 	}
-	i, _ := strconv.Atoi(strings.TrimSpace(val[0]))
+	i, _ := strconv.ParseInt(strings.TrimSpace(val[0]), 10, 64)
 	if i < 1 {
-		return 10
+		return
 	}
-	return i
+	*c = TakeClause(i)
 }
 
-func Skip(count int) Query {
-	return make(Query).Skip(count)
+func (c TakeClause) MarshalQuery(values *url.Values) {
+	if c <= 0 {
+		return
+	}
+	values.Add(takeKey, fmt.Sprint(c))
 }
 
-func (q Query) Skip(count int) Query {
-	q.set(skipKey, fmt.Sprint(count))
+func Skip(count int64) *Query {
+	return new(Query).Skip(count)
+}
+
+func (q *Query) Skip(count int64) *Query {
+	q.SkipClause = SkipClause(count)
 	return q
 }
 
-func Take(count int) Query {
-	return make(Query).Take(count)
+func Take(count int64) *Query {
+	return new(Query).Take(count)
 }
 
-func (q Query) Take(count int) Query {
-	q.set(takeKey, fmt.Sprint(count))
+func (q *Query) Take(count int64) *Query {
+	q.TakeClause = TakeClause(count)
 	return q
 }

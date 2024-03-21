@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/pinosell/gopher/pkg/gormext"
-	"github.com/pinosell/gopher/pkg/postgresext"
-	"github.com/pinosell/gopher/pkg/query"
+	"github.com/mohsensamiei/gopher/pkg/gormext"
+	"github.com/mohsensamiei/gopher/pkg/postgresext"
+	"github.com/mohsensamiei/gopher/pkg/query"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -17,12 +17,12 @@ func (u User) FullTextName() string {
 }
 
 type UserRepository struct {
-	gormext.CrudRepository[User, uint32]
+	gormext.CrudRepository[User]
 }
 
 func main() {
 	r := new(UserRepository)
-	log.Print(r.ReturnByID(context.Background(), 123, query.Empty))
+	log.Print(r.ReturnByPK(context.Background(), query.Empty, 123))
 
 	configs := &postgresext.Configs{
 		PostgresHosts:    []string{"localhost"},

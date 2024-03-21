@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/pinosell/gopher/internal/pkg/helpers"
-	"github.com/pinosell/gopher/internal/pkg/templates"
+	"github.com/mohsensamiei/gopher/internal/pkg/helpers"
+	"github.com/mohsensamiei/gopher/internal/pkg/templates"
 	"github.com/spf13/cobra"
 )
 

@@ -1,24 +1,33 @@
 package query
 
-import "fmt"
+import (
+	"fmt"
+	"net/url"
+	"strings"
+)
 
 const (
 	countKey = "count"
 )
 
-func (q Query) CountOnly() bool {
-	val := q.get(countKey)
-	if len(val) == 0 {
-		return false
+type CountClause bool
+
+func (c *CountClause) UnmarshalQuery(values url.Values) {
+	*c = strings.ToLower(strings.TrimSpace(values.Get(countKey))) == "true"
+}
+
+func (c CountClause) MarshalQuery(values *url.Values) {
+	if c == false {
+		return
 	}
-	return val[0] == "true"
+	values.Add(countKey, fmt.Sprint(c))
 }
 
-func Count(flag bool) Query {
-	return make(Query).Count(flag)
+func Count(flag bool) *Query {
+	return new(Query).Count(flag)
 }
 
-func (q Query) Count(flag bool) Query {
-	q.set(countKey, fmt.Sprint(flag))
+func (q *Query) Count(flag bool) *Query {
+	q.CountClause = CountClause(flag)
 	return q
 }

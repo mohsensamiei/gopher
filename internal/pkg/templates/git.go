@@ -24,6 +24,17 @@ Thumbs.db
 stages:
   - test
   - build
+  - deploy
+
+variables:
+  DEPLOY_TARGET:
+    value: "none"
+    options:
+      - "none"
+      - "development"
+      - "staging"
+      - "production"
+    description: "The deployment target. Set to 'none' by default."
 
 test:
   stage: test
@@ -34,28 +45,41 @@ test:
   script:
     - go vet -vettool="$(which shadow)" ./...
     - go test -v ./...
-  only:
-    - merge_requests
-    - tags
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $DEPLOY_TARGET != "none"
   tags:
     - test
 
 build:
   stage: build
+  environment:
+    name: ${DEPLOY_TARGET}
   before_script:
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
-    - SERVICE=$(echo ${CI_COMMIT_TAG} | cut -d- -f1)
-    - VERSION=$(echo ${CI_COMMIT_TAG} | cut -d- -f2)
+    - export VERSION=$(echo ${CI_COMMIT_TAG:-${CI_COMMIT_SHORT_SHA}}.${CI_PIPELINE_ID})
   script:
-    - docker build .
-      -f services/${SERVICE}/Dockerfile
-      -t ${CI_REGISTRY_IMAGE}/${SERVICE}:${VERSION}
-      --build-arg GOPROXY=${GOPROXY}
-      --build-arg VERSION=${VERSION}
-    - docker push ${CI_REGISTRY_IMAGE}/${SERVICE}:${VERSION}
+    - docker compose -f deploy/docker-compose.build.yml build --no-cache
+    - docker compose -f deploy/docker-compose.build.yml push
   only:
-    - tags
+    variables:
+      - $DEPLOY_TARGET != "none"
   tags:
     - build
+
+deploy:
+  stage: deploy
+  environment:
+    name: ${DEPLOY_TARGET}
+  before_script:
+    - docker login -u ${ARTIFACTORY_USER} -p ${ARTIFACTORY_PASS} ${DOCKER_ARTIFACTORY}
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+    - export VERSION=$(echo ${CI_COMMIT_TAG:-${CI_COMMIT_SHORT_SHA}}.${CI_PIPELINE_ID})
+  script:
+    - docker compose -f deploy/docker-compose.deploy.yml up -d
+  only:
+    variables:
+      - $DEPLOY_TARGET != "none"
+  tags:
+    - ${DEPLOY_TARGET}
 `
 )

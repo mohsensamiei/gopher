@@ -8,4 +8,6 @@ const (
 	AuthorizationHeader  = "Authorization"
 	RealIPHeader         = "X-Real-IP"
 	AcceptLanguageHeader = "Accept-Language"
+	SessionIDHeader      = "session-id"
+	ContentDisposition   = "Content-Disposition"
 )

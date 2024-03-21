@@ -1,7 +1,7 @@
 package cobraext
 
 import (
-	"github.com/pinosell/gopher/pkg/pointers"
+	"github.com/mohsensamiei/gopher/pkg/pointers"
 	"github.com/spf13/cobra"
 )
 
@@ -12,7 +12,7 @@ func Flag[T string](cmd *cobra.Command, name string, result *T) error {
 		if err != nil {
 			return err
 		}
-		*result = *pointers.ToPointer(T(res))
+		*result = *pointers.Pointer(T(res))
 	}
 	return nil
 }

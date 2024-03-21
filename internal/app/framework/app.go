@@ -7,10 +7,10 @@ import (
 
 	"github.com/gertd/go-pluralize"
 	"github.com/iancoleman/strcase"
-	"github.com/pinosell/gopher/internal/pkg/helpers"
-	"github.com/pinosell/gopher/internal/pkg/templates"
-	"github.com/pinosell/gopher/pkg/slices"
-	"github.com/pinosell/gopher/pkg/templateext"
+	"github.com/mohsensamiei/gopher/internal/pkg/helpers"
+	"github.com/mohsensamiei/gopher/internal/pkg/templates"
+	"github.com/mohsensamiei/gopher/pkg/slices"
+	"github.com/mohsensamiei/gopher/pkg/templateext"
 	"github.com/spf13/cobra"
 )
 
@@ -92,6 +92,7 @@ func (c Commander) app(cmd *cobra.Command, args []string) error {
 		"Plural":     strcase.ToCamel(plural),
 		"singular":   singular,
 		"plural":     plural,
+		"command":    command,
 		"import":     "{{ .import }}",
 		"controller": "{{ .controller }}",
 		"service":    "{{ .service }}",

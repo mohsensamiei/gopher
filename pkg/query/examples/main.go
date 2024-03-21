@@ -3,7 +3,7 @@ package main
 import (
 	"net/url"
 
-	"github.com/pinosell/gopher/pkg/query"
+	"github.com/mohsensamiei/gopher/pkg/query"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -25,7 +25,7 @@ func Filter() {
 	log.Print(url.QueryUnescape(q.String()))
 
 	pq, _ := query.Parse(q.String())
-	for _, item := range pq.FilterClauses() {
+	for _, item := range pq.FilterClauses {
 		log.Print(item.Field, " ", item.Function, " ", item.Values)
 	}
 }
@@ -37,7 +37,7 @@ func Include() {
 	log.Print(url.QueryUnescape(q.String()))
 
 	pq, _ := query.Parse(q.String())
-	for _, item := range pq.IncludeItems() {
+	for _, item := range pq.IncludeClauses {
 		log.Print(item)
 	}
 }
@@ -49,8 +49,8 @@ func Page() {
 	log.Print(url.QueryUnescape(q.String()))
 
 	pq, _ := query.Parse(q.String())
-	log.Print(pq.SkipCount())
-	log.Print(pq.TakeCount())
+	log.Print(pq.SkipClause)
+	log.Print(pq.TakeClause)
 }
 
 func Sort() {
@@ -60,7 +60,7 @@ func Sort() {
 	log.Print(url.QueryUnescape(q.String()))
 
 	pq, _ := query.Parse(q.String())
-	for _, item := range pq.SortClauses() {
+	for _, item := range pq.SortClauses {
 		log.Print(item.Field, " ", item.Function)
 	}
 }
@@ -72,7 +72,7 @@ func Search() {
 	log.Print(url.QueryUnescape(q.String()))
 
 	pq, _ := query.Parse(q.String())
-	log.Print(pq.SearchQuery())
+	log.Print(pq.SearchClause)
 }
 
 func Count() {
@@ -82,5 +82,5 @@ func Count() {
 	log.Print(url.QueryUnescape(q.String()))
 
 	pq, _ := query.Parse(q.String())
-	log.Print(pq.CountOnly())
+	log.Print(pq.CountClause)
 }

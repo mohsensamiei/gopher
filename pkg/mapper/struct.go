@@ -3,6 +3,8 @@ package mapper
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
+	"github.com/mohsensamiei/gopher/pkg/gormext"
 	"reflect"
 	"time"
 )
@@ -114,33 +116,104 @@ func Struct(from, to any) {
 					}
 				}
 
-				if fromField.Type() == toField.Type() {
-					toField.Set(fromField)
+				if fromFieldType == toFieldType {
+					if fromField.Kind() == reflect.Ptr {
+						if toField.Kind() == reflect.Ptr {
+							toField.Set(fromField)
+						} else {
+							toField.Set(fromField.Elem())
+						}
+					} else {
+						if toField.Kind() == reflect.Ptr {
+							toField.Set(fromField.Addr())
+						} else {
+							toField.Set(fromField)
+						}
+					}
+					continue
 				} else {
-					switch val := fromField.Interface().(type) {
-					case time.Time:
-						if toField.Kind() == reflect.Int64 {
-							toField.Set(reflect.ValueOf(val.Unix()))
-							continue
-						}
-					case *time.Time:
-						if toField.Kind() == reflect.Int64 {
-							toField.Set(reflect.ValueOf(val.Unix()))
-							continue
-						}
-					}
-					if fromField.Kind() == reflect.Int64 {
-						switch toField.Interface().(type) {
+					{
+						var dt *time.Time
+						switch v := fromField.Interface().(type) {
 						case time.Time:
-							toField.Set(reflect.ValueOf(time.Unix(fromField.Int(), 0)))
-							continue
+							dt = &v
 						case *time.Time:
-							toField.Set(reflect.ValueOf(time.Unix(fromField.Int(), 0)))
+							dt = v
+						case gormext.NullTime:
+							dt = &v.Time
+						}
+						if dt != nil && toFieldType.Kind() == reflect.Int64 {
+							val := dt.Unix()
+							if toField.Kind() == reflect.Ptr {
+								toField.Set(reflect.ValueOf(&val))
+							} else {
+								toField.Set(reflect.ValueOf(val))
+							}
 							continue
 						}
 					}
-					bin, _ := json.Marshal(fromField.Interface())
-					_ = json.Unmarshal(bin, toField.Addr().Interface())
+					{
+						if fromField.Kind() == reflect.Int64 {
+							var dt time.Time
+							switch toField.Interface().(type) {
+							case time.Time:
+								dt = time.Unix(fromField.Int(), 0)
+							case *time.Time:
+								dt = time.Unix(fromField.Int(), 0)
+							case gormext.NullTime:
+								dt = time.Unix(fromField.Int(), 0)
+							}
+							if !dt.IsZero() {
+								if toField.Kind() == reflect.Ptr {
+									toField.Set(reflect.ValueOf(&dt))
+								} else {
+									toField.Set(reflect.ValueOf(dt))
+								}
+								continue
+							}
+						}
+					}
+					{
+						var id *uuid.UUID
+						switch v := fromField.Interface().(type) {
+						case uuid.UUID:
+							id = &v
+						case *uuid.UUID:
+							id = v
+						}
+						if id != nil && toFieldType.Kind() == reflect.String {
+							val := id.String()
+							if toField.Kind() == reflect.Ptr {
+								toField.Set(reflect.ValueOf(&val))
+							} else {
+								toField.Set(reflect.ValueOf(val))
+							}
+							continue
+						}
+					}
+					{
+						if fromField.Kind() == reflect.String {
+							var id uuid.UUID
+							switch toField.Interface().(type) {
+							case uuid.UUID:
+								id, _ = uuid.Parse(fromField.String())
+							case *uuid.UUID:
+								id, _ = uuid.Parse(fromField.String())
+							}
+							if id != uuid.Nil {
+								if toField.Kind() == reflect.Ptr {
+									toField.Set(reflect.ValueOf(&id))
+								} else {
+									toField.Set(reflect.ValueOf(id))
+								}
+								continue
+							}
+						}
+					}
+					{
+						bin, _ := json.Marshal(fromField.Interface())
+						_ = json.Unmarshal(bin, toField.Addr().Interface())
+					}
 				}
 			}
 		}

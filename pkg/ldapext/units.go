@@ -3,8 +3,8 @@ package ldapext
 import (
 	"fmt"
 	"github.com/go-ldap/ldap/v3"
-	"github.com/pinosell/gopher/pkg/errors"
-	"github.com/pinosell/gopher/pkg/query"
+	"github.com/mohsensamiei/gopher/pkg/errors"
+	"github.com/mohsensamiei/gopher/pkg/query"
 	"google.golang.org/grpc/codes"
 )
 
@@ -50,7 +50,7 @@ func (e Units) Delete(unit *Unit) error {
 
 func (e Units) Create(unit *Unit) error {
 	unit.ID = fmt.Sprintf("ou=%v,%v", unit.Name, e.client.BaseDN)
-	if _, err := e.Return(unit.ID, ""); err == nil {
+	if _, err := e.Return(unit.ID, query.Empty); err == nil {
 		return errors.New(codes.AlreadyExists).
 			WithDetailF("there is another unit with id '%v' exists", unit.ID)
 	}

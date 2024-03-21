@@ -11,6 +11,6 @@ type Client struct {
 	Groups *Groups
 }
 
-func (c *Client) Close() {
-	c.Conn.Close()
+func (c *Client) Close() error {
+	return c.Conn.Close()
 }

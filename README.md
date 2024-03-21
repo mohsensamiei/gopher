@@ -1,6 +1,6 @@
 # GOPHER
 ![GOPHER](assets/avatar.svg)
-> Simple Golang Framework
+> Advanced Golang Framework
 
 ## Bases:
 * [Docker](https://www.docker.com)
@@ -42,7 +42,7 @@ go install github.com/keepljg/protoc-go-inject-tag@latest
 
 ## Installation
 ```shell
-go install github.com/pinosell/gopher/cmd/gopher@latest
+go install github.com/mohsensamiei/gopher/cmd/gopher@latest
 ```
 
 ## How to use

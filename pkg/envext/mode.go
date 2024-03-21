@@ -1,10 +1,10 @@
 package envext
 
-type Mode int32
+type Name string
 
 const (
-	LOCAL Mode = iota
-	DEVELOPMENT
-	STAGING
-	PRODUCTION
+	LOCAL       Name = "LOCAL"
+	DEVELOPMENT Name = "DEVELOPMENT"
+	STAGING     Name = "STAGING"
+	PRODUCTION  Name = "PRODUCTION"
 )

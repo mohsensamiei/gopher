@@ -3,9 +3,9 @@ package ldapext
 import (
 	"fmt"
 	"github.com/go-ldap/ldap/v3"
-	"github.com/pinosell/gopher/pkg/errors"
-	"github.com/pinosell/gopher/pkg/query"
-	"github.com/pinosell/gopher/pkg/slices"
+	"github.com/mohsensamiei/gopher/pkg/errors"
+	"github.com/mohsensamiei/gopher/pkg/query"
+	"github.com/mohsensamiei/gopher/pkg/slices"
 	"google.golang.org/grpc/codes"
 	"strconv"
 	"strings"

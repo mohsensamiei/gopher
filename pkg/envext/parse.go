@@ -2,7 +2,7 @@ package envext
 
 import (
 	"fmt"
-	"github.com/caarlos0/env/v6"
+	"github.com/caarlos0/env/v10"
 	"net/url"
 	"reflect"
 	"strconv"
@@ -93,8 +93,7 @@ var (
 )
 
 func Parse(configs any) error {
-	if err := env.ParseWithFuncs(configs, defaultTypeParsers); err != nil {
-		return err
-	}
-	return nil
+	return env.ParseWithOptions(configs, env.Options{
+		FuncMap: defaultTypeParsers,
+	})
 }

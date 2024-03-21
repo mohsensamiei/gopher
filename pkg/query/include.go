@@ -1,6 +1,7 @@
 package query
 
 import (
+	"net/url"
 	"regexp"
 )
 
@@ -13,21 +14,30 @@ var (
 	includeTermRegex = regexp.MustCompile(includeTermExp)
 )
 
-func (q Query) IncludeItems() []string {
-	var includes []string
-	for _, raw := range q.get(includeKey) {
-		includes = append(includes, includeTermRegex.FindAllString(raw, -1)...)
+type IncludeClauses []string
+
+func (c *IncludeClauses) UnmarshalQuery(values url.Values) {
+	for _, raw := range values[includeKey] {
+		*c = append(*c, includeTermRegex.FindAllString(raw, -1)...)
 	}
-	return includes
 }
 
-func Include(includes ...string) Query {
-	return make(Query).Include(includes...)
+func (c IncludeClauses) MarshalQuery(values *url.Values) {
+	if len(c) <= 0 {
+		return
+	}
+	for _, f := range c {
+		values.Add(includeKey, f)
+	}
 }
 
-func (q Query) Include(includes ...string) Query {
+func Include(includes ...string) *Query {
+	return new(Query).Include(includes...)
+}
+
+func (q *Query) Include(includes ...string) *Query {
 	for _, include := range includes {
-		q.add(includeKey, include)
+		q.IncludeClauses = append(q.IncludeClauses, include)
 	}
 	return q
 }

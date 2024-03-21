@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"github.com/pinosell/gopher/pkg/envext"
-	"github.com/pinosell/gopher/pkg/s3ext"
+	"github.com/mohsensamiei/gopher/pkg/envext"
+	"github.com/mohsensamiei/gopher/pkg/s3ext"
 	"net/url"
 	"os"
 )
@@ -26,7 +26,7 @@ func main() {
 	}
 
 	var uri *url.URL
-	uri, err = client.Upload("bucket-name", "/docs/test.txt", []byte("hello world"), true)
+	uri, err = client.Upload("/docs/test.txt", []byte("hello world"), true)
 	if err != nil {
 		panic(err)
 	}

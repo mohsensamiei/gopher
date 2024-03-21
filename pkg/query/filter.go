@@ -3,6 +3,8 @@ package query
 import (
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/mohsensamiei/gopher/pkg/stringsext"
+	"net/url"
 	"regexp"
 	"strings"
 	"time"
@@ -73,44 +75,44 @@ type FilterClause struct {
 	Values   []any
 }
 
-func (c FilterClause) String() string {
-	return fmt.Sprintf("%v:%v(%v)",
-		c.Field,
-		c.Function,
-		strings.Join(toStringSlice(c.Values), ","),
-	)
-}
+type FilterClauses []FilterClause
 
-func (q Query) FilterClauses() []*FilterClause {
-	var clauses []*FilterClause
-	for _, filter := range q.get(filterKey) {
+func (c *FilterClauses) UnmarshalQuery(values url.Values) {
+	for _, filter := range values[filterKey] {
 		for _, raw := range filterTermRegex.FindAllStringSubmatch(filter, -1) {
-			clauses = append(clauses, &FilterClause{
+			*c = append(*c, FilterClause{
 				Field:    raw[1],
 				Function: FilterFunction(raw[2]),
 				Values:   toInterfaceSlice(filterValueRegex.FindAllString(raw[3], -1)),
 			})
 		}
 	}
-	return clauses
 }
 
-func Filter(field string, function FilterFunction, values ...any) Query {
-	return make(Query).Filter(field, function, values...)
+func (c FilterClauses) MarshalQuery(values *url.Values) {
+	if len(c) <= 0 {
+		return
+	}
+	for _, f := range c {
+		values.Add(filterKey, fmt.Sprintf("%v:%v(%v)",
+			f.Field,
+			f.Function,
+			strings.Join(toStringSlice(f.Values), ","),
+		))
+	}
 }
 
-func (q Query) Filter(field string, function FilterFunction, values ...any) Query {
-	clause := &FilterClause{
+func Filter(field string, function FilterFunction, values ...any) *Query {
+	return new(Query).Filter(field, function, values...)
+}
+
+func (q *Query) Filter(field string, function FilterFunction, values ...any) *Query {
+	q.FilterClauses = append(q.FilterClauses, FilterClause{
 		Field:    field,
 		Function: function,
 		Values:   values,
-	}
-	q.add(filterKey, clause.String())
+	})
 	return q
-}
-
-type stringify interface {
-	String() string
 }
 
 func toStringSlice(values []any) []string {
@@ -119,7 +121,7 @@ func toStringSlice(values []any) []string {
 		switch v := value.(type) {
 		case time.Time:
 			res = append(res, fmt.Sprintf("%q", v.UTC().Format(time.RFC3339Nano)))
-		case uuid.UUID, string, stringify:
+		case uuid.UUID, string, stringsext.Stringify:
 			res = append(res, fmt.Sprintf("%q", v))
 		default:
 			res = append(res, fmt.Sprint(v))

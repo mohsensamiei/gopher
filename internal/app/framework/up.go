@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/fatih/color"
-	"github.com/pinosell/gopher/pkg/execext"
+	"github.com/mohsensamiei/gopher/pkg/execext"
 	"github.com/spf13/cobra"
 )
 

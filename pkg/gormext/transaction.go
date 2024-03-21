@@ -2,7 +2,7 @@ package gormext
 
 import (
 	"context"
-	"github.com/pinosell/gopher/pkg/di"
+	"github.com/mohsensamiei/gopher/pkg/di"
 	"gorm.io/gorm"
 )
 

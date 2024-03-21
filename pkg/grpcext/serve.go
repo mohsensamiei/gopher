@@ -1,7 +1,7 @@
 package grpcext
 
 import (
-	"github.com/pinosell/gopher/pkg/service"
+	"github.com/mohsensamiei/gopher/pkg/service"
 	"google.golang.org/grpc"
 	"net"
 )

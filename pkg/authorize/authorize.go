@@ -1,9 +1,9 @@
 package authorize
 
 import (
-	"github.com/pinosell/gopher/pkg/authenticate"
+	"github.com/mohsensamiei/gopher/pkg/authenticate"
 )
 
 type Authorize interface {
-	Authorize(auth authenticate.Authenticate, needAdmin bool) (*Claims, error)
+	Authorize(auth authenticate.Authenticate, scopes ...string) (*Claims, error)
 }

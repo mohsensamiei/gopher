@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/fatih/color"
-	"github.com/pinosell/gopher/internal/pkg/helpers"
-	"github.com/pinosell/gopher/pkg/cobraext"
+	"github.com/mohsensamiei/gopher/internal/pkg/helpers"
+	"github.com/mohsensamiei/gopher/pkg/cobraext"
 	"github.com/spf13/cobra"
 )
 
@@ -32,6 +32,15 @@ func (c Commander) RegisterCommander(root *cobra.Command) {
 			Args:  cobra.MaximumNArgs(1),
 			Short: "Download project dependencies",
 			RunE:  rune(c.dep),
+		}
+		root.AddCommand(dump)
+	}
+	{
+		dump := &cobra.Command{
+			Use:   "doc",
+			Args:  cobra.MatchAll(cobra.MinimumNArgs(1), cobra.MaximumNArgs(2)),
+			Short: "Generate swagger document by general info file",
+			RunE:  rune(c.doc),
 		}
 		root.AddCommand(dump)
 	}

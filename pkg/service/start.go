@@ -2,10 +2,11 @@ package service
 
 import (
 	"fmt"
-	"github.com/pinosell/gopher/pkg/netext"
+	"github.com/mohsensamiei/gopher/pkg/netext"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"os/signal"
+	"syscall"
 )
 
 func Start() {
@@ -21,7 +22,7 @@ func Start() {
 	}
 
 	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, os.Interrupt)
+	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		interrupt <- fmt.Errorf((<-signalChan).String())
 	}()

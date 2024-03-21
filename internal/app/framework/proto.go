@@ -2,16 +2,22 @@ package framework
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
-	"github.com/pinosell/gopher/pkg/execext"
+	"github.com/mohsensamiei/gopher/pkg/execext"
 	"github.com/spf13/cobra"
 )
 
 func (c Commander) proto(cmd *cobra.Command, args []string) error {
-	files, err := ioutil.ReadDir("api/src")
+	if err := execext.CommandContextStream(cmd.Context(), "rm", "-f", "api/*.pb.go"); err != nil {
+		return err
+	}
+	defer func() {
+		_ = execext.CommandContextStream(cmd.Context(), "rm", "-f", "api/src/*.pb.go")
+	}()
+
+	files, err := os.ReadDir("api/src")
 	if err != nil {
 		return err
 	}
@@ -24,7 +30,7 @@ func (c Commander) proto(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	files, err = ioutil.ReadDir("api/src")
+	files, err = os.ReadDir("api/src")
 	if err != nil {
 		return err
 	}

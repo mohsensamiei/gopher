@@ -1,15 +1,15 @@
 package query
 
-type Encode string
-
-const (
+var (
 	Empty Encode = ""
 )
 
-func (s Encode) String() string {
-	return string(s)
+type Encode string
+
+func (q Query) Encode() Encode {
+	return Encode(q.String())
 }
 
-func (s Encode) Parse() (Query, error) {
-	return Parse(string(s))
+func (e Encode) Parse() (*Query, error) {
+	return Parse(string(e))
 }

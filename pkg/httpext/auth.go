@@ -1,8 +1,8 @@
 package httpext
 
 import (
-	"github.com/pinosell/gopher/pkg/authenticate"
-	"github.com/pinosell/gopher/pkg/errors"
+	"github.com/mohsensamiei/gopher/pkg/authenticate"
+	"github.com/mohsensamiei/gopher/pkg/errors"
 	"google.golang.org/grpc/codes"
 	"net/http"
 	"strings"
@@ -17,8 +17,8 @@ var (
 )
 
 func bearerParser(req *http.Request) (authenticate.Authenticate, error) {
-	if strings.HasPrefix(req.Header.Get("Authorization"), "Bearer") {
-		return authenticate.NewBearer(strings.TrimSpace(strings.Replace(req.Header.Get("Authorization"), "Bearer ", "", 1))), nil
+	if strings.HasPrefix(req.Header.Get(AuthorizationHeader), "Bearer") {
+		return authenticate.NewBearer(strings.TrimSpace(strings.Replace(req.Header.Get(AuthorizationHeader), "Bearer ", "", 1))), nil
 	}
 	return nil, ErrInvalidToken
 }

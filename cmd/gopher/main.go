@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/pinosell/gopher/internal/app/framework"
-	"github.com/pinosell/gopher/pkg/cobraext"
-	"github.com/pinosell/gopher/pkg/logext"
+	"github.com/mohsensamiei/gopher/internal/app/framework"
+	"github.com/mohsensamiei/gopher/pkg/cobraext"
+	"github.com/mohsensamiei/gopher/pkg/logext"
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +23,7 @@ func main() {
 	cobraext.Execute(&cobra.Command{
 		Use:     Service,
 		Version: Version,
-		Long:    "GOPHER\nSimple Golang Framework",
+		Long:    "GOPHER\nAdvanced Golang Framework",
 		Run:     cobraext.HelpFunc,
 	}, []cobraext.CommanderRegister{
 		framework.NewCommander(),

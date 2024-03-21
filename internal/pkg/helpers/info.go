@@ -2,11 +2,10 @@ package helpers
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
-	"github.com/pinosell/gopher/pkg/errors"
+	"github.com/mohsensamiei/gopher/pkg/errors"
 	"google.golang.org/grpc/codes"
 )
 
@@ -46,7 +45,7 @@ func Registry(filepath string) (string, error) {
 }
 
 func Services() ([]string, error) {
-	dirs, err := ioutil.ReadDir("services")
+	dirs, err := os.ReadDir("services")
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +57,7 @@ func Services() ([]string, error) {
 }
 
 func Commands() ([]string, error) {
-	dirs, err := ioutil.ReadDir("cmd")
+	dirs, err := os.ReadDir("cmd")
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +69,7 @@ func Commands() ([]string, error) {
 }
 
 func Applications() ([]string, error) {
-	dirs, err := ioutil.ReadDir("internal/app")
+	dirs, err := os.ReadDir("internal/app")
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +81,7 @@ func Applications() ([]string, error) {
 }
 
 func MigrationNumber(command string) (int, error) {
-	files, err := ioutil.ReadDir(fmt.Sprintf("assets/migrations/%v", command))
+	files, err := os.ReadDir(fmt.Sprintf("assets/migrations/%v", command))
 	if err != nil {
 		return 0, err
 	}

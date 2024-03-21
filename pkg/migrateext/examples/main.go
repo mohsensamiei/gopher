@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/pinosell/gopher/pkg/migrateext"
-	"github.com/pinosell/gopher/pkg/postgresext"
+	"github.com/mohsensamiei/gopher/pkg/migrateext"
+	"github.com/mohsensamiei/gopher/pkg/postgresext"
 )
 
 func main() {

@@ -2,6 +2,7 @@ package query
 
 import (
 	"fmt"
+	"net/url"
 	"regexp"
 	"strings"
 )
@@ -17,15 +18,6 @@ const (
 	DESC SortFunction = "desc"
 )
 
-type SortClause struct {
-	Field    string
-	Function SortFunction
-}
-
-func (c SortClause) String() string {
-	return fmt.Sprintf("%v(%v)", c.Function, c.Field)
-}
-
 var (
 	sortTermExp = fmt.Sprintf(`(%v)\(([^\)]*)\)`,
 		strings.Join([]string{
@@ -35,28 +27,41 @@ var (
 	sortTermRegex = regexp.MustCompile(sortTermExp)
 )
 
-func (q Query) SortClauses() []*SortClause {
-	var clauses []*SortClause
-	for _, sort := range q.get(sortKey) {
+type SortClause struct {
+	Field    string
+	Function SortFunction
+}
+
+type SortClauses []SortClause
+
+func (c *SortClauses) UnmarshalQuery(values url.Values) {
+	for _, sort := range values[sortKey] {
 		for _, raw := range sortTermRegex.FindAllStringSubmatch(sort, -1) {
-			clauses = append(clauses, &SortClause{
+			*c = append(*c, SortClause{
 				Field:    raw[2],
 				Function: SortFunction(raw[1]),
 			})
 		}
 	}
-	return clauses
 }
 
-func Sort(field string, function SortFunction) Query {
-	return make(Query).Sort(field, function)
+func (c SortClauses) MarshalQuery(values *url.Values) {
+	if len(c) <= 0 {
+		return
+	}
+	for _, f := range c {
+		values.Add(sortKey, fmt.Sprintf("%v(%v)", f.Function, f.Field))
+	}
 }
 
-func (q Query) Sort(field string, function SortFunction) Query {
-	clause := SortClause{
+func Sort(field string, function SortFunction) *Query {
+	return new(Query).Sort(field, function)
+}
+
+func (q *Query) Sort(field string, function SortFunction) *Query {
+	q.SortClauses = append(q.SortClauses, SortClause{
 		Field:    field,
 		Function: function,
-	}
-	q.add(sortKey, clause.String())
+	})
 	return q
 }

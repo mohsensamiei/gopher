@@ -62,10 +62,10 @@ func write(output *os.File, reader readLine) {
 		line, _, err := reader.ReadLine()
 		if err != nil {
 			if err != io.EOF {
-				fmt.Fprintf(output, "  %v\n", err)
+				_, _ = fmt.Fprintf(output, "  %v\n", err)
 			}
 			break
 		}
-		fmt.Fprintf(output, "  %s\n", line)
+		_, _ = fmt.Fprintf(output, "  %s\n", line)
 	}
 }

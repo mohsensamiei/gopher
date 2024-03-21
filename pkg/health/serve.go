@@ -1,7 +1,7 @@
 package health
 
 import (
-	"github.com/pinosell/gopher/pkg/service"
+	"github.com/mohsensamiei/gopher/pkg/service"
 	"net"
 	"net/http"
 )

@@ -5,11 +5,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/pinosell/gopher/internal/pkg/helpers"
-	"github.com/pinosell/gopher/internal/pkg/templates"
-	"github.com/pinosell/gopher/pkg/cobraext"
-	"github.com/pinosell/gopher/pkg/slices"
-	"github.com/pinosell/gopher/pkg/templateext"
+	"github.com/mohsensamiei/gopher/internal/pkg/helpers"
+	"github.com/mohsensamiei/gopher/internal/pkg/templates"
+	"github.com/mohsensamiei/gopher/pkg/cobraext"
+	"github.com/mohsensamiei/gopher/pkg/slices"
+	"github.com/mohsensamiei/gopher/pkg/templateext"
 	"github.com/spf13/cobra"
 )
 

@@ -2,7 +2,7 @@ package validatorext
 
 import (
 	"fmt"
-	"github.com/pinosell/gopher/pkg/errors"
+	"github.com/mohsensamiei/gopher/pkg/errors"
 	"google.golang.org/grpc/codes"
 )
 

@@ -2,7 +2,7 @@ package i18next
 
 import (
 	"context"
-	"github.com/pinosell/gopher/pkg/metadataext"
+	"github.com/mohsensamiei/gopher/pkg/metadataext"
 	"golang.org/x/text/language"
 )
 

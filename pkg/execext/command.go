@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"strings"
+	"syscall"
 
 	"github.com/fatih/color"
 )
@@ -15,8 +16,9 @@ import (
 func CommandContextStream(ctx context.Context, name string, args ...string) error {
 	color.Cyan("$ %v %v\n", name, strings.Join(args, " "))
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
+	var stopChan = make(chan os.Signal, 2)
+	signal.Notify(stopChan, syscall.SIGTERM, syscall.SIGINT)
+
 	cmd := exec.CommandContext(ctx, name, args...)
 	{
 		stdout, err := cmd.StdoutPipe()

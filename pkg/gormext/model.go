@@ -4,18 +4,22 @@ import (
 	"github.com/google/uuid"
 )
 
-type IncrementalModel struct {
-	ID uint32
+type Model interface {
+	PrimaryKeys() []string
 }
 
-func (m IncrementalModel) GetID() uint32 {
-	return m.ID
+type IncrementalModel struct {
+	ID uint32 `gorm:"primaryKey"`
+}
+
+func (m IncrementalModel) PrimaryKeys() []string {
+	return []string{"id"}
 }
 
 type UniversalModel struct {
-	ID uuid.UUID `gorm:"default:uuid_generate_v4()"`
+	ID uuid.UUID `gorm:"primaryKey;default:uuid_generate_v4()"`
 }
 
-func (m UniversalModel) GetID() uuid.UUID {
-	return m.ID
+func (m UniversalModel) PrimaryKeys() []string {
+	return []string{"id"}
 }
