@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-type Action func(ctx context.Context, update telegram.Update, data any) (string, any, error)
+type Action func(ctx context.Context, update telegram.Update, data []byte) (string, []byte, error)
 
 type Route struct {
 	Action       Action
@@ -18,7 +18,7 @@ type Command interface {
 	Name() string
 	Alias() []string
 	Description() string
-	Init(ctx context.Context, update telegram.Update, data any) (string, any, error)
+	Init(ctx context.Context, update telegram.Update, data []byte) (string, []byte, error)
 	Actions() map[string]Route
 }
 

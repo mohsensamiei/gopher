@@ -26,7 +26,7 @@ func parseCommand(str string) (string, []string) {
 type State struct {
 	Command string `json:"command,omitempty"`
 	Action  string `json:"action,omitempty"`
-	Data    any    `json:"data,omitempty"`
+	Data    []byte `json:"data,omitempty"`
 }
 
 func (c Client) recoveredProcess(ctx context.Context, update telegram.Update) (err error) {
@@ -55,6 +55,8 @@ func (c Client) process(ctx context.Context, update telegram.Update) error {
 	var state = new(State)
 	switch err := redisext.FromContext(ctx).Get(ctx, "telegram:stats", fmt.Sprint(chatID), state); errors.Code(err) {
 	case codes.OK, codes.NotFound:
+	case codes.InvalidArgument:
+		_ = redisext.FromContext(ctx).Del(ctx, "telegram:stats", fmt.Sprint(chatID))
 	default:
 		return err
 	}

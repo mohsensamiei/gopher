@@ -96,7 +96,7 @@ func (c *Client) Get(ctx context.Context, ns, key string, value any) error {
 			WithDetails(err.Error())
 	}
 	if err = json.Unmarshal(bytes, value); err != nil {
-		return err
+		return errors.Wrap(err, codes.InvalidArgument)
 	}
 	return nil
 }
