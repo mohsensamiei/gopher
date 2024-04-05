@@ -18,6 +18,7 @@ Thumbs.db
 /logs
 /build
 /vendor
+*.pb.go
 `
 	GitKeep = ``
 	GitCI   = `
