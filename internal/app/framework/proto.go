@@ -14,7 +14,7 @@ import (
 
 var (
 	enumRegex       = regexp.MustCompile("type (.*) int32")
-	enumImportRegex = regexp.MustCompile("import \\(((.|\\n)*)\\)")
+	enumImportRegex = regexp.MustCompile("import \\(((.|\\n)*)\\)\\n\\nconst")
 )
 
 func (c Commander) proto(cmd *cobra.Command, args []string) error {
