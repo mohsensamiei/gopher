@@ -68,7 +68,7 @@ message {{ .Singular }}List {
 	"encoding/json"
 	"github.com/mohsensamiei/gopher/v2/pkg/mapext"`
 
-	ApiEnum = `//region enum {{ .Enum }} methods
+	ApiEnum = `// region enum {{ .Enum }} methods
 func ({{ .Enum }}) Values() []string {
 	return mapext.Values({{ .Enum }}_name)
 }
@@ -94,5 +94,5 @@ func (x *{{ .Enum }}) UnmarshalJSON(b []byte) error {
 func (x {{ .Enum }}) MarshalJSON() ([]byte, error) {
 	return json.Marshal(x.String())
 }
-//endregion`
+// endregion`
 )
