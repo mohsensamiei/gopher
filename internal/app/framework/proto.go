@@ -2,11 +2,18 @@ package framework
 
 import (
 	"fmt"
+	"github.com/mohsensamiei/gopher/v2/internal/pkg/templates"
+	"github.com/mohsensamiei/gopher/v2/pkg/templateext"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/mohsensamiei/gopher/v2/pkg/execext"
 	"github.com/spf13/cobra"
+)
+
+var (
+	enumRegex = regexp.MustCompile("type (.*) int32")
 )
 
 func (c Commander) proto(cmd *cobra.Command, args []string) error {
@@ -37,6 +44,27 @@ func (c Commander) proto(cmd *cobra.Command, args []string) error {
 	for _, file := range files {
 		if !strings.HasSuffix(file.Name(), ".pb.go") {
 			continue
+		}
+		{
+			var bin []byte
+			bin, err = os.ReadFile(file.Name())
+			if err != nil {
+				return err
+			}
+
+			body := string(bin)
+			for _, name := range enumRegex.FindStringSubmatch(body) {
+				var add string
+				add, err = templateext.Format(templates.ApiEnum, map[string]any{
+					"Enum": name,
+				})
+				body = fmt.Sprintf("%v\n%v", body, add)
+			}
+			bin = []byte(body)
+
+			if err = os.WriteFile(file.Name(), bin, os.ModePerm); err != nil {
+				return err
+			}
 		}
 		if err = os.Rename(fmt.Sprintf("api/src/%v", file.Name()), fmt.Sprintf("api/%v", file.Name())); err != nil {
 			return err

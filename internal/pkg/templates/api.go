@@ -62,4 +62,32 @@ message {{ .Singular }}List {
   string Query = 1;
 }
 `
+
+	ApiEnum = `//region enum {{ .Enum }} methods
+func ({{ .Enum }}) Values() []string {
+	return mapext.Values({{ .Enum }}_name)
+}
+func ({{ .Enum }}) InRange(v interface{}) bool {
+	_, ok := {{ .Enum }}_value[v.({{ .Enum }}).String()]
+	return ok
+}
+func (x *{{ .Enum }}) Scan(value interface{}) error {
+	*x = {{ .Enum }}({{ .Enum }}_value[value.(string)])
+	return nil
+}
+func (x {{ .Enum }}) Value() (driver.Value, error) {
+	return x.String(), nil
+}
+func (x *{{ .Enum }}) UnmarshalJSON(b []byte) error {
+	var str string
+	if err := json.Unmarshal(b, &str); err != nil {
+		return err
+	}
+	*x = {{ .Enum }}({{ .Enum }}_value[str])
+	return nil
+}
+func (x {{ .Enum }}) MarshalJSON() ([]byte, error) {
+	return json.Marshal(x.String())
+}
+//endregion`
 )
