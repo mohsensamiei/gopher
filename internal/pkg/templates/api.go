@@ -63,7 +63,13 @@ message {{ .Singular }}List {
 }
 `
 
-	ApiEnum = `//region enum {{ .Enum }} methods
+	ApiEnum = `import (
+	"database/sql/driver"
+	"encoding/json"
+	"github.com/mohsensamiei/gopher/pkg/mapext"
+)
+
+//region enum {{ .Enum }} methods
 func ({{ .Enum }}) Values() []string {
 	return mapext.Values({{ .Enum }}_name)
 }

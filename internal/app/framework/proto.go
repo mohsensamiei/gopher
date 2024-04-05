@@ -54,10 +54,10 @@ func (c Commander) proto(cmd *cobra.Command, args []string) error {
 			}
 
 			body := string(bin)
-			for _, name := range enumRegex.FindStringSubmatch(body) {
+			for _, name := range enumRegex.FindAllStringSubmatch(body, -1) {
 				var add string
 				add, err = templateext.Format(templates.ApiEnum, map[string]any{
-					"Enum": name,
+					"Enum": name[1],
 				})
 				body = fmt.Sprintf("%v\n%v", body, add)
 			}
