@@ -57,7 +57,7 @@ func (c Commander) proto(cmd *cobra.Command, args []string) error {
 			body := string(bin)
 			matches := enumRegex.FindAllStringSubmatch(body, -1)
 			if len(matches) > 0 {
-				im := fmt.Sprintf("%v\n%v", enumImportRegex.FindStringSubmatch(body)[1], templates.ApiEnumImport)
+				im := fmt.Sprintf("%v%v\n", templates.ApiEnumImport, enumImportRegex.FindStringSubmatch(body)[1])
 				body = strings.ReplaceAll(body, enumImportRegex.FindStringSubmatch(body)[1], im)
 			}
 			for _, name := range matches {
@@ -65,7 +65,7 @@ func (c Commander) proto(cmd *cobra.Command, args []string) error {
 				add, err = templateext.Format(templates.ApiEnum, map[string]any{
 					"Enum": name[1],
 				})
-				body = fmt.Sprintf("%v\n%v", body, add)
+				body = fmt.Sprintf("%v\n\n%v", body, add)
 			}
 			bin = []byte(body)
 

@@ -63,9 +63,10 @@ message {{ .Singular }}List {
 }
 `
 
-	ApiEnumImport = `"database/sql/driver"
+	ApiEnumImport = `
+	"database/sql/driver"
 	"encoding/json"
-	"github.com/mohsensamiei/gopher/pkg/mapext"`
+	"github.com/mohsensamiei/gopher/v2/pkg/mapext"`
 
 	ApiEnum = `//region enum {{ .Enum }} methods
 func ({{ .Enum }}) Values() []string {
