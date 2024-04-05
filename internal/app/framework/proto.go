@@ -45,9 +45,10 @@ func (c Commander) proto(cmd *cobra.Command, args []string) error {
 		if !strings.HasSuffix(file.Name(), ".pb.go") {
 			continue
 		}
+		filePath := fmt.Sprintf("api/src/%v", file.Name())
 		{
 			var bin []byte
-			bin, err = os.ReadFile(file.Name())
+			bin, err = os.ReadFile(filePath)
 			if err != nil {
 				return err
 			}
@@ -62,11 +63,11 @@ func (c Commander) proto(cmd *cobra.Command, args []string) error {
 			}
 			bin = []byte(body)
 
-			if err = os.WriteFile(file.Name(), bin, os.ModePerm); err != nil {
+			if err = os.WriteFile(filePath, bin, os.ModePerm); err != nil {
 				return err
 			}
 		}
-		if err = os.Rename(fmt.Sprintf("api/src/%v", file.Name()), fmt.Sprintf("api/%v", file.Name())); err != nil {
+		if err = os.Rename(filePath, fmt.Sprintf("api/%v", file.Name())); err != nil {
 			return err
 		}
 		if err = execext.CommandContextStream(cmd.Context(), "protoc-go-inject-tag", fmt.Sprintf("-input=api/%v", file.Name()), "-XXX_skip=json,xml,yaml"); err != nil {
