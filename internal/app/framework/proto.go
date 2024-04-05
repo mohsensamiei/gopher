@@ -13,7 +13,8 @@ import (
 )
 
 var (
-	enumRegex = regexp.MustCompile("type (.*) int32")
+	enumRegex       = regexp.MustCompile("type (.*) int32")
+	enumImportRegex = regexp.MustCompile("import \\(((.|\\n)*)\\)")
 )
 
 func (c Commander) proto(cmd *cobra.Command, args []string) error {
@@ -54,7 +55,12 @@ func (c Commander) proto(cmd *cobra.Command, args []string) error {
 			}
 
 			body := string(bin)
-			for _, name := range enumRegex.FindAllStringSubmatch(body, -1) {
+			matches := enumRegex.FindAllStringSubmatch(body, -1)
+			if len(matches) > 0 {
+				im := fmt.Sprintf("%v\n%v", enumImportRegex.FindStringSubmatch(body)[1], templates.ApiEnumImport)
+				body = strings.ReplaceAll(body, enumImportRegex.FindStringSubmatch(body)[1], im)
+			}
+			for _, name := range matches {
 				var add string
 				add, err = templateext.Format(templates.ApiEnum, map[string]any{
 					"Enum": name[1],
