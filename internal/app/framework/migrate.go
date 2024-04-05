@@ -3,6 +3,7 @@ package framework
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/iancoleman/strcase"
 	"github.com/mohsensamiei/gopher/v2/internal/pkg/helpers"
@@ -30,15 +31,10 @@ func (c Commander) migrate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	var num int
-	num, err = helpers.MigrationNumber(command)
-	if err != nil {
-		return err
-	}
-
+	now := time.Now()
 	if err = helpers.MakeContents(map[string]string{
-		fmt.Sprintf("assets/migrations/%v/%v_%v.up.sql", command, num, strcase.ToSnake(strings.TrimSpace(name))):   templates.MigrationUp,
-		fmt.Sprintf("assets/migrations/%v/%v_%v.down.sql", command, num, strcase.ToSnake(strings.TrimSpace(name))): templates.MigrationDown,
+		fmt.Sprintf("assets/migrations/%v/%v_%v.up.sql", command, now.Unix(), strcase.ToSnake(strings.TrimSpace(name))):   templates.MigrationUp,
+		fmt.Sprintf("assets/migrations/%v/%v_%v.down.sql", command, now.Unix(), strcase.ToSnake(strings.TrimSpace(name))): templates.MigrationDown,
 	}, map[string]any{}); err != nil {
 		return err
 	}

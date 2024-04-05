@@ -79,21 +79,3 @@ func Applications() ([]string, error) {
 	}
 	return applications, nil
 }
-
-func MigrationNumber(command string) (int, error) {
-	files, err := os.ReadDir(fmt.Sprintf("assets/migrations/%v", command))
-	if err != nil {
-		return 0, err
-	}
-	latest := 0
-	for _, file := range files {
-		var num int
-		if _, err = fmt.Sscanf(file.Name(), "%d_", &num); err != nil {
-			continue
-		}
-		if latest <= num {
-			latest = num + 1
-		}
-	}
-	return latest, nil
-}
