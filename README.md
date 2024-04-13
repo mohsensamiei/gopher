@@ -19,7 +19,7 @@ go install golang.org/x/tools/go/analysis/passes/shadow/cmd/shadow@latest
 brew install protobuf
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-go install github.com/keepljg/protoc-go-inject-tag@latest
+go install github.com/favadi/protoc-go-inject-tag@latest
 
 brew install --cask docker
 ```
@@ -37,7 +37,7 @@ apt install -y protobuf-compiler
 apt install -y build-essential
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-go install github.com/keepljg/protoc-go-inject-tag@latest
+go install github.com/favadi/protoc-go-inject-tag@latest
 ```
 
 ## Installation
