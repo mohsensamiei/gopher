@@ -4,7 +4,7 @@ const (
 	GatewayDockerfile = `
 FROM nginx:latest
 
-COPY services/gateway/default.conf /etc/nginx/conf.d/
+COPY deploy/gateway/default.conf /etc/nginx/conf.d/
 `
 	GatewayConf = `
 server {

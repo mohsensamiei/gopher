@@ -45,7 +45,7 @@ func Registry(filepath string) (string, error) {
 }
 
 func Services() ([]string, error) {
-	dirs, err := os.ReadDir("services")
+	dirs, err := os.ReadDir("deploy")
 	if err != nil {
 		return nil, err
 	}

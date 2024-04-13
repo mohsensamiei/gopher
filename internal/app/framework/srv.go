@@ -36,7 +36,7 @@ func (c Commander) srv(cmd *cobra.Command, args []string) error {
 	}
 
 	if err = helpers.MakeStructure([]string{
-		fmt.Sprintf("services/%v", service),
+		fmt.Sprintf("deploy/%v", service),
 	}); err != nil {
 		return err
 	}
@@ -49,7 +49,7 @@ func (c Commander) srv(cmd *cobra.Command, args []string) error {
 
 	if err = helpers.MakeContents(map[string]string{
 		"deploy/docker-compose.build.yml":              deploy,
-		fmt.Sprintf("services/%v/Dockerfile", service): templates.ServiceDockerfile,
+		fmt.Sprintf("deploy/%v/Dockerfile", service): templates.ServiceDockerfile,
 	}, map[string]any{
 		"name":    service,
 		"service": "{{ .service }}",

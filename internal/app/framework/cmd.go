@@ -77,9 +77,9 @@ func (c Commander) cmd(cmd *cobra.Command, args []string) error {
 	if err = helpers.MakeContents(map[string]string{
 		fmt.Sprintf("assets/migrations/%v/.gitkeep", command): templates.GitKeep,
 		fmt.Sprintf("cmd/%v/main.go", command):                templates.CmdMain,
-		fmt.Sprintf("services/%v/Dockerfile", service):        docker,
+		fmt.Sprintf("deploy/%v/Dockerfile", service):        docker,
 		"deploy/docker-compose.deploy.yml":                    deploy,
-		"services/gateway/default.conf":                       conf,
+		"deploy/gateway/default.conf":                       conf,
 	}, map[string]any{
 		"name":       command,
 		"command":    "{{ .command }}",
@@ -109,7 +109,7 @@ func appendGatewayCommand(service, command string) (string, error) {
 	}
 
 	var confFile []byte
-	confFile, err = os.ReadFile("services/gateway/default.conf")
+	confFile, err = os.ReadFile("deploy/gateway/default.conf")
 	if err != nil {
 		if os.IsNotExist(err) {
 			var text string
@@ -144,7 +144,7 @@ func appendDockerCommand(service, command string) (string, error) {
 	}
 
 	var dockerFile []byte
-	dockerFile, err = os.ReadFile(fmt.Sprintf("services/%v/Dockerfile", service))
+	dockerFile, err = os.ReadFile(fmt.Sprintf("deploy/%v/Dockerfile", service))
 	if err != nil {
 		return "", err
 	}
