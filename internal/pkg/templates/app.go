@@ -15,7 +15,7 @@ import (
 
 func NewController(configs grpcext.Configs) muxext.ControllerRegister {
 	internalConn := grpcext.NewInternalConnection(configs)
-	return &Controller{
+	return &Controller {
 		{{ .Singular }}ServiceClient: api.New{{ .Singular }}ServiceClient(internalConn),
 	}
 }
@@ -87,7 +87,7 @@ func (c Controller) Create(res http.ResponseWriter, req *http.Request) {
 
 //	@Summary	Returns a {{ .singular }}
 //	@Tags		{{ .plural }}
-//	@Router		/{{ .command }}/{{ .plural }}/{{{ .singular }}_id} [get]
+//	@Router		/{{ .command }}/{{ .plural }}/{{ "{" }}{{ .singular }}_id} [get]
 //	@Param		{object}	query	queryext.Single	false	"Query string"
 //	@Param		{{ .singular }}_id	path	string			true	"{{ .Singular }} primary key"
 //	@Produce	json
@@ -111,7 +111,7 @@ func (c Controller) Return(res http.ResponseWriter, req *http.Request) {
 
 //	@Summary	Updates a {{ .singular }}
 //	@Tags		{{ .plural }}
-//	@Router		/{{ .command }}/{{ .plural }}/{{{ .singular }}_id} [put]
+//	@Router		/{{ .command }}/{{ .plural }}/{{ "{" }}{{ .singular }}_id} [put]
 //	@Security	BearerAuth
 //	@Param		{object}	query	queryext.Single	false	"Query string"
 //	@Param		{{ .singular }}_id	path	string			true	"{{ .Singular }} primary key"
@@ -144,7 +144,7 @@ func (c Controller) Update(res http.ResponseWriter, req *http.Request) {
 
 //	@Summary	Deletes a {{ .singular }}
 //	@Tags		{{ .plural }}
-//	@Router		/{{ .command }}/{{ .plural }}/{{{ .singular }}_id} [delete]
+//	@Router		/{{ .command }}/{{ .plural }}/{{ "{" }}{{ .singular }}_id} [delete]
 //	@Security	BearerAuth
 //	@Param		{{ .singular }}_id	path	string	true	"{{ .Singular }} primary key"
 //	@Success	204

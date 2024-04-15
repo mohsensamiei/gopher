@@ -1,6 +1,14 @@
 package templates
 
 const (
+	ApiMisc = `
+syntax = "proto3";
+package api;
+option go_package = "{{ .repository }}/api";
+  
+message Void {
+}
+`
 	ApiModel = `
 syntax = "proto3";
 package api;

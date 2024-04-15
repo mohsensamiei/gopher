@@ -51,7 +51,7 @@ func (c Commander) init(cmd *cobra.Command, args []string) error {
 	}
 
 	if err := helpers.MakeContents(map[string]string{
-		"api/src/.gitkeep":                 templates.GitKeep,
+		"api/src/misc.proto":               templates.ApiMisc,
 		"assets/locales/.gitkeep":          templates.GitKeep,
 		"assets/migrations/.gitkeep":       templates.GitKeep,
 		"assets/statics/.gitkeep":          templates.GitKeep,

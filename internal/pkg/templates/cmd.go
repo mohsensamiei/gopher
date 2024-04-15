@@ -62,9 +62,9 @@ func main() {
 		// GOPHER: Don't remove this line
 		// {{ .service }}
 	}, []grpc.ServerOption{
-		grpcext.UnaryToServerOption(
+		grpc.ChainUnaryInterceptor(
 			grpcext.UnaryWrapErrorInterceptor(),
-			metadataext.UnaryContextInterceptor(),
+			grpcext.UnaryContextMetadataInterceptor(),
 			grpc_recovery.UnaryServerInterceptor(),
 		),
 	})
