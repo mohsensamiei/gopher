@@ -73,7 +73,7 @@ func (c Controller) Create(res http.ResponseWriter, req *http.Request) {
 	model := &api.{{ .Singular }}Create{
 		Query: req.URL.RawQuery,
 	}
-	if err := httpext.BindModel(req, model); err != nil {
+	if err := httpext.BindRequestModel(req, model); err != nil {
 		httpext.SendError(res, req, err)
 		return
 	}
@@ -130,7 +130,7 @@ func (c Controller) Update(res http.ResponseWriter, req *http.Request) {
 		{{ .Singular }}ID:    muxext.PathParam(req, "{{ .singular }}_id"),
 		Query: req.URL.RawQuery,
 	}
-	if err := httpext.BindModel(req, model); err != nil {
+	if err := httpext.BindRequestModel(req, model); err != nil {
 		httpext.SendError(res, req, err)
 		return
 	}

@@ -13,7 +13,6 @@ import (
 	"github.com/mohsensamiei/gopher/v2/pkg/httpext"
 	"github.com/mohsensamiei/gopher/v2/pkg/i18next"
 	"github.com/mohsensamiei/gopher/v2/pkg/logext"
-	"github.com/mohsensamiei/gopher/v2/pkg/metadataext"
 	"github.com/mohsensamiei/gopher/v2/pkg/muxext"
 	"github.com/mohsensamiei/gopher/v2/pkg/service"
 	"github.com/gorilla/mux"
