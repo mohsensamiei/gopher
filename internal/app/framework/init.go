@@ -51,6 +51,7 @@ func (c Commander) init(cmd *cobra.Command, args []string) error {
 	}
 
 	if err := helpers.MakeContents(map[string]string{
+		"api/src/.gitkeep":                 templates.GitKeep,
 		"assets/locales/.gitkeep":          templates.GitKeep,
 		"assets/migrations/.gitkeep":       templates.GitKeep,
 		"assets/statics/.gitkeep":          templates.GitKeep,
@@ -66,8 +67,8 @@ func (c Commander) init(cmd *cobra.Command, args []string) error {
 		"cmd/.gitkeep":                     templates.GitKeep,
 		"pkg/.gitkeep":                     templates.GitKeep,
 		"scripts/.gitkeep":                 templates.GitKeep,
-		"deploy/gateway/default.conf":    templates.GatewayConf,
-		"deploy/gateway/Dockerfile":      templates.GatewayDockerfile,
+		"deploy/gateway/default.conf":      templates.GatewayConf,
+		"deploy/gateway/Dockerfile":        templates.GatewayDockerfile,
 		"Makefile":                         templates.RootMakefile,
 		".gitlab-ci.yml":                   templates.GitCI,
 		".gitignore":                       templates.GitIgnore,
