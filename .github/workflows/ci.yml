@@ -1,0 +1,29 @@
+name: Build and Push Images to GHCR
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  builder:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'deploy/builder'
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@main
+
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: 'Build Image and Push to Registry'
+        run: |
+          docker build -t ghcr.io/mohsensamiei/gopher:builder-latest .
+          docker push ghcr.io/mohsensamiei/gopher:builder-latest
