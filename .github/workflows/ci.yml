@@ -8,6 +8,7 @@ on:
 
 jobs:
   builder:
+    name: Build and Push Builder Image
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -30,3 +31,28 @@ jobs:
         run: |
           docker build -t ghcr.io/mohsensamiei/gopher:builder-latest .
           docker push ghcr.io/mohsensamiei/gopher:builder-latest
+
+  server:
+    name: Build and Push Server Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    defaults:
+      run:
+        working-directory: 'deploy/server'
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@main
+
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: 'Build Image and Push to Registry'
+        run: |
+          docker build -t ghcr.io/mohsensamiei/gopher:server-latest .
+          docker push ghcr.io/mohsensamiei/gopher:server-latest
