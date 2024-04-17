@@ -2,8 +2,7 @@ package templates
 
 const (
 	ServiceDockerfile = `
-FROM golang:alpine as builder
-RUN apk add --update --no-cache git
+FROM ghcr.io/mohsensamiei/gopher:builder-latest as builder
 
 ARG VERSION
 ARG GOPROXY
@@ -11,14 +10,14 @@ ARG GOPROXY
 WORKDIR /src
 COPY go.mod go.sum ./
 COPY vendor* vendor
-RUN go mod tidy
+RUN gopher dep
 COPY . .
+RUN gopher proto
 
 # GOPHER: Don't remove this line
 # {{ .command }}
 
-FROM alpine:latest
-RUN apk add --update --no-cache ca-certificates tzdata mailcap
+FROM ghcr.io/mohsensamiei/gopher:server-latest
 
 WORKDIR /app
 COPY --from=builder /src/build/ ./

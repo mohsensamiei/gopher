@@ -39,13 +39,13 @@ variables:
 
 test:
   stage: test
-  image: golang:latest
+  image: ghcr.io/mohsensamiei/gopher:builder-latest
   before_script:
-    - go install golang.org/x/tools/go/analysis/passes/shadow/cmd/shadow@latest
-    - go mod download
+    - gopher dep
+    - gopher proto
   script:
-    - go vet -vettool="$(which shadow)" ./...
-    - go test -v ./...
+    - gopher fmt
+    - gopher test
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $DEPLOY_TARGET != "none"
   tags:
