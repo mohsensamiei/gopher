@@ -38,10 +38,11 @@ func (c Commander) RegisterCommander(root *cobra.Command) {
 	{
 		dump := &cobra.Command{
 			Use:   "doc",
-			Args:  cobra.MatchAll(cobra.MinimumNArgs(1), cobra.MaximumNArgs(2)),
+			Args:  cobra.MatchAll(cobra.MaximumNArgs(1)),
 			Short: "Generate swagger document by general info file",
 			RunE:  rune(c.doc),
 		}
+		cobraext.AddFlag(dump, "doc", "", "", "path of doc server service, like: cmd/doc/main.go", true)
 		root.AddCommand(dump)
 	}
 	{
