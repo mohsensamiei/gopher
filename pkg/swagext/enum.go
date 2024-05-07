@@ -30,7 +30,9 @@ func init() {
 
 		v.Type = spec.StringOrArray{"string"}
 		for i := range v.Enum {
-			v.Enum[i] = strings.SplitN(names[i], "_", 2)[1]
+			if strings.Contains(names[i], "_") {
+				v.Enum[i] = strings.SplitN(names[i], "_", 2)[1]
+			}
 		}
 		delete(v.VendorExtensible.Extensions, namesKey)
 
