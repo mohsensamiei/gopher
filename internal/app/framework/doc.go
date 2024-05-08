@@ -7,15 +7,15 @@ import (
 )
 
 func (c Commander) doc(cmd *cobra.Command, args []string) error {
-	var doc string
-	if err := cobraext.Flag(cmd, "doc", &doc); err != nil {
+	var main string
+	if err := cobraext.Flag(cmd, "main", &main); err != nil {
 		return err
 	}
 	if err := c.fmt(cmd, args); err != nil {
 		return err
 	}
 	if err := execext.CommandContextStream(cmd.Context(), "swag", "init",
-		"--generalInfo", doc,
+		"--generalInfo", main,
 		"--output", "docs",
 		"--propertyStrategy", "snakecase",
 		"--outputTypes", "go",

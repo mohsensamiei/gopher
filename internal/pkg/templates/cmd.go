@@ -68,7 +68,7 @@ func main() {
 		),
 	})
 
-	muxext.Serve(configs.Http, []muxext.ControllerRegister{
+	muxext.Serve(Service, configs.Http, []muxext.ControllerRegister{
 		// GOPHER: Don't remove this line
 		// {{ .controller }}
 	}, []mux.MiddlewareFunc{

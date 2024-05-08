@@ -42,7 +42,7 @@ func (c Commander) RegisterCommander(root *cobra.Command) {
 			Short: "Generate swagger document by general info file",
 			RunE:  rune(c.doc),
 		}
-		cobraext.AddFlag(dump, "doc", "", "", "path of doc server service, like: cmd/doc/main.go", true)
+		cobraext.AddFlag(dump, "main", "m", "", "path of doc service main file, like: cmd/doc/main.go", true)
 		root.AddCommand(dump)
 	}
 	{

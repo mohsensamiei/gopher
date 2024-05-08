@@ -21,7 +21,6 @@ server {
 	location /{{ .name }} {
         set $upstream {{ .name }};
         proxy_pass http://$upstream:8080;
-        rewrite ^/{{ .name }}/(.*)$ /$1 break;
     }
 `
 )
