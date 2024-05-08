@@ -80,9 +80,5 @@ func (c Commander) proto(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	}
-
-	if err = c.dep(cmd, args); err != nil {
-		return err
-	}
 	return nil
 }

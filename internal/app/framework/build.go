@@ -7,13 +7,6 @@ import (
 )
 
 func (c Commander) build(cmd *cobra.Command, args []string) error {
-	if err := c.dep(cmd, args); err != nil {
-		return err
-	}
-	if err := c.fmt(cmd, args); err != nil {
-		return err
-	}
-
 	var service string
 	_ = cobraext.Flag(cmd, "srv", &service)
 	if service == "" {
