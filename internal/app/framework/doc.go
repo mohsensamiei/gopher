@@ -11,7 +11,7 @@ func (c Commander) doc(cmd *cobra.Command, args []string) error {
 	if err := cobraext.Flag(cmd, "main", &main); err != nil {
 		return err
 	}
-	if err := c.fmt(cmd, args); err != nil {
+	if err := execext.CommandContextStream(cmd.Context(), "swag", "fmt"); err != nil {
 		return err
 	}
 	if err := execext.CommandContextStream(cmd.Context(), "swag", "init",

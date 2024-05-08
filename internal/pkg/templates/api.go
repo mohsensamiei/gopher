@@ -15,14 +15,14 @@ package api;
 option go_package = "{{ .repository }}/api";
 
 message {{ .Singular }} {
-  // @inject_tag: json:"id,omitempty"
+  // @gotags: json:"id,omitempty"
   string ID = 1;
 }
 
 message {{ .Plural }} {
-  // @inject_tag: json:"elements,omitempty"
+  // @gotags: json:"elements,omitempty"
   repeated {{ .Singular }} Elements = 1;
-  // @inject_tag: json:"count"
+  // @gotags: json:"count"
   int64 Count = 2;
 }
 `
@@ -42,31 +42,31 @@ service {{ .Singular }}Service {
 }
 
 message {{ .Singular }}Create {
-  // @inject_tag: json:"query"
+  // @gotags: json:"query"
   string Query = 1;
 }
 
 message {{ .Singular }}Update {
-  // @inject_tag: json:"{{ .singular }}_id"
+  // @gotags: json:"{{ .singular }}_id"
   string {{ .Singular }}ID = 1;
-  // @inject_tag: json:"query"
+  // @gotags: json:"query"
   string Query = 2;
 }
 
 message {{ .Singular }}Return {
-  // @inject_tag: json:"{{ .singular }}_id"
+  // @gotags: json:"{{ .singular }}_id"
   string {{ .Singular }}ID = 1;
-  // @inject_tag: json:"query"
+  // @gotags: json:"query"
   string Query = 2;
 }
 
 message {{ .Singular }}Delete {
-  // @inject_tag: json:"{{ .singular }}_id"
+  // @gotags: json:"{{ .singular }}_id"
   string {{ .Singular }}ID = 1;
 }
 
 message {{ .Singular }}List {
-  // @inject_tag: json:"query"
+  // @gotags: json:"query"
   string Query = 1;
 }
 `
