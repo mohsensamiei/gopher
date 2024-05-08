@@ -32,11 +32,11 @@ func AuthMiddleware(scopes ...string) mux.MiddlewareFunc {
 	}
 }
 
-func DIMiddleware[T any](tc di.ToContext[T], provide func() T) mux.MiddlewareFunc {
+func DIMiddleware[T any](key string, provide func() T) mux.MiddlewareFunc {
 	value := provide()
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
-			next.ServeHTTP(res, req.WithContext(tc(req.Context(), value)))
+			next.ServeHTTP(res, req.WithContext(di.Register(req.Context(), key, value)))
 		})
 	}
 }

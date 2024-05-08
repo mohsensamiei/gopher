@@ -42,9 +42,9 @@ func UnaryContextMetadataInterceptor() grpc.UnaryServerInterceptor {
 	}
 }
 
-func DIUnaryInterceptor[T any](tc di.ToContext[T], provide func() T) grpc.UnaryServerInterceptor {
+func DIUnaryInterceptor[T any](key string, provide func() T) grpc.UnaryServerInterceptor {
 	value := provide()
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
-		return handler(tc(ctx, value), req)
+		return handler(di.Register(ctx, key, value), req)
 	}
 }
