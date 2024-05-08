@@ -10,12 +10,12 @@ func IsEmail(v string) error {
 	})
 }
 
-type isMobile struct {
-	Mobile string `validate:"max=15,phone,required"`
+type isPhone struct {
+	Phone string `validate:"max=15,phone,required"`
 }
 
-func IsMobile(v string) error {
-	return defaultValidate.Struct(&isMobile{
-		Mobile: v,
+func IsPhone(v string) error {
+	return defaultValidate.Struct(&isPhone{
+		Phone: v,
 	})
 }
