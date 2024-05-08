@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-func NewRouter() *mux.Router {
-	return mux.NewRouter().StrictSlash(true)
+func NewRouter(prefix string) *mux.Router {
+	return mux.NewRouter().PathPrefix(prefix).Subrouter().StrictSlash(true)
 }
 
 type key[T comparable] interface {
