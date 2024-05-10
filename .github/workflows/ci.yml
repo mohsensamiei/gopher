@@ -40,9 +40,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./Dockerfile
+          file: deploy/builder/Dockerfile
           push: true
-          tags: agasdrm/blog:latest,agasdrm/blog:${{ github.run_number }}
+          tags: ghcr.io/mohsensamiei/gopher/builder:latest,ghcr.io/mohsensamiei/gopher/builder:${{ github.run_number }}
           platforms: linux/amd64,linux/arm64/v8
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
