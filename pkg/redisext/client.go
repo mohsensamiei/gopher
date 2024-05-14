@@ -2,6 +2,7 @@ package redisext
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"github.com/adjust/rmq/v5"
@@ -21,11 +22,16 @@ func Connect(ctx context.Context, configs Configs) (*Client, error) {
 		errChan: make(chan error),
 	}
 	{
-		cli.DB = redis.NewClient(&redis.Options{
+		opts := &redis.Options{
 			Addr:     configs.RedisAddress,
+			Username: configs.RedisUsername,
 			Password: configs.RedisPassword,
 			DB:       configs.RedisDatabase,
-		})
+		}
+		if configs.RedisTLSRequired {
+			opts.TLSConfig = &tls.Config{}
+		}
+		cli.DB = redis.NewClient(opts)
 		if err := cli.DB.Ping(ctx).Err(); err != nil {
 			return nil, err
 		}
