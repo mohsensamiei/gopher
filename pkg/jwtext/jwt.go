@@ -17,12 +17,12 @@ type JWT struct {
 	duration  time.Duration
 }
 
-type Claims struct {
+type claims struct {
 	*authorize.Claims
 	*jwt.RegisteredClaims
 }
 
-func (c Claims) Valid() error {
+func (c claims) Valid() error {
 	now := time.Now().Unix()
 	if c.ExpiresAt.Unix() < now || c.IssuedAt.Unix() > now {
 		return errors.New(codes.DeadlineExceeded)
@@ -33,30 +33,34 @@ func (c Claims) Valid() error {
 func (a JWT) Authorize(auth authenticate.Authenticate, scopes ...string) (*authorize.Claims, error) {
 	switch cred := auth.(type) {
 	case *authenticate.Bearer:
-		at, err := jwt.ParseWithClaims(cred.Token, &Claims{}, func(_ *jwt.Token) (any, error) {
+		at, err := jwt.ParseWithClaims(cred.Token, &claims{}, func(_ *jwt.Token) (any, error) {
 			return a.verifyKey, nil
 		})
 		if err != nil {
 			return nil, errors.Wrap(err, codes.Unauthenticated)
 		}
-		claims := at.Claims.(*Claims)
-		if slices.Common(claims.Scopes, scopes, 1) {
+		claim := at.Claims.(*claims)
+		if slices.Common(claim.Scopes, scopes, 1) {
 			return nil, errors.New(codes.PermissionDenied)
 		}
-		return claims.Claims, nil
+		return claim.Claims, nil
 	}
 	return nil, errors.New(codes.Unauthenticated)
 }
 
-func (a JWT) Sign(c *Claims) (string, error) {
+func (a JWT) Sign(c *authorize.Claims) (string, *jwt.RegisteredClaims, error) {
+	claim := &claims{
+		Claims:           c,
+		RegisteredClaims: new(jwt.RegisteredClaims),
+	}
 	now := time.Now()
-	c.IssuedAt = &jwt.NumericDate{Time: now}
-	c.ExpiresAt = &jwt.NumericDate{Time: now.Add(a.duration)}
+	claim.IssuedAt = &jwt.NumericDate{Time: now}
+	claim.ExpiresAt = &jwt.NumericDate{Time: now.Add(a.duration)}
 
-	at := jwt.NewWithClaims(jwt.SigningMethodRS256, c)
+	at := jwt.NewWithClaims(jwt.SigningMethodRS256, claim)
 	token, err := at.SignedString(a.signKey)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
-	return token, nil
+	return token, claim.RegisteredClaims, nil
 }
