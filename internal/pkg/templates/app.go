@@ -35,7 +35,7 @@ func (c Controller) RegisterController(router *mux.Router) {
 //	@Summary	List of {{ .plural }}
 //	@Tags		{{ .plural }}
 //	@Router		/{{ .command }}/{{ .plural }} [get]
-//	@Param		{object}	query	queryext.Multiple	false	"Query string"
+//	@Param		{object}	query	query.Query	false	"Query string"
 //	@Produce	json
 //	@Success	200	{object}	api.{{ .Plural }}
 //	@Failure	400	{object}	errors.Model
@@ -58,7 +58,7 @@ func (c Controller) List(res http.ResponseWriter, req *http.Request) {
 //	@Tags		{{ .plural }}
 //	@Router		/{{ .command }}/{{ .plural }} [post]
 //	@Security	BearerAuth
-//	@Param		{object}	query	queryext.Single	false	"Query string"
+//	@Param		{object}	query	query.Query	false	"Query string"
 //	@Accept		json
 //	@Param		{object}	body		api.{{ .Singular }}Create	true	"Request body"
 //	@Produce	json
@@ -88,7 +88,7 @@ func (c Controller) Create(res http.ResponseWriter, req *http.Request) {
 //	@Summary	Returns a {{ .singular }}
 //	@Tags		{{ .plural }}
 //	@Router		/{{ .command }}/{{ .plural }}/{{ "{" }}{{ .singular }}_id} [get]
-//	@Param		{object}	query	queryext.Single	false	"Query string"
+//	@Param		{object}	query	query.Query	false	"Query string"
 //	@Param		{{ .singular }}_id	path	string			true	"{{ .Singular }} primary key"
 //	@Produce	json
 //	@Success	200	{object}	api.{{ .Singular }}
@@ -113,7 +113,7 @@ func (c Controller) Return(res http.ResponseWriter, req *http.Request) {
 //	@Tags		{{ .plural }}
 //	@Router		/{{ .command }}/{{ .plural }}/{{ "{" }}{{ .singular }}_id} [put]
 //	@Security	BearerAuth
-//	@Param		{object}	query	queryext.Single	false	"Query string"
+//	@Param		{object}	query	query.Query	false	"Query string"
 //	@Param		{{ .singular }}_id	path	string			true	"{{ .Singular }} primary key"
 //	@Produce	json
 //	@Param		{object}	body		api.{{ .Singular }}Update	true	"Request body"

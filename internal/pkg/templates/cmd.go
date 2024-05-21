@@ -72,6 +72,7 @@ func main() {
 		// GOPHER: Don't remove this line
 		// {{ .controller }}
 	}, []mux.MiddlewareFunc{
+		muxext.LangMiddleware(),
 	}, httpext.DefaultCors)
 
 	service.Start()
