@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func (c Commander) lang(cmd *cobra.Command, args []string) error {
+func (c Commander) lang(cmd *cobra.Command, _ []string) error {
 	name, err := cmd.Flags().GetString("name")
 	if err != nil {
 		return err

@@ -17,7 +17,7 @@ var (
 	enumImportRegex = regexp.MustCompile("import \\(((.|\\n)*)\\)\\n\\nconst")
 )
 
-func (c Commander) proto(cmd *cobra.Command, args []string) error {
+func (c Commander) proto(cmd *cobra.Command, _ []string) error {
 	if err := execext.CommandContextStream(cmd.Context(), "rm", "-f", "api/*.pb.go"); err != nil {
 		return err
 	}

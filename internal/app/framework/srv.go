@@ -13,15 +13,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func (c Commander) srv(cmd *cobra.Command, args []string) error {
-	var (
-		service  string
-		services []string
-	)
+func (c Commander) srv(cmd *cobra.Command, _ []string) error {
 	services, err := helpers.Services()
 	if err != nil {
 		return err
 	}
+
+	var service string
 	if err = cobraext.Flag(cmd, "name", &service); err != nil {
 		return err
 	}
@@ -48,7 +46,7 @@ func (c Commander) srv(cmd *cobra.Command, args []string) error {
 	}
 
 	if err = helpers.MakeContents(map[string]string{
-		"deploy/docker-compose.build.yml":              deploy,
+		"deploy/docker-compose.build.yml":            deploy,
 		fmt.Sprintf("deploy/%v/Dockerfile", service): templates.ServiceDockerfile,
 	}, map[string]any{
 		"name":    service,

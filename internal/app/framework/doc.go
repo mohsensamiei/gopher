@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func (c Commander) doc(cmd *cobra.Command, args []string) error {
+func (c Commander) doc(cmd *cobra.Command, _ []string) error {
 	var main string
 	if err := cobraext.Flag(cmd, "main", &main); err != nil {
 		return err

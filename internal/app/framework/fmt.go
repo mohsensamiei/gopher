@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func (c Commander) fmt(cmd *cobra.Command, args []string) error {
+func (c Commander) fmt(cmd *cobra.Command, _ []string) error {
 	var shadow string
 	if res, err := exec.CommandContext(cmd.Context(), "which", "shadow").CombinedOutput(); err == nil {
 		shadow = strings.TrimSpace(string(res))
