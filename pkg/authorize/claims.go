@@ -1,12 +1,12 @@
 package authorize
 
 type Claims struct {
-	UserID   string   `json:"user_id,omitempty" map:"id"`
-	UnitID   string   `json:"unit_id,omitempty"`
+	ID       string   `json:"id,omitempty"`
+	Unit     string   `json:"unit,omitempty"`
 	Username string   `json:"username,omitempty"`
 	Name     string   `json:"name,omitempty"`
 	Surname  string   `json:"surname,omitempty"`
 	Email    string   `json:"email,omitempty"`
-	Mobile   string   `json:"mobile,omitempty"`
+	Phone    string   `json:"phone,omitempty"`
 	Scopes   []string `json:"scopes,omitempty"`
 }
