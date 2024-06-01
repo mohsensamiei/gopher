@@ -9,7 +9,6 @@ import (
 	"github.com/mohsensamiei/gopher/v2/pkg/response"
 	"golang.org/x/text/language"
 	"net/http"
-	"strings"
 )
 
 func AuthMiddleware(scopes ...string) mux.MiddlewareFunc {
@@ -49,7 +48,14 @@ func LangMiddleware() mux.MiddlewareFunc {
 				next.ServeHTTP(res, req)
 				return
 			}
-			lang, err := language.Parse(strings.Split(strings.Split(accept, ",")[0], ";")[0])
+			var base language.Base
+			if tags, _, err := language.ParseAcceptLanguage(accept); err != nil {
+				next.ServeHTTP(res, req)
+				return
+			} else {
+				base, _ = tags[0].Base()
+			}
+			lang, err := language.Parse(base.String())
 			if err != nil {
 				next.ServeHTTP(res, req)
 				return

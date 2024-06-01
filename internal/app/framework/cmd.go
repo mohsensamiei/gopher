@@ -77,9 +77,9 @@ func (c Commander) cmd(cmd *cobra.Command, args []string) error {
 	if err = helpers.MakeContents(map[string]string{
 		fmt.Sprintf("assets/migrations/%v/.gitkeep", command): templates.GitKeep,
 		fmt.Sprintf("cmd/%v/main.go", command):                templates.CmdMain,
-		fmt.Sprintf("deploy/%v/Dockerfile", service):        docker,
+		fmt.Sprintf("deploy/%v/Dockerfile", service):          docker,
 		"deploy/docker-compose.deploy.yml":                    deploy,
-		"deploy/gateway/default.conf":                       conf,
+		"deploy/gateway/default.conf":                         conf,
 	}, map[string]any{
 		"name":       command,
 		"command":    "{{ .command }}",

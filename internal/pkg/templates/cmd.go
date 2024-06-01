@@ -55,6 +55,8 @@ func init() {
 //	@name						Authorization
 //	@description				Format: Bearer [Access Token]
 func main() {
+	defer closer.Defer()
+
 	health.Serve(configs.Health)
 
 	grpcext.Serve(configs.Grpc, []grpcext.ServiceRegister{
