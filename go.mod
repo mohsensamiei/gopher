@@ -8,6 +8,7 @@ require (
 	github.com/BurntSushi/toml v1.3.2
 	github.com/adjust/rmq/v5 v5.2.0
 	github.com/aws/aws-sdk-go v1.50.34
+	github.com/bsm/redislock v0.9.4
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/dongri/phonenumber v0.1.2
 	github.com/fatih/color v1.16.0

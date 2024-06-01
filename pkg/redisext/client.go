@@ -4,8 +4,10 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	goerrors "errors"
 	"fmt"
 	"github.com/adjust/rmq/v5"
+	"github.com/bsm/redislock"
 	"github.com/go-redis/redis_rate/v10"
 	"github.com/go-redsync/redsync/v4"
 	"github.com/go-redsync/redsync/v4/redis/goredis/v9"
@@ -46,6 +48,9 @@ func Connect(ctx context.Context, configs Configs) (*Client, error) {
 		go cli.loggingQueue()
 	}
 	{
+		cli.Atomic = redislock.New(cli.DB)
+	}
+	{
 		cli.Lock = redsync.New(goredis.NewPool(cli.DB))
 	}
 	{
@@ -61,6 +66,7 @@ type Client struct {
 	Lock    *redsync.Redsync
 	Limiter *redis_rate.Limiter
 	errChan chan error
+	Atomic  *redislock.Client
 }
 
 func (c *Client) Close() error {
@@ -157,6 +163,16 @@ func (c *Client) OpenQueue(name string) (*Queue, error) {
 
 func (c *Client) NewMutex(ns, key string, exp time.Duration) *redsync.Mutex {
 	return c.Lock.NewMutex(fmt.Sprintf("%v:%v", ns, key), redsync.WithExpiry(exp))
+}
+
+func (c *Client) ObtainAtomic(ctx context.Context, ns, key string, exp time.Duration) (*redislock.Lock, error) {
+	lock, err := c.Atomic.Obtain(ctx, fmt.Sprintf("%v:%v", ns, key), exp, nil)
+	if goerrors.Is(err, redislock.ErrNotObtained) {
+		return nil, errors.Wrap(err, codes.AlreadyExists)
+	} else if err != nil {
+		return nil, err
+	}
+	return lock, nil
 }
 
 func (c *Client) Limit(ctx context.Context, ns, key string, limit redis_rate.Limit) (*redis_rate.Result, error) {
