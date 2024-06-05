@@ -77,7 +77,7 @@ func (c *Client) cleaningQueue() {
 	cleaner := rmq.NewCleaner(c.Queue)
 	ticker := time.NewTicker(time.Minute)
 	for range ticker.C {
-		if _, err := cleaner.Clean(); err != nil {
+		if _, err := cleaner.Clean(); err != nil && !goerrors.Is(err, rmq.ErrorNotFound) {
 			c.errChan <- err
 		}
 	}
