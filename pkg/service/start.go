@@ -30,5 +30,4 @@ func Start() {
 	if err := <-interrupt; err != nil {
 		log.WithError(err).Panic("service interrupted")
 	}
-	log.Panic("service interrupted")
 }
