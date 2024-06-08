@@ -40,7 +40,7 @@ func (a JWT) Authorize(auth authenticate.Authenticate, scopes ...string) (*autho
 			return nil, errors.Wrap(err, codes.Unauthenticated)
 		}
 		claim := at.Claims.(*claims)
-		if !slices.Common(claim.Scopes, scopes, 1) {
+		if scopes != nil && !slices.Common(claim.Scopes, scopes, 1) {
 			return nil, errors.New(codes.PermissionDenied)
 		}
 		return claim.Claims, nil
