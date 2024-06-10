@@ -8,16 +8,24 @@ func New() *Query {
 	return new(Query)
 }
 
+type Params struct {
+	Take         int      `json:"take"`    // Count of return records, empty equal 10
+	Skip         int      `json:"skip"`    // Count of skip records, empty equal 0
+	Includes     []string `json:"include"` // Loads embedded fields
+	Filters      []string `json:"filter"`  // Filters records, such as 'id:eq("5200efe3-3842-4c3e-929d-0a05b3bda793")'
+	Sorts        []string `json:"sort"`    // Sorts records. such as desc(arranged_at)
+	SearchClause string   `json:"search"`  // full text search between records
+	CountClause  bool     `json:"count"`   // Count only
+}
+
 type Query struct {
-	TakeClause     TakeClause     `json:"take"`    // Count of return records, empty equal 10
-	SkipClause     SkipClause     `json:"skip"`    // Count of skip records, empty equal 0
-	IncludeClauses IncludeClauses `json:"include"` // Loads embedded fields
-	filterClauses  []string       `json:"filter"`  // Filters records, such as 'id:eq("5200efe3-3842-4c3e-929d-0a05b3bda793")'
-	FilterClauses  FilterClauses  `json:"-"`
-	sortClauses    []string       `json:"sort"` // Sorts records. such as desc(arranged_at)
-	SortClauses    SortClauses    `json:"-"`
-	SearchClause   SearchClause   `json:"search"` // full text search between records
-	CountClause    CountClause    `json:"count"`  // Count only
+	TakeClause     TakeClause
+	SkipClause     SkipClause
+	IncludeClauses IncludeClauses
+	FilterClauses  FilterClauses
+	SortClauses    SortClauses
+	SearchClause   SearchClause
+	CountClause    CountClause
 }
 
 func (q Query) String() string {

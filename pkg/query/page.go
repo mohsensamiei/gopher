@@ -56,20 +56,20 @@ func (c TakeClause) MarshalQuery(values *url.Values) {
 	values.Add(takeKey, fmt.Sprint(c))
 }
 
-func Skip(count int64) *Query {
+func Skip(count int) *Query {
 	return new(Query).Skip(count)
 }
 
-func (q *Query) Skip(count int64) *Query {
+func (q *Query) Skip(count int) *Query {
 	q.SkipClause = SkipClause(count)
 	return q
 }
 
-func Take(count int64) *Query {
+func Take(count int) *Query {
 	return new(Query).Take(count)
 }
 
-func (q *Query) Take(count int64) *Query {
+func (q *Query) Take(count int) *Query {
 	q.TakeClause = TakeClause(count)
 	return q
 }
