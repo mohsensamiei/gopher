@@ -9,13 +9,13 @@ func New() *Query {
 }
 
 type Params struct {
-	Take         int      `json:"take"`    // Count of return records, empty equal 10
-	Skip         int      `json:"skip"`    // Count of skip records, empty equal 0
-	Includes     []string `json:"include"` // Loads embedded fields
-	Filters      []string `json:"filter"`  // Filters records, such as 'id:eq("5200efe3-3842-4c3e-929d-0a05b3bda793")'
-	Sorts        []string `json:"sort"`    // Sorts records. such as desc(arranged_at)
-	SearchClause string   `json:"search"`  // full text search between records
-	CountClause  bool     `json:"count"`   // Count only
+	Take     int      `json:"take"`    // Count of return records, empty equal 10
+	Skip     int      `json:"skip"`    // Count of skip records, empty equal 0
+	Includes []string `json:"include"` // Loads embedded fields
+	Filters  []string `json:"filter"`  // Filters records, such as 'id:eq("5200efe3-3842-4c3e-929d-0a05b3bda793")'
+	Sorts    []string `json:"sort"`    // Sorts records. such as desc(arranged_at)
+	Search   string   `json:"search"`  // full text search between records
+	Count    bool     `json:"count"`   // Count only
 }
 
 type Query struct {
