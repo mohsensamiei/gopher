@@ -12,10 +12,12 @@ type Query struct {
 	TakeClause     TakeClause     `json:"take"`    // Count of return records, empty equal 10
 	SkipClause     SkipClause     `json:"skip"`    // Count of skip records, empty equal 0
 	IncludeClauses IncludeClauses `json:"include"` // Loads embedded fields
-	FilterClauses  FilterClauses  `json:"filter"`  // Filters records, such as 'id:eq("5200efe3-3842-4c3e-929d-0a05b3bda793")'
-	SortClauses    SortClauses    `json:"sort"`    // Sorts records. such as desc(arranged_at)
-	SearchClause   SearchClause   `json:"search"`  // full text search between records
-	CountClause    CountClause    `json:"count"`   // Count only
+	filterClauses  []string       `json:"filter"`  // Filters records, such as 'id:eq("5200efe3-3842-4c3e-929d-0a05b3bda793")'
+	FilterClauses  FilterClauses  `json:"-"`
+	sortClauses    []string       `json:"sort"` // Sorts records. such as desc(arranged_at)
+	SortClauses    SortClauses    `json:"-"`
+	SearchClause   SearchClause   `json:"search"` // full text search between records
+	CountClause    CountClause    `json:"count"`  // Count only
 }
 
 func (q Query) String() string {
