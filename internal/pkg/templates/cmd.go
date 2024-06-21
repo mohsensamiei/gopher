@@ -15,6 +15,7 @@ import (
 	"github.com/mohsensamiei/gopher/v2/pkg/logext"
 	"github.com/mohsensamiei/gopher/v2/pkg/muxext"
 	"github.com/mohsensamiei/gopher/v2/pkg/service"
+	"github.com/mohsensamiei/gopher/v2/pkg/closer"
 	"github.com/gorilla/mux"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	log "github.com/sirupsen/logrus"
