@@ -27,7 +27,7 @@ func Start() {
 		interrupt <- fmt.Errorf((<-signalChan).String())
 	}()
 
-	if err := <-interrupt; err != nil {
+	if err := <-interrupt; err != nil && err.Error() != "terminated" {
 		log.WithError(err).Panic("service interrupted")
 	}
 }
