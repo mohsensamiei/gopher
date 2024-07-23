@@ -179,21 +179,34 @@ func applyFilter(db *gorm.DB, c query.FilterClauses) *gorm.DB {
 	return db
 }
 
-func normalize[T any](db *gorm.DB, q *query.Query) {
+func normalize[T any](db *gorm.DB, q *query.Query) *query.Query {
 	for _, c := range q.FilterClauses {
 		c.Field = normalizeField[T](db, c.Field)
 	}
 	for _, c := range q.SortClauses {
 		c.Field = normalizeField[T](db, c.Field)
 	}
+	return q
 }
 
 func normalizeField[T any](db *gorm.DB, field string) string {
 	if strings.Contains(field, ".") {
 		dump := strings.Split(field, ".")
 		nested := strcaseext.Delimited(strings.Join(dump[0:len(dump)-1], "."), ".", strcase.ToCamel)
-		return fmt.Sprintf(`"%v"."%v"`, strings.Join(strings.Split(nested, "."), `"."`), strcase.ToSnake(dump[len(dump)-1]))
+		return fmt.Sprintf(`%v.%v`, strings.Join(addQuoteSlice(strings.Split(nested, ".")), `"."`), addQuote(strcase.ToSnake(dump[len(dump)-1])))
 	} else {
-		return fmt.Sprintf(`"%v"."%v"`, TableName(db, new(T)), strcase.ToSnake(field))
+		return fmt.Sprintf(`%v.%v`, addQuote(TableName(db, new(T))), addQuote(strcase.ToSnake(field)))
 	}
+}
+
+func addQuote(v string) string {
+	return fmt.Sprintf("%q", strings.Trim(strings.Trim(v, `"`), `'`))
+}
+
+func addQuoteSlice(v []string) []string {
+	var res []string
+	for _, i := range v {
+		res = append(res, addQuote(i))
+	}
+	return res
 }
