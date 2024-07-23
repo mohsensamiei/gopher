@@ -187,7 +187,9 @@ func normalizeField[T any](db *gorm.DB, field string) string {
 	if strings.Contains(field, ".") {
 		dump := strings.Split(field, ".")
 		nested := strcaseext.Delimited(strings.Join(dump[0:len(dump)-1], "."), ".", strcase.ToCamel)
-		return fmt.Sprintf(`%v.%v`, strings.Join(addQuoteSlice(strings.Split(nested, ".")), `"."`), addQuote(strcase.ToSnake(dump[len(dump)-1])))
+		return fmt.Sprintf(`%v.%v`,
+			strings.Join(addQuoteSlice(strings.Split(nested, ".")), `"."`),
+			addQuote(strcase.ToSnake(dump[len(dump)-1])))
 	} else {
 		return fmt.Sprintf(`%v.%v`, addQuote(TableName(db, new(T))), addQuote(strcase.ToSnake(field)))
 	}
@@ -210,7 +212,7 @@ func addQuoteSlice(v []string) []string {
 }
 
 func currentTable[T any](db *gorm.DB, field string) bool {
-	return strings.HasPrefix(normalizeField[T](db, field), addQuote(strcase.ToCamel(TableName(db, new(T)))))
+	return strings.HasPrefix(normalizeField[T](db, field), addQuote(TableName(db, new(T))))
 }
 
 func nestedJoin(db *gorm.DB, field string) *gorm.DB {
