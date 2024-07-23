@@ -62,8 +62,6 @@ func ApplyQuery[T Model](db *gorm.DB, q *query.Query) *gorm.DB {
 		}
 	}
 	{
-		table := TableName(db, new(T))
-
 		for _, include := range q.IncludeClauses {
 			l := strcaseext.Delimited(include, ".", strcase.ToCamel)
 
@@ -94,18 +92,16 @@ func ApplyQuery[T Model](db *gorm.DB, q *query.Query) *gorm.DB {
 		}
 
 		for _, c := range q.FilterClauses {
-			d := strings.Split(c.Field, ".")
-			if len(d) > 1 && d[0] != table {
-				db = db.InnerJoins(strcaseext.Delimited(strings.Join(d[:len(d)-1], "."), ".", strcase.ToCamel))
+			if !currentTable[T](db, c.Field) {
+				db = nestedJoin(db, c.Field)
 			}
 		}
 
-		fields := []string{fmt.Sprintf("%v.*", table)}
+		fields := []string{fmt.Sprintf("%v.*", TableName(db, new(T)))}
 		for _, c := range q.SortClauses {
-			d := strings.Split(c.Field, ".")
-			if len(d) > 1 && d[0] != table {
+			if !currentTable[T](db, c.Field) {
+				db = nestedJoin(db, c.Field)
 				fields = append(fields, c.Field)
-				db = db.InnerJoins(strcaseext.Delimited(strings.Join(d[:len(d)-1], "."), ".", strcase.ToCamel))
 			}
 		}
 		db = db.Select(fields).Distinct()
@@ -123,13 +119,12 @@ func ApplyCount[T Model](db *gorm.DB, q *query.Query) *gorm.DB {
 	}
 	{
 		model := new(T)
-		table := TableName(db, new(T))
+		table := TableName(db, model)
 		primaryKeys := any(model).(Model).PrimaryKeys()
 
 		for _, c := range q.FilterClauses {
-			d := strings.Split(c.Field, ".")
-			if len(d) > 1 && d[0] != table {
-				db = db.InnerJoins(strcaseext.Delimited(strings.Join(d[:len(d)-1], "."), ".", strcase.ToCamel))
+			if !currentTable[T](db, c.Field) {
+				db = nestedJoin(db, c.Field)
 			}
 		}
 		db = db.Distinct(logic.IFor(func(v string) string {
@@ -148,9 +143,8 @@ func applySearch[T any](db *gorm.DB, c query.SearchClause) *gorm.DB {
 		return db
 	}
 	f := normalizeField[T](db, obj.FullTextName())
-	if strings.Contains(f, ".") {
-		d := strings.Split(f, ".")
-		db = db.InnerJoins(strcaseext.Delimited(strings.Join(d[:len(d)-1], "."), ".", strcase.ToCamel))
+	if !currentTable[T](db, f) {
+		db = nestedJoin(db, f)
 	}
 	db = db.Where(
 		fmt.Sprintf("%v ILIKE ?", f),
@@ -199,8 +193,12 @@ func normalizeField[T any](db *gorm.DB, field string) string {
 	}
 }
 
+func remQuote(v string) string {
+	return strings.Trim(strings.Trim(v, `"`), `'`)
+}
+
 func addQuote(v string) string {
-	return fmt.Sprintf("%q", strings.Trim(strings.Trim(v, `"`), `'`))
+	return fmt.Sprintf(`%q`, remQuote(v))
 }
 
 func addQuoteSlice(v []string) []string {
@@ -209,4 +207,19 @@ func addQuoteSlice(v []string) []string {
 		res = append(res, addQuote(i))
 	}
 	return res
+}
+
+func currentTable[T any](db *gorm.DB, field string) bool {
+	return strings.HasPrefix(normalizeField[T](db, field), addQuote(strcase.ToCamel(TableName(db, new(T)))))
+}
+
+func nestedJoin(db *gorm.DB, field string) *gorm.DB {
+	var (
+		nested []string
+		dump   = strings.Split(field, ".")
+	)
+	for _, s := range dump[:len(dump)-1] {
+		nested = append(nested, strcase.ToCamel(remQuote(s)))
+	}
+	return db.InnerJoins(strings.Join(nested, "."))
 }
