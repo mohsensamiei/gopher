@@ -75,12 +75,12 @@ type FilterClause struct {
 	Values   []any
 }
 
-type FilterClauses []FilterClause
+type FilterClauses []*FilterClause
 
 func (c *FilterClauses) UnmarshalQuery(values url.Values) {
 	for _, filter := range values[filterKey] {
 		for _, raw := range filterTermRegex.FindAllStringSubmatch(filter, -1) {
-			*c = append(*c, FilterClause{
+			*c = append(*c, &FilterClause{
 				Field:    raw[1],
 				Function: FilterFunction(raw[2]),
 				Values:   toInterfaceSlice(filterValueRegex.FindAllString(raw[3], -1)),
@@ -107,7 +107,7 @@ func Filter(field string, function FilterFunction, values ...any) *Query {
 }
 
 func (q *Query) Filter(field string, function FilterFunction, values ...any) *Query {
-	q.FilterClauses = append(q.FilterClauses, FilterClause{
+	q.FilterClauses = append(q.FilterClauses, &FilterClause{
 		Field:    field,
 		Function: function,
 		Values:   values,

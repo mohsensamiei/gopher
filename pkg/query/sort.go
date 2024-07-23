@@ -32,12 +32,12 @@ type SortClause struct {
 	Function SortFunction
 }
 
-type SortClauses []SortClause
+type SortClauses []*SortClause
 
 func (c *SortClauses) UnmarshalQuery(values url.Values) {
 	for _, sort := range values[sortKey] {
 		for _, raw := range sortTermRegex.FindAllStringSubmatch(sort, -1) {
-			*c = append(*c, SortClause{
+			*c = append(*c, &SortClause{
 				Field:    raw[2],
 				Function: SortFunction(raw[1]),
 			})
@@ -59,7 +59,7 @@ func Sort(field string, function SortFunction) *Query {
 }
 
 func (q *Query) Sort(field string, function SortFunction) *Query {
-	q.SortClauses = append(q.SortClauses, SortClause{
+	q.SortClauses = append(q.SortClauses, &SortClause{
 		Field:    field,
 		Function: function,
 	})

@@ -36,7 +36,7 @@ func (a Ldap) Authorize(auth authenticate.Authenticate, scopes ...string) (*auth
 	case *authenticate.Basic:
 		if a.Base.LdapBindUsername == cred.Username && a.Base.LdapBindPassword == cred.Password {
 			return &authorize.Claims{
-				UserID:   fmt.Sprintf("cn=%v,%v", a.Base.LdapBindUsername, a.Base.LdapBaseDN),
+				ID:       fmt.Sprintf("cn=%v,%v", a.Base.LdapBindUsername, a.Base.LdapBaseDN),
 				Username: a.Base.LdapBindUsername,
 			}, nil
 		}
