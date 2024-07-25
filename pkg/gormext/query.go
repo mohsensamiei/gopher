@@ -212,7 +212,10 @@ func addQuoteSlice(v []string) []string {
 }
 
 func currentTable[T any](db *gorm.DB, field string) bool {
-	return strings.HasPrefix(normalizeField[T](db, field), addQuote(TableName(db, new(T))))
+	return strings.HasPrefix(
+		normalizeField[T](db, field),
+		addQuote(strcase.ToSnake(TableName(db, new(T)))),
+	)
 }
 
 func nestedJoin(db *gorm.DB, field string) *gorm.DB {
