@@ -7,7 +7,7 @@ import (
 
 type Builder func(context.Context) context.Context
 
-func DIBuilder[T any](key string, provide func() T) Builder {
+func DIBuilder[T any](key any, provide func() T) Builder {
 	value := provide()
 	return func(ctx context.Context) context.Context {
 		return di.Register(ctx, key, value)

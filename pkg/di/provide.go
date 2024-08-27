@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func Provide[T any](ctx context.Context, key string) T {
+func Provide[T any](ctx context.Context, key any) T {
 	val := ctx.Value(key)
 	if val == nil {
 		panic(fmt.Sprintf("%v key does not registered in DI", key))
