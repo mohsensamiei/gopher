@@ -45,10 +45,10 @@ func ApplyQuery[T Model](db *gorm.DB, q *query.Query) *gorm.DB {
 		return db
 	}
 	db = db.Limit(int(q.TakeClause)).Offset(int(q.SkipClause))
-	db = applyFilter(db, q.FilterClauses)
+	db = applyFilter[T](db, q.FilterClauses)
 	db = applySearch[T](db, q.SearchClause)
 	for _, sort := range q.SortClauses {
-		db = db.Order(fmt.Sprintf(orders[sort.Function], sort.Field))
+		db = db.Order(fmt.Sprintf(orders[sort.Function], normalize[T](db, sort.Field)))
 	}
 	for _, include := range q.IncludeClauses {
 		l := strcaseext.Delimited(include, ".", strcase.ToCamel)
@@ -80,12 +80,12 @@ func ApplyQuery[T Model](db *gorm.DB, q *query.Query) *gorm.DB {
 	}
 	{
 		for _, c := range q.FilterClauses {
-			db = nestedJoin(db, c.Field)
+			db = nestedJoin[T](db, c.Field)
 		}
 		fields := []string{fmt.Sprintf("%v.*", TableName(db, new(T)))}
 		for _, c := range q.SortClauses {
 			if strings.Contains(c.Field, ".") {
-				db = nestedJoin(db, c.Field)
+				db = nestedJoin[T](db, c.Field)
 				fields = append(fields, c.Field)
 			}
 		}
@@ -95,7 +95,7 @@ func ApplyQuery[T Model](db *gorm.DB, q *query.Query) *gorm.DB {
 }
 
 func ApplyCount[T Model](db *gorm.DB, q *query.Query) *gorm.DB {
-	db = applyFilter(db, q.FilterClauses)
+	db = applyFilter[T](db, q.FilterClauses)
 	db = applySearch[T](db, q.SearchClause)
 	{
 		model := new(T)
@@ -103,7 +103,7 @@ func ApplyCount[T Model](db *gorm.DB, q *query.Query) *gorm.DB {
 		primaryKeys := any(model).(Model).PrimaryKeys()
 
 		for _, c := range q.FilterClauses {
-			db = nestedJoin(db, c.Field)
+			db = nestedJoin[T](db, c.Field)
 		}
 		db = db.Distinct(logic.IFor(func(v string) string {
 			return fmt.Sprintf("%v.%v", table, v)
@@ -112,7 +112,7 @@ func ApplyCount[T Model](db *gorm.DB, q *query.Query) *gorm.DB {
 	return db
 }
 
-func applySearch[T any](db *gorm.DB, c query.SearchClause) *gorm.DB {
+func applySearch[T Model](db *gorm.DB, c query.SearchClause) *gorm.DB {
 	if c == "" {
 		return db
 	}
@@ -120,17 +120,17 @@ func applySearch[T any](db *gorm.DB, c query.SearchClause) *gorm.DB {
 	if !ok {
 		return db
 	}
-	field := normalize(obj.FullTextName())
-	db = nestedJoin(db, field).Where(
+	field := normalize[T](db, obj.FullTextName())
+	db = nestedJoin[T](db, field).Where(
 		fmt.Sprintf("%v ILIKE ?", field),
 		fmt.Sprint("%", c, "%"),
 	)
 	return db
 }
 
-func applyFilter(db *gorm.DB, c query.FilterClauses) *gorm.DB {
+func applyFilter[T Model](db *gorm.DB, c query.FilterClauses) *gorm.DB {
 	for _, filter := range c {
-		field := normalize(filter.Field)
+		field := normalize[T](db, filter.Field)
 		switch filter.Function {
 		case query.Null, query.NotNull:
 			db = db.Where(fmt.Sprintf(queries[filter.Function], field))
@@ -149,22 +149,32 @@ func applyFilter(db *gorm.DB, c query.FilterClauses) *gorm.DB {
 	return db
 }
 
-func normalize(field string) string {
+func normalize[T Model](db *gorm.DB, field string) string {
+	table := TableName(db, new(T))
 	if strings.Contains(field, ".") {
 		nested := strcaseext.DelimitedSlice(field, ".", strcase.ToCamel)
+		if db.NamingStrategy.TableName(nested[0]) == db.NamingStrategy.TableName(table) {
+			nested[0] = table
+		}
 		return fmt.Sprintf("%q.%q",
 			strings.Join(nested[:len(nested)-1], "__"),
 			strcase.ToSnake(nested[len(nested)-1]),
 		)
 	} else {
-		return strcase.ToSnake(field)
+		return fmt.Sprintf("%q.%q",
+			table,
+			strcase.ToSnake(field),
+		)
 	}
 }
 
-func nestedJoin(db *gorm.DB, field string) *gorm.DB {
+func nestedJoin[T Model](db *gorm.DB, field string) *gorm.DB {
 	if !strings.Contains(field, ".") {
 		return db
 	}
 	nested := strcaseext.DelimitedSlice(field, ".", strcase.ToCamel)
+	if table := TableName(db, new(T)); db.NamingStrategy.TableName(nested[0]) == db.NamingStrategy.TableName(table) {
+		return db
+	}
 	return db.InnerJoins(strings.Join(nested[:len(nested)-1], "."))
 }
