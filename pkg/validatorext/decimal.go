@@ -20,12 +20,12 @@ func decimal(fl validator.FieldLevel) bool {
 		return false
 	}
 	if fl.Param() != "" {
-		var min int64
-		min, err = strconv.ParseInt(fl.Param(), 10, 64)
+		var minimum int64
+		minimum, err = strconv.ParseInt(fl.Param(), 10, 64)
 		if err != nil {
 			panic("invalid min argument")
 		}
-		if dec < min {
+		if dec < minimum {
 			return false
 		}
 	}

@@ -3,21 +3,21 @@ package telegram
 // Message
 // This object represents a message.
 type Message struct {
-	MessageID                     int                            `json:"message_id"`                        // Unique message identifier inside this chat
+	MessageID                     int64                          `json:"message_id"`                        // Unique message identifier inside this chat
 	From                          *User                          `json:"from"`                              // Optional. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
 	SenderChat                    *Chat                          `json:"sender_chat"`                       // Optional. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field from contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
-	Date                          int                            `json:"date"`                              // Date the message was sent in Unix time
-	Chat                          Chat                           `json:"chat"`                              // Conversation the message belongs to
+	Date                          Date                           `json:"date"`                              // Date the message was sent in Unix time
+	Chat                          *Chat                          `json:"chat"`                              // Conversation the message belongs to
 	ForwardFrom                   *User                          `json:"forward_from"`                      // Optional. For forwarded messages, sender of the original message
 	ForwardFromChat               *Chat                          `json:"forward_from_chat"`                 // Optional. For messages forwarded from channels or from anonymous administrators, information about the original sender chat
-	ForwardFromMessageID          int                            `json:"forward_from_message_id"`           // Optional. For messages forwarded from channels, identifier of the original message in the channel
+	ForwardFromMessageID          int64                          `json:"forward_from_message_id"`           // Optional. For messages forwarded from channels, identifier of the original message in the channel
 	ForwardSignature              string                         `json:"forward_signature"`                 // Optional. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present
 	ForwardSenderName             string                         `json:"forward_sender_name"`               // Optional. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages
-	ForwardDate                   int                            `json:"forward_date"`                      // Optional. For forwarded messages, date the original message was sent in Unix time
+	ForwardDate                   Date                           `json:"forward_date"`                      // Optional. For forwarded messages, date the original message was sent in Unix time
 	IsAutomaticForward            bool                           `json:"is_automatic_forward"`              // Optional. True, if the message is a channel post that was automatically forwarded to the connected discussion group
 	ReplyToMessage                *Message                       `json:"reply_to_message"`                  // Optional. For replies, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.
 	ViaBot                        *User                          `json:"via_bot"`                           // Optional. Bot through which the message was sent
-	EditDate                      int                            `json:"edit_date"`                         // Optional. Date the message was last edited in Unix time
+	EditDate                      Date                           `json:"edit_date"`                         // Optional. Date the message was last edited in Unix time
 	HasProtectedContent           bool                           `json:"has_protected_content"`             // Optional. True, if the message can't be forwarded
 	MediaGroupID                  string                         `json:"media_group_id"`                    // Optional. The unique identifier of a media message group this message belongs to
 	AuthorSignature               string                         `json:"author_signature"`                  // Optional. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
@@ -48,8 +48,8 @@ type Message struct {
 	SupergroupChatCreated         bool                           `json:"supergroup_chat_created"`           // Optional. Service message: the supergroup has been created. This field can't be received in a message coming through updates, because bot can't be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.
 	ChannelChatCreated            bool                           `json:"channel_chat_created"`              // Optional. Service message: the channel has been created. This field can't be received in a message coming through updates, because bot can't be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.
 	MessageAutoDeleteTimerChanged *MessageAutoDeleteTimerChanged `json:"message_auto_delete_timer_changed"` // Optional. Service message: auto-delete timer settings changed in the chat
-	MigrateToChatID               int                            `json:"migrate_to_chat_id"`                // Optional. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
-	MigrateFromChatID             int                            `json:"migrate_from_chat_id"`              // Optional. The supergroup has been migrated from a group with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
+	MigrateToChatID               int64                          `json:"migrate_to_chat_id"`                // Optional. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
+	MigrateFromChatID             int64                          `json:"migrate_from_chat_id"`              // Optional. The supergroup has been migrated from a group with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
 	PinnedMessage                 *Message                       `json:"pinned_message"`                    // Optional. Specified message was pinned. Note that the Message object in this field will not contain further reply_to_message fields even if it is itself a reply.
 	Invoice                       *Invoice                       `json:"invoice"`                           // Optional. Message is an invoice for a payment, information about the invoice. More about payments »
 	SuccessfulPayment             *SuccessfulPayment             `json:"successful_payment"`                // Optional. Message is a service message about a successful payment, information about the payment. More about payments »
@@ -62,7 +62,6 @@ type Message struct {
 	VideoChatParticipantsInvited  *VideoChatParticipantsInvited  `json:"video_chat_participants_invited"`   // Optional. Service message: new participants invited to a video chat
 	WebAppData                    *WebAppData                    `json:"web_app_data"`                      // Optional. Service message: data sent by a Web App
 	ReplyMarkup                   *InlineKeyboardMarkup          `json:"reply_markup"`                      // Optional. Inline keyboard attached to the message. login_url buttons are represented as ordinary url buttons.
-
 }
 
 type EntityType string

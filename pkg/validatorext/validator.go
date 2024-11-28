@@ -33,8 +33,14 @@ type Validate struct {
 	*validator.Validate
 }
 
-func (v *Validate) Struct(s any) error {
-	if err := v.Validate.Struct(s); err != nil {
+func (v *Validate) Struct(s any, fields ...string) error {
+	var err error
+	if len(fields) == 0 {
+		err = v.Validate.Struct(s)
+	} else {
+		err = v.Validate.StructPartial(s, fields...)
+	}
+	if err != nil {
 		var validations []*errors.Validation
 		for _, row := range raw.FindAllStringSubmatch(err.Error(), -1) {
 			validations = append(validations, &errors.Validation{

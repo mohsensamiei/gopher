@@ -1,8 +1,8 @@
 package telegram
 
 type DeleteMessage struct {
-	ChatID    int `json:"chat_id"`    // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-	MessageID int `json:"message_id"` // Identifier of the message to delete
+	ChatID    int64 `json:"chat_id"`    // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
+	MessageID int64 `json:"message_id"` // Identifier of the message to delete
 }
 
 // DeleteMessage

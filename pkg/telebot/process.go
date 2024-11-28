@@ -4,47 +4,47 @@ import (
 	"context"
 	"fmt"
 	"github.com/mohsensamiei/gopher/v2/pkg/errors"
-	"github.com/mohsensamiei/gopher/v2/pkg/i18next"
 	"github.com/mohsensamiei/gopher/v2/pkg/mapext"
 	"github.com/mohsensamiei/gopher/v2/pkg/redisext"
 	"github.com/mohsensamiei/gopher/v2/pkg/slices"
 	"github.com/mohsensamiei/gopher/v2/pkg/telegram"
 	"google.golang.org/grpc/codes"
+	"runtime/debug"
 	"strings"
 	"time"
 )
 
-func parseCommand(str string) (string, []string) {
+func parseCommand(str string) (Keyword, []string) {
 	dump := strings.Split(str, " ")
 	command := strings.ToLower(strings.TrimSpace(dump[0]))
 	if len(dump) > 1 {
-		return command, dump[1:]
+		return Keyword(command), dump[1:]
 	}
-	return command, nil
+	return Keyword(command), nil
 }
 
 type State struct {
-	Command string `json:"command,omitempty"`
-	Action  string `json:"action,omitempty"`
-	Data    []byte `json:"data,omitempty"`
+	Command   Keyword  `json:"command,omitempty"`
+	Action    Keyword  `json:"action,omitempty"`
+	Arguments []string `json:"arguments,omitempty"`
 }
 
-func (c Client) recoveredProcess(ctx context.Context, update telegram.Update) (err error) {
+func (c *Client) recoveredProcess(ctx context.Context, update telegram.Update) (err error) {
 	defer func() {
 		if rec := recover(); rec != nil {
-			err = fmt.Errorf("%s", rec)
+			err = fmt.Errorf("%s:\n%s", rec, debug.Stack())
 		}
 	}()
 	return c.process(ctx, update)
 }
 
-func (c Client) process(ctx context.Context, update telegram.Update) error {
-	chatID := update.ChatID()
-	if chatID == 0 {
+func (c *Client) process(ctx context.Context, update telegram.Update) error {
+	if update.Chat() == nil {
 		return errors.New(codes.Unimplemented).WithDetailF("unsupported update type '%v'", update.Type())
 	}
+	chatID := fmt.Sprint(update.Chat().ID)
 	{
-		mutex := redisext.FromContext(ctx).NewMutex("telegram:locks", fmt.Sprint(chatID), time.Minute)
+		mutex := redisext.FromContext(ctx).NewMutex(fmt.Sprint(c.TelegramStoragePrefix, ":locks"), chatID, time.Minute)
 		if err := mutex.LockContext(ctx); err != nil {
 			return err
 		}
@@ -52,67 +52,60 @@ func (c Client) process(ctx context.Context, update telegram.Update) error {
 			_, _ = mutex.UnlockContext(ctx)
 		}()
 	}
-	var state = new(State)
-	switch err := redisext.FromContext(ctx).Get(ctx, "telegram:stats", fmt.Sprint(chatID), state); errors.Code(err) {
-	case codes.OK, codes.NotFound:
-	case codes.InvalidArgument:
-		_ = redisext.FromContext(ctx).Del(ctx, "telegram:stats", fmt.Sprint(chatID))
-	default:
-		return err
-	}
-	var action Action
-	{
-		var err error
-		if update.IsCommand() || update.IsSimilarCommand(mapext.Keys(c.commands)) {
-			state.Command, _ = parseCommand(update.Message.Text)
-			if cmd, ok := c.commands[state.Command]; ok {
-				action = cmd.Init
-			} else {
-				err = errors.New(codes.InvalidArgument)
+	if event, ok := c.events[update.Type()]; ok {
+		action := func(ctx context.Context, update telegram.Update) (Keyword, error) {
+			if err := event(ctx, update); err != nil {
+				return Empty, err
 			}
-		} else if routes := c.commands[state.Command].Actions(); routes == nil || state.Action == "" {
-			err = errors.New(codes.Aborted)
-		} else {
-			if slices.Contains(update.Type(), routes[state.Action].AllowUpdates...) {
-				action = routes[state.Action].Action
-			} else {
-				err = errors.New(codes.InvalidArgument)
-			}
+			return Empty, nil
 		}
-		if err != nil {
-			return c.handleError(ctx, err, chatID, update.MessageID())
+		for _, middleware := range c.middlewares {
+			action = middleware(action)
 		}
-	}
-	for _, middleware := range c.Middlewares {
-		if ok, err := middleware(ctx, update); err != nil {
-			return c.handleError(ctx, err, chatID, update.MessageID())
-		} else if !ok {
-			return nil
-		}
+		return event(ctx, update)
 	}
 	{
-		var err error
-		state.Action, state.Data, err = action(ctx, update, state.Data)
-		if err != nil {
-			return c.handleError(ctx, err, chatID, update.MessageID())
+		var state = new(State)
+		switch err := redisext.FromContext(ctx).Get(ctx, fmt.Sprint(c.TelegramStoragePrefix, ":states"), chatID, state); errors.Code(err) {
+		case codes.OK, codes.NotFound:
+		case codes.InvalidArgument:
+			_ = redisext.FromContext(ctx).Del(ctx, fmt.Sprint(c.TelegramStoragePrefix, ":states"), chatID)
+		default:
+			return err
 		}
-	}
-	if err := redisext.FromContext(ctx).Set(ctx, "telegram:stats", fmt.Sprint(chatID), state, 0); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (c Client) handleError(ctx context.Context, err error, chatID, MessageID int) error {
-	e := errors.Cast(err)
-	e = e.SetLocalize(i18next.ByContext(ctx, e.Slug()))
-	_, _ = c.SendMessage(telegram.SendMessage{
-		ChatID:           chatID,
-		Text:             e.Localize(),
-		ReplyToMessageID: MessageID,
-	})
-	if !e.IsHandled() {
-		return err
+		var action Action
+		{
+			if update.IsCommand() || update.IsSimilarCommand(mapext.Keys(c.commands)) {
+				state.Command, state.Arguments = parseCommand(update.Message.Text)
+				if err := redisext.FromContext(ctx).Set(ctx, fmt.Sprint(c.TelegramStoragePrefix, ":states"), chatID, state, 0); err != nil {
+					return err
+				}
+				if cmd, ok := c.commands[state.Command.String()]; ok {
+					action = cmd.Init
+				}
+			} else if command := c.commands[state.Command.String()]; command != nil && state.Action != Empty && command.Actions() != nil {
+				if routes := command.Actions(); slices.Contains(update.Type(), routes[state.Action].AllowUpdates...) {
+					action = routes[state.Action].Action
+				}
+			}
+		}
+		{
+			action = abortMiddleware(action)
+			for _, middleware := range c.middlewares {
+				action = middleware(action)
+			}
+		}
+		{
+			next, err := action(ctx, update)
+			if e := errors.Cast(err); e == nil {
+				state.Action = next
+			} else if !e.IsHandled() {
+				return err
+			}
+		}
+		if err := redisext.FromContext(ctx).Set(ctx, fmt.Sprint(c.TelegramStoragePrefix, ":states"), chatID, state, 0); err != nil {
+			return err
+		}
 	}
 	return nil
 }

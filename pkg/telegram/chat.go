@@ -4,11 +4,20 @@ import (
 	"encoding/json"
 )
 
+type ChatType string
+
+const (
+	Private    ChatType = "private"
+	Group      ChatType = "group"
+	SuperGroup ChatType = "supergroup"
+	Channel    ChatType = "channel"
+)
+
 // Chat
 // This object represents a chat.
 type Chat struct {
-	ID                                 int              `json:"id"`                                      // Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
-	Type                               string           `json:"type"`                                    // Type of chat, can be either “private”, “group”, “supergroup” or “channel”
+	ID                                 int64            `json:"id"`                                      // Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
+	Type                               ChatType         `json:"type"`                                    // Type of chat, can be either “private”, “group”, “supergroup” or “channel”
 	Title                              string           `json:"title"`                                   // Optional. Title, for supergroups, channels and group chats
 	Username                           string           `json:"username"`                                // Optional. Username, for private chats, supergroups and channels if available
 	FirstName                          string           `json:"first_name"`                              // Optional. First name of the other party in a private chat
@@ -28,7 +37,7 @@ type Chat struct {
 	HasProtectedContent                bool             `json:"has_protected_content"`                   // Optional. True, if messages from the chat can't be forwarded to other chats. Returned only in getChat.
 	StickerSetName                     string           `json:"sticker_set_name"`                        // Optional. For supergroups, name of group sticker set. Returned only in getChat.
 	CanSetStickerSet                   bool             `json:"can_set_sticker_set"`                     // Optional. True, if the bot can change the group sticker set. Returned only in getChat.
-	LinkedChatID                       int              `json:"linked_chat_id"`                          // Optional. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in getChat.
+	LinkedChatID                       int64            `json:"linked_chat_id"`                          // Optional. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in getChat.
 	Location                           *ChatLocation    `json:"location"`                                // Optional. For supergroups, the location to which the supergroup is connected. Returned only in getChat.
 }
 
@@ -64,9 +73,9 @@ type ChatLocation struct {
 // ChatMemberUpdated
 // This object represents changes in the status of a chat member.
 type ChatMemberUpdated struct {
-	Chat          Chat            `json:"chat"`            // Chat the user belongs to
-	From          User            `json:"from"`            // Performer of the action, which resulted in the change
-	Date          int             `json:"date"`            // Date the change was done in Unix time
+	Chat          *Chat           `json:"chat"`            // Chat the user belongs to
+	From          *User           `json:"from"`            // Performer of the action, which resulted in the change
+	Date          Date            `json:"date"`            // Date the change was done in Unix time
 	OldChatMember ChatMember      `json:"old_chat_member"` // Previous information about the chat member
 	NewChatMember ChatMember      `json:"new_chat_member"` // New information about the chat member
 	InviteLink    *ChatInviteLink `json:"invite_link"`     // Optional. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.
@@ -76,12 +85,12 @@ type ChatMemberUpdated struct {
 // Represents an invite link for a chat.
 type ChatInviteLink struct {
 	InviteLink              string `json:"invite_link"`                // The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with “…”.
-	Creator                 User   `json:"creator"`                    // Creator of the link
+	Creator                 *User  `json:"creator"`                    // Creator of the link
 	CreatesJoinRequest      bool   `json:"creates_join_request"`       // True, if users joining the chat via the link need to be approved by chat administrators
 	IsPrimary               bool   `json:"is_primary"`                 // True, if the link is primary
 	IsRevoked               bool   `json:"is_revoked"`                 // True, if the link is revoked
 	Name                    string `json:"name"`                       // Optional. Invite link name
-	ExpireDate              int    `json:"expire_date"`                // Optional. Point in time (Unix timestamp) when the link will expire or has been expired
+	ExpireDate              Date   `json:"expire_date"`                // Optional. Point in time (Unix timestamp) when the link will expire or has been expired
 	MemberLimit             int    `json:"member_limit"`               // Optional. The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
 	PendingJoinRequestCount int    `json:"pending_join_request_count"` // Optional. Number of pending join requests created using this link
 }
@@ -89,9 +98,9 @@ type ChatInviteLink struct {
 // ChatJoinRequest
 // Represents a join request sent to a chat.
 type ChatJoinRequest struct {
-	Chat       Chat            `json:"chat"`        // Chat to which the request was sent
-	From       User            `json:"from"`        // User that sent the join request
-	Date       int             `json:"date"`        // Date the request was sent in Unix time
+	Chat       *Chat           `json:"chat"`        // Chat to which the request was sent
+	From       *User           `json:"from"`        // User that sent the join request
+	Date       Date            `json:"date"`        // Date the request was sent in Unix time
 	Bio        string          `json:"bio"`         // Optional. Bio of the user.
 	InviteLink *ChatInviteLink `json:"invite_link"` // Optional. Chat invite link that was used by the user to send the join request
 }
@@ -207,7 +216,7 @@ type ChatMemberRestricted struct {
 	CanSendPolls          bool   `json:"can_send_polls"`            // True, if the user is allowed to send polls
 	CanSendOtherMessages  bool   `json:"can_send_other_messages"`   // True, if the user is allowed to send animations, games, stickers and use inline bots
 	CanAddWebPagePreviews bool   `json:"can_add_web_page_previews"` // True, if the user is allowed to add web page previews to their messages
-	UntilDate             int    `json:"until_date"`                // Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever
+	UntilDate             Date   `json:"until_date"`                // Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever
 }
 
 // ChatMemberLeft
@@ -222,5 +231,5 @@ type ChatMemberLeft struct {
 type ChatMemberBanned struct {
 	Status    string `json:"status"`     // The member's status in the chat, always “kicked”
 	User      User   `json:"user"`       // Information about the user
-	UntilDate int    `json:"until_date"` // Date when restrictions will be lifted for this user; unix time. If 0, then the user is banned forever
+	UntilDate Date   `json:"until_date"` // Date when restrictions will be lifted for this user; unix time. If 0, then the user is banned forever
 }

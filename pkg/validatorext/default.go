@@ -4,6 +4,6 @@ var (
 	defaultValidate = New()
 )
 
-func Struct(s any) error {
-	return defaultValidate.Struct(s)
+func Struct(s any, fields ...string) error {
+	return defaultValidate.Struct(s, fields...)
 }

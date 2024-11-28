@@ -7,7 +7,7 @@ type Animation struct {
 	FileUniqueID string     `json:"file_unique_id"` // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
 	Width        int        `json:"width"`          // Video width as defined by sender
 	Height       int        `json:"height"`         // Video height as defined by sender
-	Duration     int        `json:"duration"`       // Duration of the video in seconds as defined by sender
+	Duration     Duration   `json:"duration"`       // Duration of the video in seconds as defined by sender
 	Thumb        *PhotoSize `json:"thumb"`          // Optional. Animation thumbnail as defined by sender
 	FileName     string     `json:"file_name"`      // Optional. Original animation filename as defined by sender
 	MimeType     string     `json:"mime_type"`      // Optional. MIME type of the file as defined by sender

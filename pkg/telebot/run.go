@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (c Client) Run(ctx context.Context) error {
+func (c *Client) Run(ctx context.Context) error {
 	c.channel = make(chan telegram.Update, c.TelegramConcurrency)
 	defer func() {
 		close(c.channel)
@@ -24,7 +24,7 @@ func (c Client) Run(ctx context.Context) error {
 	var updateID uint
 	ticker := time.NewTicker(c.TelegramPullInterval)
 	for range ticker.C {
-		updates, err := c.GetUpdates(telegram.GetUpdates{
+		updates, err := telegram.FromContext(ctx).GetUpdates(telegram.GetUpdates{
 			Offset: updateID,
 			Limit:  c.TelegramConcurrency,
 		})
@@ -32,12 +32,6 @@ func (c Client) Run(ctx context.Context) error {
 			return err
 		}
 		for _, update := range updates {
-			if chatID := update.ChatID(); chatID > 0 {
-				_, _ = c.SendAction(telegram.SendAction{
-					ChatID: chatID,
-					Action: telegram.Typing,
-				})
-			}
 			updateID = update.UpdateID + 1
 			c.channel <- update
 		}

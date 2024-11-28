@@ -15,7 +15,7 @@ type Poll struct {
 	Explanation           string          `json:"explanation"`             // Optional. Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters
 	ExplanationEntities   []MessageEntity `json:"explanation_entities"`    // Optional. Special entities like usernames, URLs, bot commands, etc. that appear in the explanation
 	OpenPeriod            int             `json:"open_period"`             // Optional. Amount of time in seconds the poll will be active after creation
-	CloseDate             int             `json:"close_date"`              // Optional. Point in time (Unix timestamp) when the poll will be automatically closed
+	CloseDate             Date            `json:"close_date"`              // Optional. Point in time (Unix timestamp) when the poll will be automatically closed
 }
 
 // PollOption

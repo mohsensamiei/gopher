@@ -2,11 +2,15 @@ package i18next
 
 import (
 	"context"
+	"github.com/fatih/structs"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
 )
 
 func ByLangWithData(lang language.Tag, id string, data any) string {
+	if structs.IsStruct(data) {
+		data = structs.Map(data)
+	}
 	local, ok := languages[lang]
 	if !ok {
 		if local, ok = languages[defaultLang]; !ok {

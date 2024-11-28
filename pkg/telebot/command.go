@@ -2,12 +2,22 @@ package telebot
 
 import (
 	"context"
+	"github.com/mohsensamiei/gopher/v2/pkg/stringsext"
 	"github.com/mohsensamiei/gopher/v2/pkg/telegram"
 	log "github.com/sirupsen/logrus"
-	"strings"
 )
 
-type Action func(ctx context.Context, update telegram.Update, data []byte) (string, []byte, error)
+type Keyword string
+
+func (k Keyword) String() string {
+	return stringsext.Comparable(string(k))
+}
+
+const (
+	Empty Keyword = ""
+)
+
+type Action func(ctx context.Context, update telegram.Update) (Keyword, error)
 
 type Route struct {
 	Action       Action
@@ -15,21 +25,18 @@ type Route struct {
 }
 
 type Command interface {
-	Name() string
-	Alias() []string
-	Description() string
-	Init(ctx context.Context, update telegram.Update, data []byte) (string, []byte, error)
-	Actions() map[string]Route
+	Name() Keyword
+	Alias() []Keyword
+	Actions() map[Keyword]Route
+	Init(ctx context.Context, update telegram.Update) (Keyword, error)
 }
 
 func (c *Client) Command(cmd Command) {
-	names := append(cmd.Alias(), cmd.Name())
-	for _, name := range names {
-		name = strings.ToLower(strings.TrimSpace(name))
-		if _, ok := c.commands[name]; ok {
+	keywords := append(cmd.Alias(), cmd.Name())
+	for _, keyword := range keywords {
+		if _, ok := c.commands[keyword.String()]; ok {
 			log.WithField("command", cmd.Name()).Fatal("duplicate command name")
 		}
-		c.commands[name] = cmd
+		c.commands[keyword.String()] = cmd
 	}
-	c.Commands = append(c.Commands, cmd)
 }

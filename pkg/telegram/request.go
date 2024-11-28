@@ -22,14 +22,17 @@ func (m method) String() string {
 }
 
 const (
-	getMe           method = "getMe"
-	getFile         method = "getFile"
-	getUpdates      method = "getUpdates"
-	sendMessage     method = "sendMessage"
-	sendChatAction  method = "sendChatAction"
-	sendDocument    method = "sendDocument"
-	editMessageText method = "editMessageText"
-	deleteMessage   method = "deleteMessage"
+	getMe                  method = "getMe"
+	getFile                method = "getFile"
+	getUpdates             method = "getUpdates"
+	sendMessage            method = "sendMessage"
+	sendChatAction         method = "sendChatAction"
+	sendDocument           method = "sendDocument"
+	editMessageText        method = "editMessageText"
+	deleteMessage          method = "deleteMessage"
+	createChatInviteLink   method = "createChatInviteLink"
+	approveChatJoinRequest method = "approveChatJoinRequest"
+	declineChatJoinRequest method = "declineChatJoinRequest"
 )
 
 const (

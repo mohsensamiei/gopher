@@ -2,20 +2,19 @@ package telebot
 
 import "github.com/mohsensamiei/gopher/v2/pkg/telegram"
 
-func New(configs Configs, connection *telegram.Connection) *Client {
+func New(configs Configs) *Client {
 	return &Client{
-		channel:    nil,
-		Configs:    configs,
-		Connection: connection,
-		commands:   make(map[string]Command),
+		channel:  nil,
+		Configs:  configs,
+		commands: make(map[string]Command),
+		events:   make(map[telegram.UpdateType]Event),
 	}
 }
 
 type Client struct {
 	Configs
-	Commands    []Command
-	Middlewares []Middleware
-	*telegram.Connection
-	channel  chan telegram.Update
-	commands map[string]Command
+	channel     chan telegram.Update
+	commands    map[string]Command
+	middlewares []Middleware
+	events      map[telegram.UpdateType]Event
 }

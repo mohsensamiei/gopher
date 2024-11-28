@@ -95,31 +95,73 @@ func (u Update) Type() UpdateType {
 }
 
 func (u Update) From() *User {
-	if u.Message != nil {
+	switch u.Type() {
+	case MessageUpdate:
 		return u.Message.From
+	case EditedMessageUpdate:
+		return u.EditedMessage.From
+	case ChannelPostUpdate:
+		return u.ChannelPost.From
+	case EditedChannelPostUpdate:
+		return u.EditedChannelPost.From
+	case InlineQueryUpdate:
+		return u.InlineQuery.From
+	case ChosenInlineResultUpdate:
+		return u.ChosenInlineResult.From
+	case CallbackQueryUpdate:
+		return u.CallbackQuery.From
+	case ShippingQueryUpdate:
+		return u.ShippingQuery.From
+	case PreCheckoutQueryUpdate:
+		return u.PreCheckoutQuery.From
+	case MyChatMemberUpdate:
+		return u.MyChatMember.From
+	case ChatMemberUpdate:
+		return u.ChatMember.From
+	case ChatJoinRequestUpdate:
+		return u.ChatJoinRequest.From
+	default:
+		return nil
 	}
-	if u.CallbackQuery != nil {
-		return &u.CallbackQuery.From
-	}
-	return nil
 }
 
-func (u Update) ChatID() int {
-	if u.Message != nil {
-		return u.Message.Chat.ID
+func (u Update) Chat() *Chat {
+	switch u.Type() {
+	case MessageUpdate:
+		return u.Message.Chat
+	case CallbackQueryUpdate:
+		return u.CallbackQuery.Message.Chat
+	case EditedMessageUpdate:
+		return u.EditedMessage.Chat
+	case ChannelPostUpdate:
+		return u.ChannelPost.Chat
+	case EditedChannelPostUpdate:
+		return u.EditedChannelPost.Chat
+	case MyChatMemberUpdate:
+		return u.MyChatMember.Chat
+	case ChatMemberUpdate:
+		return u.ChatMember.Chat
+	case ChatJoinRequestUpdate:
+		return u.ChatJoinRequest.Chat
+	default:
+		return nil
 	}
-	if u.CallbackQuery != nil {
-		return u.CallbackQuery.Message.Chat.ID
-	}
-	return 0
 }
 
-func (u Update) MessageID() int {
-	if u.Message != nil {
+func (u Update) MessageID() int64 {
+	switch u.Type() {
+	case MessageUpdate:
 		return u.Message.MessageID
-	}
-	if u.CallbackQuery != nil {
+	case EditedMessageUpdate:
+		return u.EditedMessage.MessageID
+	case ChannelPostUpdate:
+		return u.ChannelPost.MessageID
+	case EditedChannelPostUpdate:
+		return u.EditedMessage.MessageID
+	case CallbackQueryUpdate:
 		return u.CallbackQuery.Message.MessageID
+	case ShippingQueryUpdate:
+		return u.Message.MessageID
 	}
 	return 0
 }
