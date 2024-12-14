@@ -42,9 +42,8 @@ func (c *Client) process(ctx context.Context, update telegram.Update) error {
 	if update.Chat() == nil {
 		return errors.New(codes.Unimplemented).WithDetailF("unsupported update type '%v'", update.Type())
 	}
-	chatID := fmt.Sprint(update.Chat().ID)
 	{
-		mutex := redisext.FromContext(ctx).NewMutex(fmt.Sprint(c.TelegramStoragePrefix, ":locks"), chatID, time.Minute)
+		mutex := redisext.FromContext(ctx).NewMutex(fmt.Sprint(c.TelegramStoragePrefix, ":locks"), fmt.Sprint(update.Chat().ID), time.Minute)
 		if err := mutex.LockContext(ctx); err != nil {
 			return err
 		}
@@ -66,10 +65,10 @@ func (c *Client) process(ctx context.Context, update telegram.Update) error {
 	}
 	{
 		var state = new(State)
-		switch err := redisext.FromContext(ctx).Get(ctx, fmt.Sprint(c.TelegramStoragePrefix, ":states"), chatID, state); errors.Code(err) {
+		switch err := c.GetState(ctx, update.Chat().ID, state); errors.Code(err) {
 		case codes.OK, codes.NotFound:
 		case codes.InvalidArgument:
-			_ = redisext.FromContext(ctx).Del(ctx, fmt.Sprint(c.TelegramStoragePrefix, ":states"), chatID)
+			_ = c.DelState(ctx, update.Chat().ID)
 		default:
 			return err
 		}
@@ -77,7 +76,7 @@ func (c *Client) process(ctx context.Context, update telegram.Update) error {
 		{
 			if update.IsCommand() || update.IsSimilarCommand(mapext.Keys(c.commands)) {
 				state.Command, state.Arguments = parseCommand(update.Message.Text)
-				if err := redisext.FromContext(ctx).Set(ctx, fmt.Sprint(c.TelegramStoragePrefix, ":states"), chatID, state, 0); err != nil {
+				if err := c.SetState(ctx, update.Chat().ID, state); err != nil {
 					return err
 				}
 				if cmd, ok := c.commands[state.Command.String()]; ok {
@@ -103,7 +102,7 @@ func (c *Client) process(ctx context.Context, update telegram.Update) error {
 				return err
 			}
 		}
-		if err := redisext.FromContext(ctx).Set(ctx, fmt.Sprint(c.TelegramStoragePrefix, ":states"), chatID, state, 0); err != nil {
+		if err := c.SetState(ctx, update.Chat().ID, state); err != nil {
 			return err
 		}
 	}
