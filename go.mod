@@ -12,6 +12,7 @@ require (
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/dongri/phonenumber v0.1.2
 	github.com/fatih/color v1.16.0
+	github.com/fatih/structs v1.1.0
 	github.com/gertd/go-pluralize v0.2.1
 	github.com/getsentry/sentry-go v0.27.0
 	github.com/go-ldap/ldap/v3 v3.4.6
