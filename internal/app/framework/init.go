@@ -44,6 +44,7 @@ func (c Commander) init(cmd *cobra.Command, args []string) error {
 		"pkg/.gitkeep":               templates.GitKeep,
 		"scripts/.gitkeep":           templates.GitKeep,
 		"Makefile":                   templates.RootMakefile,
+		".air.toml":                  templates.RootAir,
 		".gitignore":                 templates.GitIgnore,
 		".dockerignore":              templates.DockerIgnore,
 	}); err != nil {

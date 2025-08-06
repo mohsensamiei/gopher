@@ -16,7 +16,7 @@ func (c Commander) run(cmd *cobra.Command, _ []string) error {
 	if err = godotenv.Load(fmt.Sprintf("configs/%v.env", command)); err != nil {
 		return err
 	}
-	if err = execext.CommandContextStream(cmd.Context(), "go", "run", fmt.Sprintf("cmd/%v/main.go", command)); err != nil {
+	if err = execext.CommandContextStream(cmd.Context(), "env", fmt.Sprintf("SERVICE=%v", command), "air"); err != nil {
 		return err
 	}
 	return nil

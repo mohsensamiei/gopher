@@ -128,6 +128,21 @@ WORKDIR /app
 COPY --from=builder /src/build/ ./
 COPY ./assets ./assets
 `
+	RootAir = `
+[build]
+  cmd = "sh -c 'go build -o tmp/output cmd/${SERVICE}/main.go'"
+  bin = "tmp/output"
+  delay = 1000
+  exclude_dir = ["tmp", "vendor", "deploy", "scripts", "tests"]
+  include_ext = ["go", "env", "tmpl", "toml", "sql", "pem"]
+  exclude_regex = ["_test.go"]
+
+[log]
+  time = true
+
+[misc]
+  clean_on_exit = true
+`
 	CmdMain = `
 package main
 
