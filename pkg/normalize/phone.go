@@ -2,8 +2,8 @@ package normalize
 
 import (
 	"fmt"
-	"github.com/mohsensamiei/gopher/v2/pkg/phonenumberext"
-	"github.com/mohsensamiei/gopher/v2/pkg/validatorext"
+	"github.com/mohsensamiei/gopher/v3/pkg/phonenumberext"
+	"github.com/mohsensamiei/gopher/v3/pkg/validatorext"
 )
 
 func Phone(val string) (string, error) {

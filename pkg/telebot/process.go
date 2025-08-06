@@ -3,11 +3,12 @@ package telebot
 import (
 	"context"
 	"fmt"
-	"github.com/mohsensamiei/gopher/v2/pkg/errors"
-	"github.com/mohsensamiei/gopher/v2/pkg/mapext"
-	"github.com/mohsensamiei/gopher/v2/pkg/redisext"
-	"github.com/mohsensamiei/gopher/v2/pkg/slices"
-	"github.com/mohsensamiei/gopher/v2/pkg/telegram"
+	"github.com/mohsensamiei/gopher/v3/pkg/di"
+	"github.com/mohsensamiei/gopher/v3/pkg/errors"
+	"github.com/mohsensamiei/gopher/v3/pkg/mapext"
+	"github.com/mohsensamiei/gopher/v3/pkg/redisext"
+	"github.com/mohsensamiei/gopher/v3/pkg/slices"
+	"github.com/mohsensamiei/gopher/v3/pkg/telegram"
 	"google.golang.org/grpc/codes"
 	"runtime/debug"
 	"strings"
@@ -43,7 +44,7 @@ func (c *Client) process(ctx context.Context, update telegram.Update) error {
 		return errors.New(codes.Unimplemented).WithDetailF("unsupported update type '%v'", update.Type())
 	}
 	{
-		mutex := redisext.FromContext(ctx).NewMutex(fmt.Sprint(c.TelegramStoragePrefix, ":locks"), fmt.Sprint(update.Chat().ID), time.Minute)
+		mutex := di.Provide[*redisext.Client](ctx).NewMutex(fmt.Sprint(c.TelegramStoragePrefix, ":locks"), fmt.Sprint(update.Chat().ID), time.Minute)
 		if err := mutex.LockContext(ctx); err != nil {
 			return err
 		}

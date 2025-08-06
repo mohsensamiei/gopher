@@ -46,7 +46,7 @@ curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh
 
 ## Installation
 ```shell
-go install github.com/mohsensamiei/gopher/v2/cmd/gopher@latest
+go install github.com/mohsensamiei/gopher/v3/cmd/gopher@latest
 ```
 
 ## How to use

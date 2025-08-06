@@ -1,7 +1,7 @@
 package normalize
 
 import (
-	"github.com/mohsensamiei/gopher/v2/pkg/validatorext"
+	"github.com/mohsensamiei/gopher/v3/pkg/validatorext"
 	"strings"
 )
 

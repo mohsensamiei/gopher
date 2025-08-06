@@ -9,4 +9,5 @@ const (
 	MP4  = "video/mp4"
 	MOV  = "video/quicktime"
 	PDF  = "application/pdf"
+	CSV  = "text/csv"
 )

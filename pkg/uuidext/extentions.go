@@ -2,7 +2,7 @@ package uuidext
 
 import (
 	"github.com/google/uuid"
-	"github.com/mohsensamiei/gopher/v2/pkg/errors"
+	"github.com/mohsensamiei/gopher/v3/pkg/errors"
 	"google.golang.org/grpc/codes"
 )
 

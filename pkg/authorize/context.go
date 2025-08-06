@@ -2,21 +2,45 @@ package authorize
 
 import (
 	"context"
-	"encoding/json"
-	"github.com/mohsensamiei/gopher/v2/pkg/metadataext"
+	"github.com/mohsensamiei/gopher/v3/pkg/authenticate"
+	"github.com/mohsensamiei/gopher/v3/pkg/di"
+	"github.com/mohsensamiei/gopher/v3/pkg/metadataext"
 )
 
-func ToContext(ctx context.Context, claim *Claims) context.Context {
-	bin, _ := json.Marshal(claim)
-	return metadataext.SetValue(ctx, CurrentClaims, string(bin))
+func ToContext(ctx context.Context, auth authenticate.Authenticate) context.Context {
+	return metadataext.SetValue(ctx, CurrentToken, authenticate.Encode(auth))
 }
 
-func FromContext(ctx context.Context) *Claims {
-	str, ok := metadataext.GetValue(ctx, CurrentClaims)
+func TokenFromContext(ctx context.Context) (string, error) {
+	token, ok := metadataext.GetValue(ctx, CurrentToken)
 	if !ok {
-		return nil
+		return "", authenticate.ErrUnauthenticated
 	}
-	claim := new(Claims)
-	_ = json.Unmarshal([]byte(str), claim)
-	return claim
+	auth, err := authenticate.Decode(token)
+	if err != nil {
+		return "", authenticate.ErrUnauthenticated
+	}
+	switch a := auth.(type) {
+	case *authenticate.Bearer:
+		return a.Token, nil
+	default:
+		return "", authenticate.ErrUnauthenticated
+	}
+}
+
+func ClaimsFromContext(ctx context.Context) (*Claims, error) {
+	token, ok := metadataext.GetValue(ctx, CurrentToken)
+	if !ok {
+		return nil, authenticate.ErrUnauthenticated
+	}
+	auth, err := authenticate.Decode(token)
+	if err != nil {
+		return nil, err
+	}
+	var claims *Claims
+	claims, err = di.Provide[Authorize](ctx).Authorize(auth)
+	if err != nil {
+		return nil, err
+	}
+	return claims, nil
 }

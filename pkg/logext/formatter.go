@@ -1,7 +1,7 @@
 package logext
 
 import (
-	"github.com/mohsensamiei/gopher/v2/pkg/mapext"
+	"github.com/mohsensamiei/gopher/v3/pkg/mapext"
 	log "github.com/sirupsen/logrus"
 )
 

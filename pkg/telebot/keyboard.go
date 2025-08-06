@@ -1,6 +1,6 @@
 package telebot
 
-import "github.com/mohsensamiei/gopher/v2/pkg/telegram"
+import "github.com/mohsensamiei/gopher/v3/pkg/telegram"
 
 type ReplyKeyboard struct {
 	markup telegram.ReplyKeyboardMarkup

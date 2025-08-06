@@ -3,8 +3,8 @@ package ldapext
 import (
 	"fmt"
 	"github.com/go-ldap/ldap/v3"
-	"github.com/mohsensamiei/gopher/v2/pkg/errors"
-	"github.com/mohsensamiei/gopher/v2/pkg/query"
+	"github.com/mohsensamiei/gopher/v3/pkg/errors"
+	"github.com/mohsensamiei/gopher/v3/pkg/query"
 	"google.golang.org/grpc/codes"
 )
 

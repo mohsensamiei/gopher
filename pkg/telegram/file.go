@@ -3,7 +3,7 @@ package telegram
 import (
 	"bytes"
 	"fmt"
-	"github.com/mohsensamiei/gopher/v2/pkg/errors"
+	"github.com/mohsensamiei/gopher/v3/pkg/errors"
 	"google.golang.org/grpc/codes"
 	"io"
 	"net/http"

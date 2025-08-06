@@ -3,8 +3,9 @@ package gormext
 import (
 	"context"
 	"fmt"
-	"github.com/mohsensamiei/gopher/v2/pkg/errors"
-	"github.com/mohsensamiei/gopher/v2/pkg/query"
+	"github.com/mohsensamiei/gopher/v3/pkg/di"
+	"github.com/mohsensamiei/gopher/v3/pkg/errors"
+	"github.com/mohsensamiei/gopher/v3/pkg/query"
 	"google.golang.org/grpc/codes"
 	"gorm.io/gorm"
 	"strings"
@@ -32,7 +33,7 @@ func (r CrudRepository[M]) ReturnByPK(ctx context.Context, qe query.Encode, pk .
 	if err != nil {
 		return nil, err
 	}
-	db := FromContext(ctx)
+	db := di.Provide[*gorm.DB](ctx)
 
 	model := new(M)
 	table := TableName(db, model)
@@ -56,15 +57,15 @@ func (r CrudRepository[M]) ReturnByPK(ctx context.Context, qe query.Encode, pk .
 }
 
 func (r CrudRepository[M]) Create(ctx context.Context, model *M) error {
-	return FromContext(ctx).Create(model).Error
+	return di.Provide[*gorm.DB](ctx).Create(model).Error
 }
 
 func (r CrudRepository[M]) Update(ctx context.Context, model *M) error {
-	return FromContext(ctx).Updates(model).Error
+	return di.Provide[*gorm.DB](ctx).Updates(model).Error
 }
 
 func (r CrudRepository[M]) Save(ctx context.Context, model *M) error {
-	return FromContext(ctx).Save(model).Error
+	return di.Provide[*gorm.DB](ctx).Save(model).Error
 }
 
 func (r CrudRepository[M]) List(ctx context.Context, qe query.Encode) ([]*M, int64, error) {
@@ -72,15 +73,16 @@ func (r CrudRepository[M]) List(ctx context.Context, qe query.Encode) ([]*M, int
 	if err != nil {
 		return nil, 0, err
 	}
-
-	var list []*M
-	if err := ApplyQuery[M](FromContext(ctx), q).
+	var (
+		list  []*M
+		count int64
+		db    = di.Provide[*gorm.DB](ctx)
+	)
+	if err = ApplyQuery[M](db, q).
 		Find(&list).Error; err != nil {
 		return nil, 0, err
 	}
-
-	var count int64
-	if err := ApplyCount[M](FromContext(ctx), q).Model(new(M)).
+	if err = ApplyCount[M](db, q).Model(new(M)).
 		Count(&count).Error; err != nil {
 		return nil, 0, err
 	}
@@ -99,7 +101,7 @@ func (r CrudRepository[M]) DeleteByPK(ctx context.Context, pk ...any) error {
 }
 
 func (r CrudRepository[M]) Delete(ctx context.Context, model *M) error {
-	if err := FromContext(ctx).Delete(model).Error; err != nil {
+	if err := di.Provide[*gorm.DB](ctx).Delete(model).Error; err != nil {
 		return err
 	}
 	return nil

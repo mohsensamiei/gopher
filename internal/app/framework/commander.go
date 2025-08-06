@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/fatih/color"
-	"github.com/mohsensamiei/gopher/v2/internal/pkg/helpers"
-	"github.com/mohsensamiei/gopher/v2/pkg/cobraext"
+	"github.com/mohsensamiei/gopher/v3/internal/pkg/helpers"
+	"github.com/mohsensamiei/gopher/v3/pkg/cobraext"
 	"github.com/spf13/cobra"
 )
 
@@ -58,21 +58,10 @@ func (c Commander) RegisterCommander(root *cobra.Command) {
 		dump := &cobra.Command{
 			Use:   "init",
 			Args:  cobra.MaximumNArgs(1),
-			Short: "Initial project repository codebase",
+			Short: "Initial project codebase",
 			RunE:  runE(c.init),
 		}
-		cobraext.AddFlag(dump, "rep", "", "", "project repository path, like: github.com/my/repo", true)
-		cobraext.AddFlag(dump, "reg", "", "", "project registry path, like: ghcr.io/my/repo", true)
-		root.AddCommand(dump)
-	}
-	{
-		dump := &cobra.Command{
-			Use:   "srv",
-			Args:  cobra.MaximumNArgs(1),
-			Short: "Add a new service to project",
-			RunE:  runE(c.srv),
-		}
-		cobraext.AddFlag(dump, "name", "n", "", "name of service, like: container", true)
+		cobraext.AddFlag(dump, "rep", "r", "", "repository path, like: github.com/my/repo", true)
 		root.AddCommand(dump)
 	}
 	{
@@ -82,7 +71,6 @@ func (c Commander) RegisterCommander(root *cobra.Command) {
 			Short: "Add a new command to service",
 			RunE:  runE(c.cmd),
 		}
-		cobraext.AddFlag(dump, "srv", "s", "", "name of service, like: container", true)
 		cobraext.AddFlag(dump, "name", "n", "", "name of command, like: finance", true)
 		root.AddCommand(dump)
 	}
@@ -93,7 +81,6 @@ func (c Commander) RegisterCommander(root *cobra.Command) {
 			Short: "Add a new application to command",
 			RunE:  runE(c.app),
 		}
-		cobraext.AddFlag(dump, "cmd", "c", "", "name of command, like: finance", true)
 		cobraext.AddFlag(dump, "name", "n", "", "name of application, like: invoices", true)
 		root.AddCommand(dump)
 	}
@@ -112,19 +99,10 @@ func (c Commander) RegisterCommander(root *cobra.Command) {
 		dump := &cobra.Command{
 			Use:   "lang",
 			Args:  cobra.MaximumNArgs(1),
-			Short: "Add a new language toml to project",
+			Short: "Add new locale to project",
 			RunE:  runE(c.lang),
 		}
 		cobraext.AddFlag(dump, "name", "n", "", "abbreviation of language, like: en", true)
-		root.AddCommand(dump)
-	}
-	{
-		dump := &cobra.Command{
-			Use:   "build",
-			Args:  cobra.MaximumNArgs(1),
-			Short: "Build services docker image",
-			RunE:  runE(c.build),
-		}
 		root.AddCommand(dump)
 	}
 	{
@@ -140,21 +118,10 @@ func (c Commander) RegisterCommander(root *cobra.Command) {
 		dump := &cobra.Command{
 			Use:   "run",
 			Args:  cobra.MaximumNArgs(1),
-			Short: "Build and run project services",
+			Short: "Build and run service",
 			RunE:  runE(c.run),
 		}
 		cobraext.AddFlag(dump, "cmd", "c", "", "name of command, like: finance", true)
-		cobraext.AddFlag(dump, "env", "e", "configs/.env", "env file path", false)
-		root.AddCommand(dump)
-	}
-	{
-		dump := &cobra.Command{
-			Use:   "up",
-			Args:  cobra.MaximumNArgs(1),
-			Short: "Start project services",
-			RunE:  runE(c.up),
-		}
-		cobraext.AddFlag(dump, "env", "e", "configs/.env", "env file path", false)
 		root.AddCommand(dump)
 	}
 }

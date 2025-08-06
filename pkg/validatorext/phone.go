@@ -2,11 +2,11 @@ package validatorext
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/mohsensamiei/gopher/v2/pkg/phonenumberext"
+	"github.com/mohsensamiei/gopher/v3/pkg/phonenumberext"
 	"reflect"
 )
 
-func phone(fl validator.FieldLevel) bool {
+func Phone(fl validator.FieldLevel) bool {
 	if fl.Field().Kind() != reflect.String {
 		return false
 	}

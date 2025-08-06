@@ -3,7 +3,7 @@ package query
 import (
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/mohsensamiei/gopher/v2/pkg/stringsext"
+	"github.com/mohsensamiei/gopher/v3/pkg/stringsext"
 	"net/url"
 	"regexp"
 	"strings"

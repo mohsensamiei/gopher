@@ -1,6 +1,6 @@
 package authorize
 
 const (
-	Name          = "authorize"
-	CurrentClaims = "claims"
+	Name         = "authorize"
+	CurrentToken = "token"
 )

@@ -2,9 +2,10 @@ package telebot
 
 import (
 	"context"
-	"github.com/mohsensamiei/gopher/v2/pkg/errors"
-	"github.com/mohsensamiei/gopher/v2/pkg/i18next"
-	"github.com/mohsensamiei/gopher/v2/pkg/telegram"
+	"github.com/mohsensamiei/gopher/v3/pkg/di"
+	"github.com/mohsensamiei/gopher/v3/pkg/errors"
+	"github.com/mohsensamiei/gopher/v3/pkg/i18next"
+	"github.com/mohsensamiei/gopher/v3/pkg/telegram"
 	"golang.org/x/text/language"
 	"google.golang.org/grpc/codes"
 )
@@ -28,7 +29,7 @@ func ActionMiddleware(action telegram.Action) Middleware {
 	return func(next Action) Action {
 		return func(ctx context.Context, update telegram.Update) (Keyword, error) {
 			if chatID := update.Chat().ID; chatID > 0 {
-				_, _ = telegram.FromContext(ctx).SendAction(telegram.SendAction{
+				_, _ = di.Provide[*telegram.Connection](ctx).SendAction(telegram.SendAction{
 					ChatID: chatID,
 					Action: action,
 				})
@@ -63,7 +64,7 @@ func ErrorMiddleware(next Action) Action {
 		if err != nil {
 			e := errors.Cast(err)
 			e = e.SetLocalize(i18next.ByContext(ctx, e.Slug()))
-			_, _ = telegram.FromContext(ctx).SendMessage(telegram.SendMessage{
+			_, _ = di.Provide[*telegram.Connection](ctx).SendMessage(telegram.SendMessage{
 				ChatID:           update.Chat().ID,
 				Text:             e.Localize(),
 				ReplyToMessageID: update.MessageID(),

@@ -1,8 +1,8 @@
 package framework
 
 import (
-	"github.com/mohsensamiei/gopher/v2/pkg/cobraext"
-	"github.com/mohsensamiei/gopher/v2/pkg/execext"
+	"github.com/mohsensamiei/gopher/v3/pkg/cobraext"
+	"github.com/mohsensamiei/gopher/v3/pkg/execext"
 	"github.com/spf13/cobra"
 )
 

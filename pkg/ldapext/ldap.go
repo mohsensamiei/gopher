@@ -3,10 +3,10 @@ package ldapext
 import (
 	"fmt"
 	"github.com/go-ldap/ldap/v3"
-	"github.com/mohsensamiei/gopher/v2/pkg/authenticate"
-	"github.com/mohsensamiei/gopher/v2/pkg/authorize"
-	"github.com/mohsensamiei/gopher/v2/pkg/errors"
-	"github.com/mohsensamiei/gopher/v2/pkg/mapper"
+	"github.com/mohsensamiei/gopher/v3/pkg/authenticate"
+	"github.com/mohsensamiei/gopher/v3/pkg/authorize"
+	"github.com/mohsensamiei/gopher/v3/pkg/errors"
+	"github.com/mohsensamiei/gopher/v3/pkg/mapper"
 	"google.golang.org/grpc/codes"
 	"strings"
 )

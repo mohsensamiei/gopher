@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/mohsensamiei/gopher/v2/pkg/gormext"
+	"github.com/mohsensamiei/gopher/v3/pkg/gormext"
 	"reflect"
 	"time"
 )
 
-func Struct(from, to any) {
+func Struct(from, to any, excludes ...string) {
 	fromValue := reflect.ValueOf(from)
 	if !(fromValue.Kind() == reflect.Struct || (fromValue.Kind() == reflect.Ptr && fromValue.Elem().Kind() == reflect.Struct)) {
 		panic(fmt.Errorf("from is not struct or pointer of struct"))
@@ -41,7 +41,7 @@ func Struct(from, to any) {
 			fromFieldType = fromFieldType.Elem()
 		}
 		if fromFieldType.Kind() == reflect.Struct && fromTypeField.Anonymous {
-			Struct(fromField.Interface(), to)
+			Struct(fromField.Interface(), to, excludes...)
 		}
 		fromFieldTags := getTagNames(fromTypeField)
 
@@ -59,13 +59,35 @@ func Struct(from, to any) {
 				toFieldType = toFieldType.Elem()
 			}
 			if toTypeField.Anonymous {
-				Struct(from, toField.Addr().Interface())
+				Struct(from, toField.Addr().Interface(), excludes...)
 			}
 			toFieldTags := getTagNames(toTypeField)
 
 			if compareTags(fromFieldTags, toFieldTags) {
+				for _, exclude := range excludes {
+					if compareTags(fromFieldTags, []string{exclude}) {
+						continue
+					}
+				}
 				if fromField.IsZero() {
 					toField.Set(reflect.Zero(toField.Type()))
+					continue
+				}
+
+				if fromFieldType == toFieldType {
+					if fromField.Kind() == reflect.Ptr {
+						if toField.Kind() == reflect.Ptr {
+							toField.Set(fromField)
+						} else {
+							toField.Set(fromField.Elem())
+						}
+					} else {
+						if toField.Kind() == reflect.Ptr {
+							toField.Set(fromField.Addr())
+						} else {
+							toField.Set(fromField)
+						}
+					}
 					continue
 				}
 
@@ -80,7 +102,7 @@ func Struct(from, to any) {
 						val = val.Addr()
 					}
 
-					Struct(fromField.Interface(), val.Interface())
+					Struct(fromField.Interface(), val.Interface(), excludes...)
 					if toField.Kind() == reflect.Ptr {
 						toField.Set(val)
 					} else {
@@ -108,7 +130,7 @@ func Struct(from, to any) {
 						dic := reflect.MakeMap(toFieldType)
 						for _, key := range fromField.MapKeys() {
 							item := reflect.New(toFieldTypeElem)
-							Struct(fromField.MapIndex(key).Interface(), item.Interface())
+							Struct(fromField.MapIndex(key).Interface(), item.Interface(), excludes...)
 							dic.SetMapIndex(key, item)
 						}
 						toField.Set(dic)
@@ -116,22 +138,7 @@ func Struct(from, to any) {
 					}
 				}
 
-				if fromFieldType == toFieldType {
-					if fromField.Kind() == reflect.Ptr {
-						if toField.Kind() == reflect.Ptr {
-							toField.Set(fromField)
-						} else {
-							toField.Set(fromField.Elem())
-						}
-					} else {
-						if toField.Kind() == reflect.Ptr {
-							toField.Set(fromField.Addr())
-						} else {
-							toField.Set(fromField)
-						}
-					}
-					continue
-				} else {
+				{
 					{
 						var dt *time.Time
 						switch v := fromField.Interface().(type) {

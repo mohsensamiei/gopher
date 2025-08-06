@@ -27,6 +27,8 @@ func (p AutoPreload) function(db *gorm.DB) {
 		if _, ok := field.TagSettings["AUTO_PRELOAD"]; !ok {
 			continue
 		}
-		*db = *db.Preload(field.Name)
+		*db = *db.Preload(field.Name, func(db *gorm.DB) *gorm.DB {
+			return db.Unscoped()
+		})
 	}
 }

@@ -3,7 +3,7 @@ package main
 import (
 	"net/url"
 
-	"github.com/mohsensamiei/gopher/v2/pkg/query"
+	"github.com/mohsensamiei/gopher/v3/pkg/query"
 	log "github.com/sirupsen/logrus"
 )
 

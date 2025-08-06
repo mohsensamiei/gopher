@@ -5,10 +5,11 @@ import (
 	"fmt"
 )
 
-func Provide[T any](ctx context.Context, key string) T {
+func Provide[T any](ctx context.Context) T {
+	key := TypeName[T]()
 	val := ctx.Value(key)
 	if val == nil {
-		panic(fmt.Sprintf("%v key does not registered in DI", key))
+		panic(fmt.Sprintf("%v does not registered in di", key))
 	}
 	return val.(T)
 }

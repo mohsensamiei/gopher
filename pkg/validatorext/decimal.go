@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func decimal(fl validator.FieldLevel) bool {
+func Decimal(fl validator.FieldLevel) bool {
 	if fl.Field().Kind() != reflect.String {
 		return false
 	}

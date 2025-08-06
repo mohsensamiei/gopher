@@ -2,7 +2,8 @@ package telebot
 
 import (
 	"context"
-	"github.com/mohsensamiei/gopher/v2/pkg/telegram"
+	"github.com/mohsensamiei/gopher/v3/pkg/di"
+	"github.com/mohsensamiei/gopher/v3/pkg/telegram"
 	log "github.com/sirupsen/logrus"
 	"time"
 )
@@ -24,7 +25,7 @@ func (c *Client) Run(ctx context.Context) error {
 	var updateID uint
 	ticker := time.NewTicker(c.TelegramPullInterval)
 	for range ticker.C {
-		updates, err := telegram.FromContext(ctx).GetUpdates(telegram.GetUpdates{
+		updates, err := di.Provide[*telegram.Connection](ctx).GetUpdates(telegram.GetUpdates{
 			Offset: updateID,
 			Limit:  c.TelegramConcurrency,
 		})
