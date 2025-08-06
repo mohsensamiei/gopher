@@ -2,7 +2,7 @@ package phonenumberext
 
 import (
 	"github.com/dongri/phonenumber"
-	"github.com/mohsensamiei/gopher/v2/pkg/errors"
+	"github.com/mohsensamiei/gopher/v3/pkg/errors"
 	"github.com/nyaruka/phonenumbers"
 	"google.golang.org/grpc/codes"
 	"strings"

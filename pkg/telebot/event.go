@@ -2,7 +2,7 @@ package telebot
 
 import (
 	"context"
-	"github.com/mohsensamiei/gopher/v2/pkg/telegram"
+	"github.com/mohsensamiei/gopher/v3/pkg/telegram"
 )
 
 type Event func(ctx context.Context, update telegram.Update) error

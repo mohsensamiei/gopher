@@ -11,7 +11,7 @@ import (
 	"github.com/go-redis/redis_rate/v10"
 	"github.com/go-redsync/redsync/v4"
 	"github.com/go-redsync/redsync/v4/redis/goredis/v9"
-	"github.com/mohsensamiei/gopher/v2/pkg/errors"
+	"github.com/mohsensamiei/gopher/v3/pkg/errors"
 	"github.com/redis/go-redis/v9"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc/codes"
@@ -100,7 +100,7 @@ func (c *Client) Set(ctx context.Context, ns, key string, value any, exp time.Du
 func (c *Client) Get(ctx context.Context, ns, key string, value any) error {
 	bytes, err := c.DB.Get(ctx, fmt.Sprintf("%v:%v", ns, key)).Bytes()
 	if err != nil {
-		if err == redis.Nil {
+		if goerrors.Is(err, redis.Nil) {
 			return errors.New(codes.NotFound).
 				WithDetails(err.Error())
 		}
@@ -115,7 +115,7 @@ func (c *Client) Get(ctx context.Context, ns, key string, value any) error {
 
 func (c *Client) Del(ctx context.Context, ns, key string) error {
 	if err := c.DB.Del(ctx, fmt.Sprintf("%v:%v", ns, key)).Err(); err != nil {
-		if err == redis.Nil {
+		if goerrors.Is(err, redis.Nil) {
 			return errors.New(codes.NotFound).
 				WithDetails(err.Error())
 		}
@@ -127,7 +127,7 @@ func (c *Client) Del(ctx context.Context, ns, key string) error {
 
 func (c *Client) Exists(ctx context.Context, ns, key string) error {
 	if err := c.DB.Get(ctx, fmt.Sprintf("%v:%v", ns, key)).Err(); err != nil {
-		if err == redis.Nil {
+		if goerrors.Is(err, redis.Nil) {
 			return errors.New(codes.NotFound).
 				WithDetails(err.Error())
 		}
@@ -139,7 +139,7 @@ func (c *Client) Exists(ctx context.Context, ns, key string) error {
 
 func (c *Client) Expire(ctx context.Context, ns, key string, exp time.Duration) error {
 	if err := c.DB.Expire(ctx, fmt.Sprintf("%v:%v", ns, key), exp).Err(); err != nil {
-		if err == redis.Nil {
+		if goerrors.Is(err, redis.Nil) {
 			return errors.New(codes.NotFound).
 				WithDetails(err.Error())
 		}

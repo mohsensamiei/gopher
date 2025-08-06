@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	"github.com/mohsensamiei/gopher/v2/pkg/netext"
+	"github.com/mohsensamiei/gopher/v3/pkg/netext"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"os/signal"

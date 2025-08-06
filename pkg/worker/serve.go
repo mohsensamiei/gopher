@@ -2,7 +2,7 @@ package worker
 
 import (
 	"context"
-	"github.com/mohsensamiei/gopher/v2/pkg/service"
+	"github.com/mohsensamiei/gopher/v3/pkg/service"
 	"net"
 	"net/http"
 )

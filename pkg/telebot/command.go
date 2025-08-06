@@ -2,8 +2,8 @@ package telebot
 
 import (
 	"context"
-	"github.com/mohsensamiei/gopher/v2/pkg/stringsext"
-	"github.com/mohsensamiei/gopher/v2/pkg/telegram"
+	"github.com/mohsensamiei/gopher/v3/pkg/stringsext"
+	"github.com/mohsensamiei/gopher/v3/pkg/telegram"
 	log "github.com/sirupsen/logrus"
 )
 

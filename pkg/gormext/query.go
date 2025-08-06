@@ -3,9 +3,9 @@ package gormext
 import (
 	"fmt"
 	"github.com/iancoleman/strcase"
-	"github.com/mohsensamiei/gopher/v2/pkg/logic"
-	"github.com/mohsensamiei/gopher/v2/pkg/query"
-	"github.com/mohsensamiei/gopher/v2/pkg/strcaseext"
+	"github.com/mohsensamiei/gopher/v3/pkg/logic"
+	"github.com/mohsensamiei/gopher/v3/pkg/query"
+	"github.com/mohsensamiei/gopher/v3/pkg/strcaseext"
 	"gorm.io/gorm"
 	"reflect"
 	"strings"
@@ -20,8 +20,8 @@ var (
 		query.NotEqual:                 "%v <> ?",
 		query.In:                       "%v IN (?)",
 		query.NotIn:                    "%v NOT IN (?)",
-		query.Contains:                 "? IN %v",
-		query.NotContains:              "? NOT IN %v",
+		query.Contains:                 "? = ANY(%v)",
+		query.NotContains:              "NOT ? = ANY(%v)",
 		query.LessThan:                 "%v < ?",
 		query.LessThanOrEqual:          "%v <= ?",
 		query.GreaterThan:              "%v > ?",
@@ -89,7 +89,10 @@ func ApplyQuery[T Model](db *gorm.DB, q *query.Query) *gorm.DB {
 				fields = append(fields, c.Field)
 			}
 		}
-		db = db.Select(fields).Distinct()
+		db = db.Select(fields)
+		if len(db.Statement.Joins) > 0 {
+			db = db.Distinct()
+		}
 	}
 	return db
 }
@@ -97,14 +100,14 @@ func ApplyQuery[T Model](db *gorm.DB, q *query.Query) *gorm.DB {
 func ApplyCount[T Model](db *gorm.DB, q *query.Query) *gorm.DB {
 	db = applyFilter[T](db, q.FilterClauses)
 	db = applySearch[T](db, q.SearchClause)
-	{
+	for _, c := range q.FilterClauses {
+		db = nestedJoin[T](db, c.Field)
+	}
+	if len(db.Statement.Joins) > 0 {
 		model := new(T)
 		table := TableName(db, model)
 		primaryKeys := any(model).(Model).PrimaryKeys()
 
-		for _, c := range q.FilterClauses {
-			db = nestedJoin[T](db, c.Field)
-		}
 		db = db.Distinct(logic.IFor(func(v string) string {
 			return fmt.Sprintf("%v.%v", table, v)
 		}, primaryKeys...))
@@ -156,16 +159,20 @@ func normalize[T Model](db *gorm.DB, field string) string {
 		if db.NamingStrategy.TableName(nested[0]) == db.NamingStrategy.TableName(table) {
 			nested[0] = table
 		}
-		return fmt.Sprintf("%q.%q",
+		return fmt.Sprintf("%q.%v",
 			strings.Join(nested[:len(nested)-1], "__"),
-			strcase.ToSnake(nested[len(nested)-1]),
+			fieldName(nested[len(nested)-1]),
 		)
 	} else {
-		return fmt.Sprintf("%q.%q",
+		return fmt.Sprintf("%q.%v",
 			table,
-			strcase.ToSnake(field),
+			fieldName(field),
 		)
 	}
+}
+
+func fieldName(name string) string {
+	return strings.ReplaceAll(strcase.ToSnake(name), "_>>", "->>")
 }
 
 func nestedJoin[T Model](db *gorm.DB, field string) *gorm.DB {

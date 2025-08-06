@@ -2,9 +2,9 @@ package swagext
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/mohsensamiei/gopher/v2/pkg/httpext"
-	"github.com/mohsensamiei/gopher/v2/pkg/mimeext"
-	"github.com/mohsensamiei/gopher/v2/pkg/muxext"
+	"github.com/mohsensamiei/gopher/v3/pkg/httpext"
+	"github.com/mohsensamiei/gopher/v3/pkg/mimeext"
+	"github.com/mohsensamiei/gopher/v3/pkg/muxext"
 	"github.com/swaggo/swag"
 	"net/http"
 	"net/url"

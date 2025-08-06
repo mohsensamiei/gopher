@@ -11,16 +11,26 @@ func Merge[K comparable, V any](src, ext map[K]V) map[K]V {
 	return newMap
 }
 
-func Keys[K comparable, V any](dic map[K]V) (keys []K) {
-	for k, _ := range dic {
-		keys = append(keys, k)
+func Keys[K comparable, V any](dic map[K]V) []K {
+	var (
+		i    = 0
+		keys = make([]K, len(dic))
+	)
+	for k := range dic {
+		keys[i] = k
+		i++
 	}
-	return
+	return keys
 }
 
-func Values[K comparable, V any](dic map[K]V) (values []V) {
+func Values[K comparable, V any](dic map[K]V) []V {
+	var (
+		i      = 0
+		values = make([]V, len(dic))
+	)
 	for _, v := range dic {
-		values = append(values, v)
+		values[i] = v
+		i++
 	}
-	return
+	return values
 }

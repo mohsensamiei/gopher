@@ -3,10 +3,10 @@ package jwtext
 import (
 	"crypto/rsa"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/mohsensamiei/gopher/v2/pkg/authenticate"
-	"github.com/mohsensamiei/gopher/v2/pkg/authorize"
-	"github.com/mohsensamiei/gopher/v2/pkg/errors"
-	"github.com/mohsensamiei/gopher/v2/pkg/slices"
+	"github.com/mohsensamiei/gopher/v3/pkg/authenticate"
+	"github.com/mohsensamiei/gopher/v3/pkg/authorize"
+	"github.com/mohsensamiei/gopher/v3/pkg/errors"
+	"github.com/mohsensamiei/gopher/v3/pkg/slices"
 	"google.golang.org/grpc/codes"
 	"time"
 )

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/mohsensamiei/gopher/v2/internal/pkg/helpers"
-	"github.com/mohsensamiei/gopher/v2/internal/pkg/templates"
+	"github.com/mohsensamiei/gopher/v3/internal/pkg/helpers"
+	"github.com/mohsensamiei/gopher/v3/internal/pkg/templates"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +22,7 @@ func (c Commander) lang(cmd *cobra.Command, _ []string) error {
 
 	if err = helpers.MakeContents(map[string]string{
 		path: templates.LanguageToml,
-	}, map[string]any{}); err != nil {
+	}); err != nil {
 		return err
 	}
 	return nil

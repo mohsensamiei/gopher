@@ -3,7 +3,7 @@ package mysqlext
 import (
 	"fmt"
 
-	"github.com/mohsensamiei/gopher/v2/pkg/netext"
+	"github.com/mohsensamiei/gopher/v3/pkg/netext"
 )
 
 type Configs struct {

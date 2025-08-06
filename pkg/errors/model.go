@@ -6,8 +6,9 @@ import (
 )
 
 type Validation struct {
-	Tag   string `json:"tag,omitempty" xml:"tag,omitempty" yaml:"tag,omitempty"`
 	Field string `json:"field,omitempty" xml:"field,omitempty" yaml:"field,omitempty"`
+	Tag   string `json:"tag,omitempty" xml:"tag,omitempty" yaml:"tag,omitempty"`
+	Param string `json:"param,omitempty" xml:"param,omitempty" yaml:"param,omitempty"`
 }
 
 type Model struct {

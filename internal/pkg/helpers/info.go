@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/mohsensamiei/gopher/v2/pkg/errors"
+	"github.com/mohsensamiei/gopher/v3/pkg/errors"
 	"google.golang.org/grpc/codes"
 )
 
@@ -22,38 +22,6 @@ func Repository() (string, error) {
 		return "", err
 	}
 	return strings.TrimSpace(repo), nil
-}
-
-func Registry(filepath string) (string, error) {
-	file, err := os.ReadFile(filepath)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return "", errors.Wrap(err, codes.NotFound)
-		}
-		return "", err
-	}
-	var registry string
-	for _, line := range strings.Split(string(file), "\n") {
-		if _, err = fmt.Sscanf(line, "# registry %s\n", &registry); err == nil {
-			break
-		}
-	}
-	if registry == "" {
-		return "", fmt.Errorf("registry does not set")
-	}
-	return strings.TrimSpace(registry), nil
-}
-
-func Services() ([]string, error) {
-	dirs, err := os.ReadDir("deploy")
-	if err != nil {
-		return nil, err
-	}
-	var services []string
-	for _, dir := range dirs {
-		services = append(services, dir.Name())
-	}
-	return services, nil
 }
 
 func Commands() ([]string, error) {

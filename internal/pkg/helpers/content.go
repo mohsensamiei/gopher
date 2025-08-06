@@ -1,18 +1,17 @@
 package helpers
 
 import (
-	"github.com/mohsensamiei/gopher/v2/pkg/templateext"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
-func MakeContents(contents map[string]string, data map[string]any) error {
-	for path, format := range contents {
-		text, err := templateext.Format(format, data)
-		if err != nil {
+func MakeContents(contents map[string]string) error {
+	for path, body := range contents {
+		if err := os.MkdirAll(filepath.Dir(path), os.ModePerm); err != nil {
 			return err
 		}
-		if err = os.WriteFile(path, []byte(strings.TrimSpace(text)), os.ModePerm); err != nil {
+		if err := os.WriteFile(path, []byte(strings.TrimSpace(body)), os.ModePerm); err != nil {
 			return err
 		}
 	}

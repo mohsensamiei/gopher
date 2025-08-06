@@ -2,10 +2,10 @@ package grpcext
 
 import (
 	"context"
-	"github.com/mohsensamiei/gopher/v2/pkg/di"
-	"github.com/mohsensamiei/gopher/v2/pkg/errors"
-	"github.com/mohsensamiei/gopher/v2/pkg/i18next"
-	"github.com/mohsensamiei/gopher/v2/pkg/metadataext"
+	"github.com/mohsensamiei/gopher/v3/pkg/di"
+	"github.com/mohsensamiei/gopher/v3/pkg/errors"
+	"github.com/mohsensamiei/gopher/v3/pkg/i18next"
+	"github.com/mohsensamiei/gopher/v3/pkg/metadataext"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -45,6 +45,6 @@ func UnaryContextMetadataInterceptor() grpc.UnaryServerInterceptor {
 func DIUnaryInterceptor[T any](key string, provide func() T) grpc.UnaryServerInterceptor {
 	value := provide()
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
-		return handler(di.Register(ctx, key, value), req)
+		return handler(di.Register(ctx, value), req)
 	}
 }

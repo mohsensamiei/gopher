@@ -2,13 +2,13 @@ package framework
 
 import (
 	"fmt"
-	"github.com/mohsensamiei/gopher/v2/internal/pkg/templates"
-	"github.com/mohsensamiei/gopher/v2/pkg/templateext"
+	"github.com/mohsensamiei/gopher/v3/internal/pkg/templates"
+	"github.com/mohsensamiei/gopher/v3/pkg/templateext"
 	"os"
 	"regexp"
 	"strings"
 
-	"github.com/mohsensamiei/gopher/v2/pkg/execext"
+	"github.com/mohsensamiei/gopher/v3/pkg/execext"
 	"github.com/spf13/cobra"
 )
 

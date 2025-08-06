@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"github.com/mohsensamiei/gopher/v2/pkg/envext"
-	"github.com/mohsensamiei/gopher/v2/pkg/s3ext"
+	"github.com/mohsensamiei/gopher/v3/pkg/envext"
+	"github.com/mohsensamiei/gopher/v3/pkg/s3ext"
 	"net/url"
 	"os"
 )

@@ -3,8 +3,8 @@ package sentryext
 import (
 	"fmt"
 	"github.com/getsentry/sentry-go"
-	"github.com/mohsensamiei/gopher/v2/pkg/errors"
-	"github.com/mohsensamiei/gopher/v2/pkg/stringsext"
+	"github.com/mohsensamiei/gopher/v3/pkg/errors"
+	"github.com/mohsensamiei/gopher/v3/pkg/stringsext"
 	log "github.com/sirupsen/logrus"
 	"strings"
 	"time"

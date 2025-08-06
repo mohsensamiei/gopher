@@ -7,4 +7,4 @@ RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 RUN go install github.com/favadi/protoc-go-inject-tag@latest
 RUN go install github.com/swaggo/swag/cmd/swag@latest
 RUN go install golang.org/x/tools/go/analysis/passes/shadow/cmd/shadow@latest
-RUN go install github.com/mohsensamiei/gopher/v2/cmd/gopher@latest
+RUN go install github.com/mohsensamiei/gopher/v3/cmd/gopher@latest

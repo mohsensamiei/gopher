@@ -1,8 +1,6 @@
 package helpers
 
-import (
-	"os"
-)
+import "os"
 
 func ChangeDirectory(args []string) error {
 	if len(args) == 0 {
@@ -10,15 +8,6 @@ func ChangeDirectory(args []string) error {
 	}
 	if err := os.Chdir(args[0]); err != nil {
 		return err
-	}
-	return nil
-}
-
-func MakeStructure(structure []string) error {
-	for _, path := range structure {
-		if err := os.MkdirAll(path, os.ModePerm); err != nil {
-			return err
-		}
 	}
 	return nil
 }

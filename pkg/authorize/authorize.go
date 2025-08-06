@@ -1,7 +1,7 @@
 package authorize
 
 import (
-	"github.com/mohsensamiei/gopher/v2/pkg/authenticate"
+	"github.com/mohsensamiei/gopher/v3/pkg/authenticate"
 )
 
 type Authorize interface {

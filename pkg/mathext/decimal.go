@@ -7,8 +7,12 @@ import (
 	"strings"
 )
 
+func RoundN(v float64, n int) float64 {
+	return math.Round(v*math.Pow10(n)) / math.Pow10(n)
+}
+
 func RoundDecimal(v float64) float64 {
-	return math.Round(v*100) / 100
+	return RoundN(v, 2)
 }
 
 func DecimalToInt64(v float64) int64 {

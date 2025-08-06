@@ -14,21 +14,8 @@ type Configs struct {
 	LogAge   int       `env:"LOG_AGE" envDefault:"30"`   // days
 }
 
-func Initial(service, version string) {
-	configs := new(Configs)
+func Setup(configs Configs) {
 	log.SetLevel(configs.LogLevel)
-	log.SetFormatter(newFormatter(log.Fields{
-		"service": service,
-		"version": version,
-	}))
-}
-
-func Setup(service, version string, configs Configs) {
-	log.SetLevel(configs.LogLevel)
-	log.SetFormatter(newFormatter(log.Fields{
-		"service": service,
-		"version": version,
-	}))
 	if configs.LogFile != "" {
 		log.SetOutput(io.MultiWriter(os.Stdout, &lumberjack.Logger{
 			Filename: configs.LogFile,
