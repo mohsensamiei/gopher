@@ -120,7 +120,7 @@ RUN gopher proto
 
 # Add build lines here
 # RUN GO111MODULE=on CGO_ENABLED=0 go build -buildvcs=false -a -installsuffix cgo \
-#    -o ./build/{{ .name }} ./cmd/{{ .name }}
+#    -o ./build/OUTPUT ./cmd/MAIN
 
 FROM ghcr.io/mohsensamiei/gopher:server-latest
 

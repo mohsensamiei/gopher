@@ -2,11 +2,11 @@ package errors
 
 import (
 	"fmt"
-	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/protoadapt"
 	"strings"
 )
 
@@ -90,7 +90,7 @@ func (e Error) WithDetailF(format string, args ...any) *Error {
 }
 
 func (e Error) WithDetails(details ...string) *Error {
-	var ei []proto.Message
+	var ei []protoadapt.MessageV1
 	for _, detail := range details {
 		ei = append(ei, &errdetails.ErrorInfo{
 			Reason: detail,

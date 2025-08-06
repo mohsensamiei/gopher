@@ -1,10 +1,10 @@
 package errors
 
 import (
-	"github.com/golang/protobuf/proto"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/protoadapt"
 )
 
 func newStatus(code codes.Code, message, slug string) *status.Status {
@@ -28,10 +28,10 @@ func getStatusLocalizedMessage(st *status.Status) *errdetails.LocalizedMessage {
 	return nil
 }
 
-func getStatusDetails(st *status.Status) []proto.Message {
-	var res []proto.Message
+func getStatusDetails(st *status.Status) []protoadapt.MessageV1 {
+	var res []protoadapt.MessageV1
 	for _, detail := range st.Details() {
-		dt, ok := detail.(proto.Message)
+		dt, ok := detail.(protoadapt.MessageV1)
 		if !ok {
 			continue
 		}

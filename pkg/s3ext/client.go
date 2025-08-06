@@ -3,11 +3,13 @@ package s3ext
 import (
 	"bytes"
 	"context"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/retry"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/mohsensamiei/gopher/v3/pkg/errors"
 	"google.golang.org/grpc/codes"
 	"net/http"
@@ -15,63 +17,72 @@ import (
 	"strings"
 )
 
-func Dial(configs Configs) (*Client, error) {
-	sess, err := session.NewSession(&aws.Config{
-		Region:   aws.String("us-west-2"),
-		Endpoint: aws.String(configs.S3EndpointURL.String()),
-		Credentials: credentials.NewStaticCredentials(
-			configs.S3AccessKey,
-			configs.S3SecretKey,
-			"",
+func Dial(ctx context.Context, configs Configs) (*Client, error) {
+	cfg, err := config.LoadDefaultConfig(ctx,
+		config.WithRegion("us-west-2"),
+		config.WithCredentialsProvider(
+			credentials.NewStaticCredentialsProvider(
+				configs.S3AccessKey,
+				configs.S3SecretKey,
+				"",
+			),
 		),
-		HTTPClient: &http.Client{
+		config.WithHTTPClient(&http.Client{
 			Timeout: configs.S3Timeout,
-		},
-		MaxRetries:       &configs.S3MaxRetries,
-		S3ForcePathStyle: aws.Bool(true),
-	})
+		}),
+		config.WithEndpointResolverWithOptions(
+			aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
+				if service == s3.ServiceID {
+					return aws.Endpoint{
+						URL:           configs.S3EndpointURL.String(),
+						SigningRegion: region,
+					}, nil
+				}
+				return aws.Endpoint{}, &aws.EndpointNotFoundError{}
+			}),
+		),
+	)
 	if err != nil {
 		return nil, err
 	}
+
+	s3Client := s3.NewFromConfig(cfg, func(o *s3.Options) {
+		o.UsePathStyle = true
+		o.Retryer = retry.AddWithMaxAttempts(retry.NewStandard(), configs.S3MaxRetries)
+	})
 	return &Client{
 		Configs:    configs,
-		session:    sess,
-		s3:         s3.New(sess),
-		uploader:   s3manager.NewUploader(sess),
-		downloader: s3manager.NewDownloader(sess),
+		S3Client:   s3Client,
+		Uploader:   manager.NewUploader(s3Client),
+		Downloader: manager.NewDownloader(s3Client),
 	}, nil
 }
 
 type Client struct {
 	Configs
-	s3         *s3.S3
-	session    *session.Session
-	uploader   *s3manager.Uploader
-	downloader *s3manager.Downloader
+	S3Client   *s3.Client
+	Uploader   *manager.Uploader
+	Downloader *manager.Downloader
 }
 
 func (c *Client) Upload(filename string, data []byte, public bool) (*url.URL, error) {
 	return c.UploadWithContext(context.Background(), filename, data, public)
 }
-
 func (c *Client) UploadWithContext(ctx context.Context, filepath string, data []byte, public bool) (*url.URL, error) {
-	req := s3manager.UploadInput{
-		Bucket: aws.String(c.S3BucketName),
+	input := &s3.PutObjectInput{
+		Bucket: aws.String(c.Configs.S3BucketName),
 		Key:    aws.String(filepath),
 		Body:   bytes.NewReader(data),
-		ACL:    aws.String("private"),
+		ACL:    types.ObjectCannedACLPrivate,
 	}
 	if public {
-		req.ACL = aws.String("public-read")
-	}
-	res, err := c.uploader.UploadWithContext(ctx, &req)
-	if err != nil {
-		return nil, err
+		input.ACL = types.ObjectCannedACLPublicRead
 	}
 
 	var location *url.URL
-	location, err = url.Parse(res.Location)
-	if err != nil {
+	if res, err := c.Uploader.Upload(ctx, input); err != nil {
+		return nil, err
+	} else if location, err = url.Parse(res.Location); err != nil {
 		return nil, err
 	}
 	return location, nil
@@ -89,23 +100,19 @@ func (c *Client) DownloadByURLWithContext(ctx context.Context, uri url.URL) ([]b
 	}
 	return c.DownloadWithContext(ctx, strings.Join(dump[2:], "/"))
 }
-
 func (c *Client) DownloadWithContext(ctx context.Context, filepath string) ([]byte, error) {
-	buffer := aws.NewWriteAtBuffer(make([]byte, c.S3BufferSize*1024))
-	// if the downloaded object is larger than our buffer, it will grow by this factor
-	buffer.GrowthCoeff = c.S3BufferGrowth
-
-	if _, err := c.downloader.DownloadWithContext(ctx, buffer, &s3.GetObjectInput{
-		Bucket: aws.String(c.S3BucketName),
+	buf := manager.NewWriteAtBuffer([]byte{})
+	if _, err := c.Downloader.Download(ctx, buf, &s3.GetObjectInput{
+		Bucket: aws.String(c.Configs.S3BucketName),
 		Key:    aws.String(filepath),
 	}); err != nil {
 		return nil, err
 	}
-	return buffer.Bytes(), nil
+	return buf.Bytes(), nil
 }
 
 func (c *Client) DeleteWithContext(ctx context.Context, filepath string) error {
-	if _, err := c.s3.DeleteObjectWithContext(ctx, &s3.DeleteObjectInput{
+	if _, err := c.S3Client.DeleteObject(ctx, &s3.DeleteObjectInput{
 		Bucket: aws.String(c.S3BucketName),
 		Key:    aws.String(filepath),
 	}); err != nil {

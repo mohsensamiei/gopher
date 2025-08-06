@@ -9,9 +9,10 @@ import (
 )
 
 func init() {
-	_ = os.Setenv("S3_ENDPOINT_URL", "")
-	_ = os.Setenv("S3_ACCESS_KEY", "")
-	_ = os.Setenv("S3_SECRET_KEY", "")
+	_ = os.Setenv("S3_ENDPOINT_URL", "https://dev-itbfx.fra1.digitaloceanspaces.com")
+	_ = os.Setenv("S3_ACCESS_KEY", "DO801JXV8Y3MTN4WNYCY")
+	_ = os.Setenv("S3_SECRET_KEY", "Df8xl5i1ZSW2lCe6C/r0NaBNTA3/oFqCPt/lZqpFhbg")
+	_ = os.Setenv("S3_BUCKET_NAME", "dev-itbfx")
 }
 
 func main() {
@@ -20,13 +21,13 @@ func main() {
 		panic(err)
 	}
 
-	client, err := s3ext.Dial(configs)
+	client, err := s3ext.Dial(context.Background(), configs)
 	if err != nil {
 		panic(err)
 	}
 
 	var uri *url.URL
-	uri, err = client.Upload("/docs/test.txt", []byte("hello world"), true)
+	uri, err = client.Upload("docs/test.txt", []byte("hello world"), true)
 	if err != nil {
 		panic(err)
 	}
