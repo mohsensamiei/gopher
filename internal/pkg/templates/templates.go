@@ -26,6 +26,7 @@ Thumbs.db
 *.pem
 
 # Auto generated
+/tmp
 /logs
 /build
 /vendor
@@ -49,6 +50,7 @@ Thumbs.db
 *.pem
 
 # Auto generated
+/tmp
 /logs
 /build
 /vendor

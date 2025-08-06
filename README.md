@@ -21,6 +21,7 @@ go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 go install github.com/favadi/protoc-go-inject-tag@latest
 go install github.com/swaggo/swag/cmd/swag@latest
+go install github.com/air-verse/air@latest
 
 brew install --cask docker
 ```
@@ -40,6 +41,7 @@ go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 go install github.com/favadi/protoc-go-inject-tag@latest
 go install github.com/swaggo/swag/cmd/swag@latest
+go install github.com/air-verse/air@latest
 
 curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh
 ```
@@ -50,10 +52,8 @@ go install github.com/mohsensamiei/gopher/v3/cmd/gopher@latest
 ```
 
 ## How to use
-* Creating project codebase: `gopher init -rep [REPOSITORY URL] -reg [REGISTERY URL]`
-* Creating a new service: `gopher srv -n [SERVICE NAME]`
-* Creating a new command: `gopher cmd -s [SERVICE NAME] -n [COMMAND NAME]`
-* Creating a new application: `gopher app -c [COMMAND NAME] -n [APPLICATION NAME]`
+* Creating project codebase: `gopher init -r [REPOSITORY URL]`
+* Creating a new command: `gopher cmd -n [COMMAND NAME]`
 * Creating a new migration: `gopher migrate -c [COMMAND NAME] -n [MIGRATION NAME]`
 * Creating a new language: `gopher lang -n [LANGUAGE ABBR]`
 * Downloading project dependencies: `gopher dep`
