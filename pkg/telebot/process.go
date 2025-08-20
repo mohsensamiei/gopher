@@ -19,7 +19,7 @@ func parseCommand(str string) (Keyword, []string) {
 	dump := strings.Split(str, " ")
 	command := strings.ToLower(strings.TrimSpace(dump[0]))
 	if len(dump) > 1 {
-		return Keyword(command), dump[1:]
+		return Keyword(command), strings.Split(dump[1], "_")
 	}
 	return Keyword(command), nil
 }

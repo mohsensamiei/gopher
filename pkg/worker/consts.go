@@ -1,5 +1,5 @@
 package worker
 
 const (
-	Platform = "Worker"
+	Platform = "worker"
 )
