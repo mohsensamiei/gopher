@@ -1,4 +1,4 @@
-FROM golang:alpine as builder
+FROM golang:1.24.5-alpine as builder
 
 RUN apk add --update --no-cache git protoc build-base
 
