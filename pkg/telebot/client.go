@@ -4,7 +4,7 @@ import "github.com/mohsensamiei/gopher/v3/pkg/telegram"
 
 func New(configs Configs) *Client {
 	return &Client{
-		channel:  nil,
+		channel:  make(chan telegram.Update, configs.TelegramConcurrency),
 		Configs:  configs,
 		commands: make(map[string]Command),
 		events:   make(map[telegram.UpdateType]Event),

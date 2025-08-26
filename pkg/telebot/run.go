@@ -11,7 +11,6 @@ import (
 )
 
 func (c *Client) Run(ctx context.Context) error {
-	c.channel = make(chan telegram.Update, c.TelegramConcurrency)
 	defer func() {
 		close(c.channel)
 	}()
