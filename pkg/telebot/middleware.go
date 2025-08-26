@@ -12,7 +12,7 @@ import (
 
 type Middleware func(next Action) Action
 
-func abortMiddleware(next Action) Action {
+func AbortMiddleware(next Action) Action {
 	return func(ctx context.Context, update telegram.Update) (Keyword, error) {
 		if next == nil {
 			if update.Chat().Type == telegram.Private {

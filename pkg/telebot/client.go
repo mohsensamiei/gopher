@@ -13,8 +13,9 @@ func New(configs Configs) *Client {
 
 type Client struct {
 	Configs
-	channel     chan telegram.Update
-	commands    map[string]Command
-	middlewares []Middleware
-	events      map[telegram.UpdateType]Event
+	channel         chan telegram.Update
+	channelUpdateId uint
+	commands        map[string]Command
+	middlewares     []Middleware
+	events          map[telegram.UpdateType]Event
 }

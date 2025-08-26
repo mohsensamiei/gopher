@@ -22,19 +22,21 @@ func (c *Client) Run(ctx context.Context) error {
 			}
 		}()
 	}
-	var updateID uint
-	ticker := time.NewTicker(c.TelegramPullInterval)
-	for range ticker.C {
-		updates, err := di.Provide[*telegram.Connection](ctx).GetUpdates(telegram.GetUpdates{
-			Offset: updateID,
-			Limit:  c.TelegramConcurrency,
-		})
-		if err != nil {
-			return err
-		}
-		for _, update := range updates {
-			updateID = update.UpdateID + 1
-			c.channel <- update
+	if c.TelegramPullInterval > 0 {
+		conn := di.Provide[*telegram.Connection](ctx)
+		ticker := time.NewTicker(c.TelegramPullInterval)
+		for range ticker.C {
+			updates, err := conn.GetUpdates(telegram.GetUpdates{
+				Offset: c.channelUpdateId,
+				Limit:  c.TelegramConcurrency,
+			})
+			if err != nil {
+				return err
+			}
+			for _, update := range updates {
+				c.channelUpdateId = update.UpdateID + 1
+				c.channel <- update
+			}
 		}
 	}
 	return nil

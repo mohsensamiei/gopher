@@ -89,11 +89,8 @@ func (c *Client) process(ctx context.Context, update telegram.Update) error {
 				}
 			}
 		}
-		{
-			action = abortMiddleware(action)
-			for _, middleware := range c.middlewares {
-				action = middleware(action)
-			}
+		for _, middleware := range c.middlewares {
+			action = middleware(action)
 		}
 		{
 			next, err := action(ctx, update)
