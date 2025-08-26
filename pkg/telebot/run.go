@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/mohsensamiei/gopher/v3/pkg/di"
-	"github.com/mohsensamiei/gopher/v3/pkg/stringsext"
 	"github.com/mohsensamiei/gopher/v3/pkg/telegram"
 	log "github.com/sirupsen/logrus"
 	"time"
@@ -26,11 +25,30 @@ func (c *Client) Run(ctx context.Context) error {
 		}()
 	}
 	conn := di.Provide[*telegram.Connection](ctx)
-	if stringsext.IsNilOrEmpty(c.ExternalURL) {
+	if c.TelegramPullInterval > 0 {
 		if ok, err := conn.DeleteWebhook(telegram.DeleteWebhook{}); err != nil {
 			return err
 		} else if !ok {
 			return errors.New("can not delete telegram webhook")
+		}
+		var offset uint
+		ticker := time.NewTicker(c.TelegramPullInterval)
+		for range ticker.C {
+			updates, err := conn.GetUpdates(telegram.GetUpdates{
+				Offset: offset,
+				Limit:  c.TelegramConcurrency,
+			})
+			if err != nil {
+				return err
+			}
+			for _, update := range updates {
+				offset = update.UpdateID + 1
+				c.channel <- update
+			}
+			select {
+			case <-ctx.Done():
+				ticker.Stop()
+			}
 		}
 	} else {
 		if ok, err := conn.SetWebhook(telegram.SetWebhook{
@@ -41,20 +59,7 @@ func (c *Client) Run(ctx context.Context) error {
 		} else if !ok {
 			return errors.New("can not set telegram webhook")
 		}
-	}
-	ticker := time.NewTicker(c.TelegramPullInterval)
-	for range ticker.C {
-		updates, err := conn.GetUpdates(telegram.GetUpdates{
-			Offset: c.offset,
-			Limit:  c.TelegramConcurrency,
-		})
-		if err != nil {
-			return err
-		}
-		for _, update := range updates {
-			c.offset = update.UpdateID + 1
-			c.channel <- update
-		}
+		<-ctx.Done()
 	}
 	return nil
 }

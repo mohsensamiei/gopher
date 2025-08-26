@@ -13,7 +13,6 @@ func New(configs Configs) *Client {
 
 type Client struct {
 	Configs
-	offset      uint
 	channel     chan telegram.Update
 	commands    map[string]Command
 	middlewares []Middleware

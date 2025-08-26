@@ -39,9 +39,6 @@ func (c Controller) Update(res http.ResponseWriter, req *http.Request) {
 		httpext.SendError(res, req, err)
 		return
 	}
-	if offset := update.UpdateID + 1; c.offset < offset {
-		c.offset = offset
-	}
 	c.channel <- update
 	httpext.SendCode(res, req, http.StatusOK)
 }
