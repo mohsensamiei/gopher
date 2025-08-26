@@ -33,6 +33,8 @@ const (
 	createChatInviteLink   method = "createChatInviteLink"
 	approveChatJoinRequest method = "approveChatJoinRequest"
 	declineChatJoinRequest method = "declineChatJoinRequest"
+	setWebhook             method = "setWebhook"
+	deleteWebhook          method = "deleteWebhook"
 )
 
 const (

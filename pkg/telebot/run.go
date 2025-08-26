@@ -2,6 +2,8 @@ package telebot
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"github.com/mohsensamiei/gopher/v3/pkg/di"
 	"github.com/mohsensamiei/gopher/v3/pkg/telegram"
 	log "github.com/sirupsen/logrus"
@@ -22,21 +24,36 @@ func (c *Client) Run(ctx context.Context) error {
 			}
 		}()
 	}
+	conn := di.Provide[*telegram.Connection](ctx)
 	if c.TelegramPullInterval > 0 {
-		conn := di.Provide[*telegram.Connection](ctx)
+		if ok, err := conn.DeleteWebhook(telegram.DeleteWebhook{}); err != nil {
+			return err
+		} else if !ok {
+			return errors.New("can not delete telegram webhook")
+		}
+		var updateId uint
 		ticker := time.NewTicker(c.TelegramPullInterval)
 		for range ticker.C {
 			updates, err := conn.GetUpdates(telegram.GetUpdates{
-				Offset: c.channelUpdateId,
+				Offset: updateId,
 				Limit:  c.TelegramConcurrency,
 			})
 			if err != nil {
 				return err
 			}
 			for _, update := range updates {
-				c.channelUpdateId = update.UpdateID + 1
+				updateId = update.UpdateID + 1
 				c.channel <- update
 			}
+		}
+	} else {
+		if ok, err := conn.SetWebhook(telegram.SetWebhook{
+			URL:         fmt.Sprint(c.ExternalURL, hookPath),
+			SecretToken: c.TelegramSecretToken,
+		}); err != nil {
+			return err
+		} else if !ok {
+			return errors.New("can not set telegram webhook")
 		}
 	}
 	return nil

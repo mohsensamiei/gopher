@@ -17,6 +17,7 @@ func (c *Client) NewController() muxext.ControllerRegister {
 }
 
 const (
+	hookPath          = "/hooks/telegram"
 	secretTokenHeader = "X-Telegram-Bot-Api-Secret-Token"
 )
 
@@ -25,7 +26,7 @@ type Controller struct {
 }
 
 func (c Controller) RegisterController(router *mux.Router) {
-	muxext.HandleFunc(router, "/v1/hooks/telegram", c.Update).Methods(http.MethodPost)
+	muxext.HandleFunc(router, hookPath, c.Update).Methods(http.MethodPost)
 }
 
 func (c Controller) Update(res http.ResponseWriter, req *http.Request) {
@@ -38,7 +39,6 @@ func (c Controller) Update(res http.ResponseWriter, req *http.Request) {
 		httpext.SendError(res, req, err)
 		return
 	}
-	c.channelUpdateId = update.UpdateID + 1
 	c.channel <- update
 	httpext.SendCode(res, req, http.StatusOK)
 }
