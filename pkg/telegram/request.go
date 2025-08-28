@@ -92,12 +92,15 @@ func request[T any](token string, method method, request any, response *Response
 }
 
 func multipartBody(s any) (*bytes.Buffer, string) {
-	body := new(bytes.Buffer)
+	zeroBuf := new(bytes.Buffer)
+	zeroContent := "multipart/form-data"
 	if s == nil {
-		return body, "multipart/form-data"
+		return zeroBuf, zeroContent
 	}
-	writer := multipart.NewWriter(body)
 
+	empty := true
+	body := new(bytes.Buffer)
+	writer := multipart.NewWriter(body)
 	structValue := reflect.ValueOf(s)
 	structType := structValue.Type()
 	for i := 0; i < structType.NumField(); i++ {
@@ -125,6 +128,7 @@ func multipartBody(s any) (*bytes.Buffer, string) {
 			continue
 		}
 
+		empty = false
 		switch v := fieldVal.Interface().(type) {
 		case InputFileContent:
 			part, _ := writer.CreateFormFile(name, filepath.Base(v.Name))
@@ -146,7 +150,10 @@ func multipartBody(s any) (*bytes.Buffer, string) {
 			}
 		}
 	}
-
 	_ = writer.Close()
+
+	if empty {
+		return new(bytes.Buffer), "multipart/form-data"
+	}
 	return body, writer.FormDataContentType()
 }
