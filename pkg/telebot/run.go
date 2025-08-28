@@ -34,20 +34,21 @@ func (c *Client) Run(ctx context.Context) error {
 		var offset uint
 		ticker := time.NewTicker(c.TelegramPullInterval)
 		for range ticker.C {
-			updates, err := conn.GetUpdates(telegram.GetUpdates{
-				Offset: offset,
-				Limit:  c.TelegramConcurrency,
-			})
-			if err != nil {
-				return err
-			}
-			for _, update := range updates {
-				offset = update.UpdateID + 1
-				c.channel <- update
-			}
 			select {
 			case <-ctx.Done():
 				ticker.Stop()
+			default:
+				updates, err := conn.GetUpdates(telegram.GetUpdates{
+					Offset: offset,
+					Limit:  c.TelegramConcurrency,
+				})
+				if err != nil {
+					return err
+				}
+				for _, update := range updates {
+					offset = update.UpdateID + 1
+					c.channel <- update
+				}
 			}
 		}
 	} else {
