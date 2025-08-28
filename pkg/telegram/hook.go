@@ -23,7 +23,7 @@ func (c Connection) SetWebhook(req SetWebhook) (bool, error) {
 }
 
 type DeleteWebhook struct {
-	DropPendingUpdates bool `json:"drop_pending_updates,omitempty"` // Optional. Pass True to drop all pending updates
+	DropPendingUpdates bool `json:"drop_pending_updates"` // Optional. Pass True to drop all pending updates
 }
 
 // DeleteWebhook
