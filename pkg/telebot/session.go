@@ -15,6 +15,10 @@ func (c *Client) GetSession(ctx context.Context, chatID int64, data any) error {
 	return di.Provide[*redisext.Client](ctx).Get(ctx, fmt.Sprint(c.TelegramStoragePrefix, ":sessions"), fmt.Sprint(chatID), data)
 }
 
+func (c *Client) DelSession(ctx context.Context, chatID int64) error {
+	return di.Provide[*redisext.Client](ctx).Del(ctx, fmt.Sprint(c.TelegramStoragePrefix, ":sessions"), fmt.Sprint(chatID))
+}
+
 func (c *Client) GetState(ctx context.Context, chatID int64, state *State) error {
 	return di.Provide[*redisext.Client](ctx).Get(ctx, fmt.Sprint(c.TelegramStoragePrefix, ":states"), fmt.Sprint(chatID), state)
 }

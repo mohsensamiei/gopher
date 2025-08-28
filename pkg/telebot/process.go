@@ -73,20 +73,20 @@ func (c *Client) process(ctx context.Context, update telegram.Update) error {
 		default:
 			return err
 		}
-		var action Action
-		{
-			if update.IsCommand() || update.IsSimilarCommand(mapext.Keys(c.commands)) {
-				state.Command, state.Arguments = parseCommand(update.Message.Text)
-				if err := c.SetState(ctx, update.Chat().ID, state); err != nil {
-					return err
-				}
-				if cmd, ok := c.commands[state.Command.String()]; ok {
-					action = cmd.Init
-				}
-			} else if command := c.commands[state.Command.String()]; command != nil && state.Action != Empty && command.Actions() != nil {
-				if routes := command.Actions(); slices.Contains(update.Type(), routes[state.Action].AllowUpdates...) {
-					action = routes[state.Action].Action
-				}
+		var action Action = func(ctx context.Context, update telegram.Update) (Keyword, error) {
+			return state.Action, nil
+		}
+		if update.IsCommand() || update.IsSimilarCommand(mapext.Keys(c.commands)) {
+			state.Command, state.Arguments = parseCommand(update.Message.Text)
+			if err := c.SetState(ctx, update.Chat().ID, state); err != nil {
+				return err
+			}
+			if cmd, ok := c.commands[state.Command.String()]; ok {
+				action = cmd.Init
+			}
+		} else if command := c.commands[state.Command.String()]; command != nil && state.Action != Empty && command.Actions() != nil {
+			if routes := command.Actions(); slices.Contains(update.Type(), routes[state.Action].AllowUpdates...) {
+				action = routes[state.Action].Action
 			}
 		}
 		for _, middleware := range c.middlewares {
