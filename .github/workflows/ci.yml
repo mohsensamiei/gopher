@@ -2,9 +2,8 @@ name: Build and Push Images to GHCR
 
 on:
   push:
-    branches:
-      - master
-  workflow_dispatch:
+    tags:
+      - "*"
 
 jobs:
   builder:
@@ -49,7 +48,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/mohsensamiei/gopher/builder:latest
-            ghcr.io/mohsensamiei/gopher/builder:${{ github.run_number }}
+            ghcr.io/mohsensamiei/gopher/builder:${{ github.ref_name }}
           platforms: linux/amd64,linux/arm64/v8
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
@@ -97,7 +96,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/mohsensamiei/gopher/server:latest
-            ghcr.io/mohsensamiei/gopher/server:${{ github.run_number }}
+            ghcr.io/mohsensamiei/gopher/server:${{ github.ref_name }}
           platforms: linux/amd64,linux/arm64/v8
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max

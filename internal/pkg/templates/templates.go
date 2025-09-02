@@ -111,7 +111,7 @@ other = "..."
 other = "..."
 `
 	DeployDockerfile = `
-FROM ghcr.io/mohsensamiei/gopher:builder-latest as builder
+FROM ghcr.io/mohsensamiei/gopher/builder:latest as builder
 
 WORKDIR /src
 COPY go.mod go.sum ./
@@ -124,7 +124,7 @@ RUN gopher proto
 # RUN GO111MODULE=on CGO_ENABLED=0 go build -buildvcs=false -a -installsuffix cgo \
 #    -o ./build/OUTPUT ./cmd/MAIN
 
-FROM ghcr.io/mohsensamiei/gopher:server-latest
+FROM ghcr.io/mohsensamiei/gopher/server:latest
 
 WORKDIR /app
 COPY --from=builder /src/build/ ./
