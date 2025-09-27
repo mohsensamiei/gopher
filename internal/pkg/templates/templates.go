@@ -7,6 +7,8 @@ GOPATH=${HOME}/go
 %:
 	@true
 `
+	DocInit = `package docs
+`
 	ConfigEnv = `
 LOG_LEVEL=TRACE
 `
@@ -111,22 +113,23 @@ other = "..."
 other = "..."
 `
 	DeployDockerfile = `
-FROM ghcr.io/mohsensamiei/gopher/builder:latest as builder
+FROM ghcr.io/mohsensamiei/gopher/builder:latest AS builder
 
 WORKDIR /src
-COPY go.mod go.sum ./
-COPY vendor* vendor
-RUN gopher dep
+
 COPY . .
 RUN gopher proto
+RUN gopher dep
+# RUN gopher doc --main cmd/service/main.go
 
 # Add build lines here
 # RUN GO111MODULE=on CGO_ENABLED=0 go build -buildvcs=false -a -installsuffix cgo \
-#    -o ./build/OUTPUT ./cmd/MAIN
+#     -o ./build/service ./cmd/service
 
 FROM ghcr.io/mohsensamiei/gopher/server:latest
 
 WORKDIR /app
+
 COPY --from=builder /src/build/ ./
 COPY ./assets ./assets
 `

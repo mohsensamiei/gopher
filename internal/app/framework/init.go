@@ -38,7 +38,7 @@ func (c Commander) init(cmd *cobra.Command, args []string) error {
 		"internal/app/.gitkeep":      templates.GitKeep,
 		"internal/pkg/.gitkeep":      templates.GitKeep,
 		"configs/.gitkeep":           templates.GitKeep,
-		"docs/.gitkeep":              templates.GitKeep,
+		"docs/init.go":               templates.DocInit,
 		"tests/.gitkeep":             templates.GitKeep,
 		"cmd/.gitkeep":               templates.GitKeep,
 		"pkg/.gitkeep":               templates.GitKeep,

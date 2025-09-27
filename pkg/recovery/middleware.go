@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func AuthMiddleware() mux.MiddlewareFunc {
+func Middleware() mux.MiddlewareFunc {
 	return func(handler http.Handler) http.Handler {
 		return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 			defer func() {
