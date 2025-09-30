@@ -1,10 +1,17 @@
 package di
 
 import (
-	"fmt"
+	"reflect"
 )
 
 func TypeName[T any]() string {
-	var t T
-	return fmt.Sprintf("%T", t)
+	var x T
+	t := reflect.TypeOf(x)
+	if t == nil {
+		t = reflect.TypeOf((*T)(nil)).Elem()
+	}
+	if t.PkgPath() == "" {
+		return t.Name()
+	}
+	return t.PkgPath() + "." + t.Name()
 }
