@@ -15,19 +15,22 @@ import (
 	"time"
 )
 
-func parseCommand(str string) (Keyword, []string) {
-	dump := strings.Split(str, " ")
-	command := strings.ToLower(strings.TrimSpace(dump[0]))
-	if len(dump) > 1 {
-		return Keyword(command), strings.Split(dump[1], "_")
-	}
-	return Keyword(command), nil
+type State struct {
+	Command   Keyword   `json:"command,omitempty"`
+	Action    Keyword   `json:"action,omitempty"`
+	Arguments Arguments `json:"arguments,omitempty"`
 }
 
-type State struct {
-	Command   Keyword  `json:"command,omitempty"`
-	Action    Keyword  `json:"action,omitempty"`
-	Arguments []string `json:"arguments,omitempty"`
+func (s *State) Parse(str string) error {
+	dump := strings.Split(str, " ")
+	s.Command = Keyword(strings.ToLower(strings.TrimSpace(dump[0])))
+	if len(dump) > 1 {
+		s.Arguments = NewArguments()
+		if err := s.Arguments.Parse(dump[1]); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (c *Client) recoveredProcess(ctx context.Context, update telegram.Update) (err error) {
@@ -77,7 +80,9 @@ func (c *Client) process(ctx context.Context, update telegram.Update) error {
 			return state.Action, nil
 		}
 		if update.IsCommand() || update.IsSimilarCommand(mapext.Keys(c.commands)) {
-			state.Command, state.Arguments = parseCommand(update.Message.Text)
+			if err := state.Parse(update.Message.Text); err != nil {
+				return err
+			}
 			if err := c.SetState(ctx, update.Chat().ID, state); err != nil {
 				return err
 			}
