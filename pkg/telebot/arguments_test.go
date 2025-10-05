@@ -12,7 +12,13 @@ func TestArguments_ParseAndString(t *testing.T) {
 		expected telebot.Arguments
 	}{
 		{
-			input: "key1_value1-value2__key2_val1-val2-val3__key3_val1",
+			input: "connect_123_abc-456-def",
+			expected: telebot.Arguments{
+				"connect": {"123", "abc-456-def"},
+			},
+		},
+		{
+			input: "key1_value1_value2__key2_val1_val2_val3__key3_val1",
 			expected: telebot.Arguments{
 				"key1": {"value1", "value2"},
 				"key2": {"val1", "val2", "val3"},

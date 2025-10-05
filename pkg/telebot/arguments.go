@@ -18,13 +18,11 @@ func (a *Arguments) Parse(s string) error {
 	}
 	parts := strings.Split(s, "__")
 	for _, p := range parts {
-		kv := strings.SplitN(p, "_", 2)
-		if len(kv) != 2 {
+		kv := strings.Split(p, "_")
+		if len(kv) < 2 {
 			return errors.New("invalid format")
 		}
-		key := kv[0]
-		values := strings.Split(kv[1], "-")
-		(*a)[key] = values
+		(*a)[kv[0]] = kv[1:]
 	}
 	return nil
 }
@@ -32,7 +30,7 @@ func (a *Arguments) Parse(s string) error {
 func (a Arguments) String() string {
 	parts := make([]string, 0, len(a))
 	for k, vals := range a {
-		parts = append(parts, k+"_"+strings.Join(vals, "-"))
+		parts = append(parts, k+"_"+strings.Join(vals, "_"))
 	}
 	return strings.Join(parts, "__")
 }
