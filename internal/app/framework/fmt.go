@@ -28,8 +28,5 @@ func (c Commander) fmt(cmd *cobra.Command, _ []string) error {
 	if err := execext.CommandContextStream(cmd.Context(), "go", "fmt", "./..."); err != nil {
 		return err
 	}
-	if err := execext.CommandContextStream(cmd.Context(), "swag", "fmt"); err != nil {
-		return err
-	}
 	return nil
 }
